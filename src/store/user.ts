@@ -26,7 +26,7 @@ export const useUserStore = defineStore('user', {
     user: null,
   }),
   actions: {
-    async register(userData: Form): Promise<User> { // Acepta un objeto de tipo Form
+    async register(userData: FormData): Promise<User> { // Acepta un objeto de tipo Form
       try {
         const response = await api.register(userData);
         this.user = response.data as User;
