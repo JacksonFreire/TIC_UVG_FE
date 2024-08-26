@@ -1,0 +1,31 @@
+// src/services/api.ts
+import axios, { AxiosResponse } from 'axios';
+
+const API_URL = 'http://localhost:8080';
+
+interface User {
+  id: number;
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  role: string;
+  birthDate: string;
+  document: string;
+  verified: boolean;
+}
+
+export default {
+  register(userData: FormData): Promise<AxiosResponse<User>> {
+    return axios.post(`${API_URL}/api/users/register`, userData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
+
+  getUser(id: string): Promise<AxiosResponse<User>> {
+    return axios.get(`${API_URL}/api/users/verify/${id}`);
+  },
+};
