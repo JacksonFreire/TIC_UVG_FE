@@ -5,15 +5,13 @@ import path from 'path';
 export default defineConfig(({ mode }) => {
   // Cargar las variables de entorno basadas en el modo (development, production)
   const env = loadEnv(mode, process.cwd());
-  
-  // Verificar si estamos en modo producción
-  const isProduction = mode === 'production';
-  
-  // Establecer la URL del backend según la variable de entorno o un valor por defecto para desarrollo local
+
   const backendUrl = env.VITE_APP_BASE_URL_API || 'http://localhost:8080';
 
   return {
-    plugins: [vue()],
+    plugins: [
+      vue(),
+    ],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
@@ -33,15 +31,13 @@ export default defineConfig(({ mode }) => {
     server: {
       port: 5173, // Cambia el puerto si es necesario
       open: true, // Abre automáticamente el navegador al iniciar el servidor
-      proxy: isProduction
-        ? undefined // No usar proxy en producción
-        : {
-            '/api': {
-              target: backendUrl, // Usar la variable de entorno o un valor por defecto en desarrollo
-              changeOrigin: true,
-              rewrite: (path) => path.replace(/^\/api/, ''), // Opcionalmente reescribe el path si es necesario
-            },
-          },
+      proxy: {
+        '/api': {
+          target: backendUrl, // Usa la variable de entorno o un valor por defecto
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, ''), // Opcionalmente reescribe el path si es necesario
+        },
+      },
     },
   };
 });
