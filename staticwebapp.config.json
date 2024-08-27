@@ -1,12 +1,25 @@
 {
     "routes": [
-        {
-            "route": "/register",
-            "rewrite": "/index.html"
-        },
-        {
-            "route": "/*",
-            "rewrite": "/index.html"
-        }
-    ]
-}
+      {
+        "route": "/*",
+        "serve": "/index.html",
+        "statusCode": 200
+      }
+    ],
+    "navigationFallback": {
+      "rewrite": "/index.html",
+      "exclude": [
+        "/images/*",
+        "/css/*",
+        "/js/*",
+        "/favicon.ico"
+      ]
+    },
+    "mimeTypes": {
+      ".json": "application/json",
+      ".ico": "image/x-icon",
+      ".css": "text/css",
+      ".js": "application/javascript"
+    }
+  }
+  
