@@ -1,19 +1,28 @@
 {
   "compilerOptions": {
+    "outDir": "./dist", // Directorio de salida para archivos .js generados
+    "rootDir": "./src", // Directorio raíz de tus archivos .ts y .vue
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"]
     },
-    "target": "ES6",
-    "lib": ["ES2015", "DOM"],
-    "module": "ESNext",
+    "target": "ESNext", // ESNext para estar alineado con Vite y optimizaciones modernas
+    "lib": ["ESNext", "DOM"], // ESNext para soporte completo de las últimas características de JS
+    "module": "ESNext", // ESNext para la compatibilidad con Vite
     "moduleResolution": "Node",
-    "strict": true,
+    "strict": true, // Activar todas las comprobaciones estrictas de TypeScript
     "jsx": "preserve",
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true, // Permitir importaciones predeterminadas sintéticas para una mejor compatibilidad con los módulos ES
+    "noImplicitAny": true, // Opcional, asegura que todos los tipos sean explícitos
+    "isolatedModules": true, // Requerido para que funcione bien con Vite
+    "resolveJsonModule": true, // Permite importar archivos JSON
+    "types": ["vite/client"], // Incluye los tipos específicos para Vite
+    "experimentalDecorators": true, // Soporte para decoradores si es necesario
+    "emitDecoratorMetadata": true // Si se usa con frameworks que requieran metadatos de decoradores, como NestJS
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "dist"]
 }
