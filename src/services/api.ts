@@ -1,7 +1,7 @@
 // src/services/api.ts
 import axios, { AxiosResponse } from 'axios';
 
-const API_URL = 'http://localhost:8080';
+const API_URL = import.meta.env.VITE_APP_BASE_URL;
 
 interface User {
   id: number;

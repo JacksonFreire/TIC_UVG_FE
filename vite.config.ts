@@ -23,7 +23,7 @@ export default defineConfig({
     },
   },
   server: {
-    port: 3000, // Cambia el puerto si es necesario
+    port: 5173, // Cambia el puerto si es necesario
     open: true, // Abre automáticamente el navegador al iniciar el servidor
   },
 });
