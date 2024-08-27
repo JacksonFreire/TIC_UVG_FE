@@ -3,6 +3,8 @@ import axios, { AxiosResponse } from 'axios';
 
 const API_URL = import.meta.env.VITE_APP_BASE_URL_API;
 
+console.log('API URL:', API_URL);
+
 interface User {
   id: number;
   username: string;
