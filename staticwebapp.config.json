@@ -1,0 +1,12 @@
+{
+    "routes": [
+        {
+            "route": "/register",
+            "rewrite": "/index.html"
+        },
+        {
+            "route": "/*",
+            "rewrite": "/index.html"
+        }
+    ]
+}
