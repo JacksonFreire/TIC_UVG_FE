@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 
-const API_URL = import.meta.env.VITE_APP_BASE_URL_API;
-console.log('API URL:', API_URL);
+const API_URL_BE = import.meta.env.VITE_APP_BASE_URL_API;
+console.log('API URL:', API_URL_BE);
 
 interface User {
   id: number;
@@ -18,7 +18,7 @@ interface User {
 
 export default {
   register(userData: FormData): Promise<AxiosResponse<User>> {
-    return axios.post(`${API_URL}/api/users/register`, userData, {
+    return axios.post(`${API_URL_BE}/api/users/register`, userData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -26,6 +26,6 @@ export default {
   },
 
   getUser(id: string): Promise<AxiosResponse<User>> {
-    return axios.get(`${API_URL}/api/users/verify/${id}`);
+    return axios.get(`${API_URL_BE}/api/users/verify/${id}`);
   },
 };
