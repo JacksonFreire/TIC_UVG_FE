@@ -1,7 +1,7 @@
 // src/services/api.ts
 import axios, { AxiosResponse } from 'axios';
 
-const API_URL = import.meta.env.VITE_APP_BASE_URL;
+const API_URL = import.meta.env.VITE_APP_BASE_URL_API;
 
 interface User {
   id: number;

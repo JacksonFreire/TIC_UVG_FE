@@ -2,6 +2,9 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import path from 'path';
 
+// Cargar variables de entorno desde .env.*
+const backendUrl = process.env.VITE_APP_BASE_URL_API || 'http://localhost:8080';
+
 export default defineConfig({
   plugins: [
     vue(),
@@ -25,5 +28,12 @@ export default defineConfig({
   server: {
     port: 5173, // Cambia el puerto si es necesario
     open: true, // Abre automáticamente el navegador al iniciar el servidor
+    proxy: {
+      '/api': {
+        target: backendUrl, // Usa la variable de entorno o un valor por defecto
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''), // Opcionalmente reescribe el path si es necesario
+      },
+    },
   },
 });
