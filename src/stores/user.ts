@@ -1,10 +1,9 @@
-// src/store/user.ts
+// src/stores/user.ts
+
 import { defineStore } from 'pinia';
 import api from '@/services/api';
-import { Form } from '@/models/request/form'; // Importa la interfaz Form
-// create function for sum two 
 
-interface User {
+export interface User {
   id: number;
   username: string;
   email: string;
@@ -26,10 +25,10 @@ export const useUserStore = defineStore('user', {
     user: null,
   }),
   actions: {
-    async register(userData: FormData): Promise<User> { // Acepta un objeto de tipo Form
+    async register(userData: FormData): Promise<User> {
       try {
         const response = await api.register(userData);
-        this.user = response.data as User;
+        this.user = response.data;
         return this.user;
       } catch (error) {
         console.error('Error en el registro:', error);
@@ -39,7 +38,7 @@ export const useUserStore = defineStore('user', {
     async fetchUser(id: string): Promise<User> {
       try {
         const response = await api.getUser(id);
-        this.user = response.data as User;
+        this.user = response.data;
         return this.user;
       } catch (error) {
         console.error('Error al obtener el usuario:', error);

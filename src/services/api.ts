@@ -1,19 +1,9 @@
+// src/services/api.ts
+
 import axios, { AxiosResponse } from 'axios';
+import { User } from '@/stores/user';
 
 const API_URL_BE = import.meta.env.VITE_APP_BASE_URL_API;
-
-interface User {
-  id: number;
-  username: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  phoneNumber: string;
-  role: string;
-  birthDate: string;
-  document: string;
-  verified: boolean;
-}
 
 export default {
   register(userData: FormData): Promise<AxiosResponse<User>> {
