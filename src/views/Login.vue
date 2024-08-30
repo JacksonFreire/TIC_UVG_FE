@@ -17,14 +17,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped>
-/* Estilos adicionales si es necesario */
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.5s;
-}
-
-.fade-enter, .fade-leave-to {
-  opacity: 0;
-}
-</style>

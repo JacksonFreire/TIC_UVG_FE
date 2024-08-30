@@ -3,8 +3,8 @@
     <!-- Navbar -->
     <Navbar />
 
-    <!-- Espacio para el Contenido Principal -->
-    <div class="flex-grow pt-16"> <!-- Ajusta el margen superior para no ocultar el contenido detrás del navbar -->
+    <!-- Contenido Principal -->
+    <div class="flex-grow pt-16 flex flex-col justify-center items-center">
       <router-view />
     </div>
 
@@ -29,4 +29,10 @@ export default defineComponent({
 
 <style scoped>
 /* Asegura que el contenido esté siempre visible entre el navbar y el footer */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+}
 </style>

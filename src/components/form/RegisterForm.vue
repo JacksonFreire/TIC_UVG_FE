@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center justify-center min-h-screen bg-gray-100">
+  <div class="flex items-center justify-center min-h-screen">
     <div class="w-full max-w-lg p-8 bg-white rounded-lg shadow-lg">
       <h2 class="text-2xl font-bold text-center mb-6">Registro</h2>
       <form @submit.prevent="submit">
@@ -13,24 +13,24 @@
                  :type="field.type"
                  @blur="touched[key] = true"
                  :class="{'border-red-500': touched[key] && (!form[key] || (key === 'confirmPassword' && !passwordsMatch))}"
-                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
           />
           <input v-else
                  :id="key"
                  @change="handleFileUpload"
                  @blur="touched[key] = true"
                  :class="{'border-red-500': touched[key] && !form[key]}"
-                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                  type="file"
           />
-          <!-- Muestra el mensaje de error solo una vez -->
+          
           <p v-if="key === 'confirmPassword' && touched.confirmPassword && !passwordsMatch" class="text-red-500 text-sm mt-1">Las contraseñas no coinciden.</p>
           <p v-else-if="touched[key] && !form[key]" class="text-red-500 text-sm mt-1">{{ field.error }}</p>
         </div>
 
         <button type="submit" :disabled="!validateForm()"
-                class="w-full px-4 py-2 font-medium text-white bg-indigo-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
-                :class="{'bg-gray-400 cursor-not-allowed': !validateForm(), 'bg-indigo-600 hover:bg-indigo-700': validateForm()}">
+                class="w-full px-4 py-2 font-medium text-white bg-blue-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm"
+                :class="{'bg-gray-400 cursor-not-allowed': !validateForm(), 'bg-blue-600 hover:bg-blue-700': validateForm()}">
           Enviar
         </button>
       </form>

@@ -30,7 +30,7 @@
           type="password" 
           @blur="touched.password = true"
           :class="{'border-red-500': touched.password && v$.password.$invalid}"
-          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" 
         />
         <p v-if="touched.password && v$.password.$invalid" class="text-red-500 text-sm mt-1">La contraseña no puede estar vacía.</p>
       </div>
@@ -39,17 +39,17 @@
       <button 
         type="submit" 
         :disabled="!validateForm() || isSubmitting"
-        class="w-full px-4 py-2 mt-4 font-medium text-white bg-indigo-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm hover:bg-indigo-700"
+        class="w-full px-4 py-2 mt-4 font-medium text-white bg-blue-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm hover:bg-blue-700"
       >
         Enviar
       </button>
 
       <!-- Enlaces de Recuperar Contraseña y Crear Nuevo Usuario -->
       <div class="mt-4 flex justify-between">
-        <router-link to="/forgot-password" class="text-sm text-indigo-600 hover:underline">
+        <router-link to="/forgot-password" class="text-sm text-blue-600 hover:underline">
           ¿Olvidaste tu contraseña?
         </router-link>
-        <router-link to="/register" class="text-sm text-indigo-600 hover:underline">
+        <router-link to="/register" class="text-sm text-blue-600 hover:underline">
           Crear nuevo usuario
         </router-link>
       </div>
