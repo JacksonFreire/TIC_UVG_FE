@@ -10,7 +10,7 @@
   
         <!-- Menú de Navegación -->
         <div class="hidden md:flex space-x-8">
-          <a href="#" class="hover:text-gray-200">Home</a>
+          <a href="/" class="hover:text-gray-200">Home</a>
           <a href="#" class="hover:text-gray-200">Quiénes somos</a>
           <a href="#" class="hover:text-gray-200">Servicios</a>
           <a href="#" class="hover:text-gray-200">Eventos</a>
