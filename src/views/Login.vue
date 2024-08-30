@@ -1,17 +1,31 @@
 <template>
-    <div class="container mx-auto px-4">
-      <h1 class="text-2xl font-bold mb-4">UV-GROUP</h1>
-      <LoginForm />
-    </div>
-  </template>
-  
-  <script lang="ts">
-  import { defineComponent } from 'vue';
-  import LoginForm from '@/components/auth/LoginForm.vue';
-  
-  export default defineComponent({
-    components: {
-        LoginForm,
-    },
-  });
-  </script>
+  <!-- Contenedor del formulario con fondo blanco y sombra -->
+  Univeritas Group
+  <div class="w-full max-w-md mx-auto mt-20 p-8 bg-white rounded-lg shadow-lg">
+    <!-- Componente de Formulario de Inicio de Sesión -->
+    <LoginForm />
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent } from 'vue';
+import LoginForm from '@/components/auth/LoginForm.vue'; // Importa el componente de formulario
+
+export default defineComponent({
+  name: 'Login',
+  components: {
+    LoginForm,
+  },
+});
+</script>
+
+<style scoped>
+/* Estilos adicionales si es necesario */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s;
+}
+
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+</style>
