@@ -2,7 +2,7 @@
     <!-- Pie de página -->
     <footer class="bg-blue-600 text-white py-4 px-6">
       <div class="container mx-auto text-center">
-        <p>&copy; 2024 - JACKSON FREIRE - UTPL</p>
+        <p>&copy; 2024 - Jackson Freire - UTPL</p>
       </div>
     </footer>
   </template>
