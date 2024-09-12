@@ -22,7 +22,6 @@ const routes: Array<RouteRecordRaw> = [
     component: ForgotPassword,
 },
 { path: '/reset-password', name: 'ResetPassword', component: ResetPassword },
-  // Otras rutas aquí
 ];
 
 const router = createRouter({
