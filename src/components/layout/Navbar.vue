@@ -20,8 +20,9 @@
         <a href="/" class="hover:text-gray-200">Home</a>
         <a href="#" class="hover:text-gray-200">Quiénes somos</a>
         <a href="#" class="hover:text-gray-200">Servicios</a>
+       <!-- <a href="#" class="hover:text-gray-200">Cursos</a> -->
+        <router-link to="/courses" class="hover:text-gray-200">Cursos</router-link>
         <a href="#" class="hover:text-gray-200">Eventos</a>
-        <a href="#" class="hover:text-gray-200">Noticias</a>
         <a href="#" class="hover:text-gray-200">Contactos</a>
         <router-link to="/login" class="hover:text-gray-200">Iniciar sesión</router-link>
       </div>

@@ -2,10 +2,17 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import Register from '@/views/Register.vue';
 import Login from '@/views/Login.vue';
-import ForgotPassword from '@/views/ForgotPassword.vue'; 
-import ResetPassword from '@/views/ResetPassword.vue'; 
+import ForgotPassword from '@/views/ForgotPassword.vue';
+import ResetPassword from '@/views/ResetPassword.vue';
+import CoursesList from '@/views/CoursesList.vue';
+import CourseDetails from '@/views/CourseDetails.vue';
 
 const routes: Array<RouteRecordRaw> = [
+  {
+    path: '/',
+    name: 'Home',
+    redirect: '/Register' // Redirigir la ruta raíz ("/") a "/courses"
+  },
   {
     path: '/register',
     name: 'Register',
@@ -16,13 +23,22 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Login',
     component: Login,
   },
-  { 
-    path: '/forgot-password', 
-    name: 'ForgotPassword', 
+  {
+    path: '/forgot-password',
+    name: 'ForgotPassword',
     component: ForgotPassword,
-},
-{ path: '/reset-password', name: 'ResetPassword', component: ResetPassword },
-  // Otras rutas aquí
+  },
+  { path: '/reset-password', name: 'ResetPassword', component: ResetPassword },
+  {
+    path: '/courses', 
+    name: 'CoursesList',
+    component: CoursesList,
+  },
+  {
+    path: '/courses/:id', 
+    name: 'CourseDetails',
+    component: CourseDetails,
+  },
 ];
 
 const router = createRouter({

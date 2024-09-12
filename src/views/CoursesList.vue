@@ -1,0 +1,111 @@
+<template>
+  <div class="container mx-auto py-8 px-4">
+    <!-- Buscador -->
+    <div class="relative mb-6">
+      <input
+        type="text"
+        v-model="searchQuery"
+        placeholder="Buscar cursos..."
+        class="w-full p-4 pl-10 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+      />
+      <svg class="absolute left-3 top-3 h-6 w-6 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+        <path
+          d="M21 21l-4.35-4.35a8 8 0 1 0-1.65 1.65L21 21zM4 10a6 6 0 1 1 12 0A6 6 0 0 1 4 10z"
+        />
+      </svg>
+    </div>
+
+    <!-- Lista de cursos -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div
+        v-for="course in filteredCourses"
+        :key="course.id"
+        class="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transition duration-300"
+      >
+        <img
+          :src="'data:image/jpeg;base64,' + course.image"
+          alt="Imagen del curso"
+          class="rounded-t-lg w-full h-40 object-cover mb-4"
+        />
+        <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ course.name }}</h3>
+        <p class="text-sm text-gray-500 mb-4">
+          <span class="font-semibold">Fecha:</span> {{ formatDate(course.startDate) }} - {{ formatDate(course.endDate) }}
+        </p>
+        <p class="text-sm text-gray-500 mb-4">
+          <span class="font-semibold">Instructor:</span> {{ course.instructor?.name || 'No asignado' }}
+        </p>
+        <button
+          @click="navigateToDetails(course.id)"
+          class="bg-blue-500 text-white px-4 py-2 rounded-lg w-full hover:bg-blue-600 transition duration-300"
+        >
+          Ver más
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent, ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { getAllCourses } from '@/services/coursesService';
+
+interface Course {
+  id: number;
+  name: string;
+  image: string; // Imagen en base64
+  startDate: string;
+  endDate: string;
+  instructor: Instructor | null;
+}
+
+interface Instructor {
+  id: number;
+  name: string;
+  bio: string;
+  profileImage: string; // Imagen en base64
+}
+
+export default defineComponent({
+  name: 'CoursesList',
+  setup() {
+    const router = useRouter();
+    const courses = ref<Course[]>([]);
+    const searchQuery = ref<string>('');
+
+    const fetchCourses = async () => {
+      try {
+        courses.value = await getAllCourses();
+      } catch (error) {
+        console.error('Error al cargar los cursos:', error);
+      }
+    };
+
+    const filteredCourses = computed(() => {
+      if (!searchQuery.value) return courses.value;
+      return courses.value.filter(course =>
+        course.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+      );
+    });
+
+    const navigateToDetails = (id: number) => {
+      router.push({ name: 'CourseDetails', params: { id: id.toString() } });
+    };
+
+    const formatDate = (date: string): string => {
+      const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+      return new Date(date).toLocaleDateString('es-ES', options);
+    };
+
+    onMounted(fetchCourses);
+
+    return {
+      courses,
+      searchQuery,
+      filteredCourses,
+      navigateToDetails,
+      formatDate,
+    };
+  },
+});
+</script>
