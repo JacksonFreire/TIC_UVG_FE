@@ -114,7 +114,12 @@ export default defineComponent({
     const fetchCourseDetails = async () => {
       try {
         const courseId = route.params.id as string;
-        course.value = await getCourseById(courseId);
+        const courseData = await getCourseById(courseId);
+        
+        // Ordenar el currículo por el campo "order"
+        courseData.curriculums.sort((a: Curriculum, b: Curriculum) => (a.order ?? 0) - (b.order ?? 0));
+        
+        course.value = courseData;
       } catch (err) {
         error.value = 'Error al cargar los detalles del curso.';
       } finally {
