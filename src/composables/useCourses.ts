@@ -1,6 +1,6 @@
 // src/composables/useCourses.ts
 import { ref, onMounted } from 'vue';
-import { getCourses } from '@/services/coursesService';
+import { getAllCourses } from '@/services/coursesService';
 
 interface Course {
   id: number;
@@ -25,7 +25,7 @@ export function useCourses() {
 
   const fetchCourses = async () => {
     try {
-      const data = await getCourses();
+      const data = await getAllCourses();
       courses.value = data;
     } catch (err) {
       error.value = (err as Error).message;
