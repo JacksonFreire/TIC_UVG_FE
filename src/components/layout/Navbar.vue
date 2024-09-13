@@ -22,7 +22,7 @@
         <a href="#" class="hover:text-gray-200">Servicios</a>
        <!-- <a href="#" class="hover:text-gray-200">Cursos</a> -->
         <router-link to="/courses" class="hover:text-gray-200">Cursos</router-link>
-        <a href="#" class="hover:text-gray-200">Eventos</a>
+        <router-link to="/events" class="hover:text-gray-200">Eventos</router-link>
         <a href="#" class="hover:text-gray-200">Contactos</a>
         <router-link to="/login" class="hover:text-gray-200">Iniciar sesión</router-link>
       </div>

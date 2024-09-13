@@ -22,11 +22,18 @@
         :key="course.id"
         class="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transition duration-300"
       >
-        <img
-          :src="'data:image/jpeg;base64,' + course.image"
-          alt="Imagen del curso"
-          class="rounded-t-lg w-full h-40 object-cover mb-4"
-        />
+        <!-- Imagen del curso con precio encima -->
+        <div class="relative">
+          <img
+            :src="'data:image/jpeg;base64,' + course.image"
+            alt="Imagen del curso"
+            class="rounded-t-lg w-full h-40 object-cover mb-4"
+          />
+          <!-- Precio encima de la imagen -->
+          <div class="absolute top-2 left-2 bg-white text-gray-800 text-sm font-bold px-2 py-1 rounded shadow-md">
+            {{ course.price > 0 ? '$' + course.price.toFixed(2) : 'Gratis' }}
+          </div>
+        </div>
         <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ course.name }}</h3>
         <p class="text-sm text-gray-500 mb-4">
           <span class="font-semibold">Fecha:</span> {{ formatDate(course.startDate) }} - {{ formatDate(course.endDate) }}
@@ -57,6 +64,7 @@ interface Course {
   startDate: string;
   endDate: string;
   instructor: Instructor | null;
+  price: number; // Añadido el campo de precio
 }
 
 interface Instructor {
