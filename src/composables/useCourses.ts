@@ -2,33 +2,23 @@
 import { ref, onMounted } from 'vue';
 import { getAllCourses } from '@/services/coursesService';
 
-interface Course {
-  id: number;
-  name: string;
-  description: string;
-  category: string | null;
-  lessonsCount: number;
-  studentsCount: number;
-  price: number;
-  duration: string | null;
-  level: string | null;
-  eventPlace: string;
-  image: string; // Imagen en base64
-  startDate: string;
-  endDate: string;
-}
-
 export function useCourses() {
-  const courses = ref<Course[]>([]);
-  const isLoading = ref<boolean>(true);
+  const courses = ref([]);
+  const isLoading = ref(false);
   const error = ref<string | null>(null);
 
+  // Parámetros para la paginación
+  const currentPage = ref(1);
+  const pageSize = ref(6); // Cambiar al tamaño de página que desees
+
   const fetchCourses = async () => {
+    isLoading.value = true;
     try {
-      const data = await getAllCourses();
-      courses.value = data;
+      // Llama a getAllCourses con los parámetros de paginación
+      const data = await getAllCourses(currentPage.value, pageSize.value);
+      courses.value = data.content; // Ajusta esto según la estructura de tu respuesta
     } catch (err) {
-      error.value = (err as Error).message;
+      error.value = 'Error al cargar los cursos.';
     } finally {
       isLoading.value = false;
     }
@@ -40,5 +30,8 @@ export function useCourses() {
     courses,
     isLoading,
     error,
+    currentPage,
+    pageSize,
+    fetchCourses,
   };
 }
