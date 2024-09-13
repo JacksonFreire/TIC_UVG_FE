@@ -1,4 +1,3 @@
-// src/composables/useCourses.ts
 import { ref, onMounted } from 'vue';
 import { getAllCourses } from '@/services/coursesService';
 
