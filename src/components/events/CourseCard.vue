@@ -1,14 +1,18 @@
-<!-- src/components/CourseCard.vue -->
 <template>
   <div class="relative bg-white shadow-lg rounded-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl">
     <div class="relative">
       <!-- Mostrar la imagen del curso -->
       <img :src="'data:image/jpeg;base64,' + course.image" alt="Course Image" class="w-full h-48 object-cover" />
+      <!-- Etiquetas encima de la imagen -->
       <div class="absolute top-0 left-0 bg-red-600 text-white text-xs font-semibold px-2 py-1">
         Free
       </div>
       <div class="absolute top-0 right-0 bg-black text-white text-xs font-semibold px-2 py-1">
         {{ course.category || 'General' }}
+      </div>
+      <!-- Precio encima de la imagen -->
+      <div class="absolute bottom-2 left-2 bg-white text-gray-800 text-sm font-bold px-2 py-1 rounded shadow-md">
+        {{ course.price > 0 ? '$' + course.price.toFixed(2) : 'Gratis' }}
       </div>
     </div>
     <div class="p-4">

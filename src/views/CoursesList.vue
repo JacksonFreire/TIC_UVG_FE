@@ -15,18 +15,36 @@
       </svg>
     </div>
 
+    <!-- Indicador de carga -->
+    <div v-if="isLoading" class="flex justify-center items-center">
+      <div class="flex items-center space-x-2">
+        <svg class="animate-spin h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8h8c0 4.42-3.58 8-8 8a8 8 0 01-8-8z"></path>
+        </svg>
+        <span class="text-gray-700 font-medium">Cargando cursos...</span>
+      </div>
+    </div>
+
     <!-- Lista de cursos -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <div
         v-for="course in filteredCourses"
         :key="course.id"
         class="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transition duration-300"
       >
-        <img
-          :src="'data:image/jpeg;base64,' + course.image"
-          alt="Imagen del curso"
-          class="rounded-t-lg w-full h-40 object-cover mb-4"
-        />
+        <!-- Imagen del curso con precio encima -->
+        <div class="relative">
+          <img
+            :src="'data:image/jpeg;base64,' + course.image"
+            alt="Imagen del curso"
+            class="rounded-t-lg w-full h-40 object-cover mb-4"
+          />
+          <!-- Precio encima de la imagen -->
+          <div class="absolute top-2 left-2 bg-white text-gray-800 text-sm font-bold px-2 py-1 rounded shadow-md">
+            {{ course.price > 0 ? '$' + course.price.toFixed(2) : 'Gratis' }}
+          </div>
+        </div>
         <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ course.name }}</h3>
         <p class="text-sm text-gray-500 mb-4">
           <span class="font-semibold">Fecha:</span> {{ formatDate(course.startDate) }} - {{ formatDate(course.endDate) }}
@@ -57,6 +75,7 @@ interface Course {
   startDate: string;
   endDate: string;
   instructor: Instructor | null;
+  price: number; // Añadido el campo de precio
 }
 
 interface Instructor {
@@ -72,12 +91,16 @@ export default defineComponent({
     const router = useRouter();
     const courses = ref<Course[]>([]);
     const searchQuery = ref<string>('');
+    const isLoading = ref<boolean>(true); // Estado de carga
 
     const fetchCourses = async () => {
+      isLoading.value = true; // Inicia la carga
       try {
         courses.value = await getAllCourses();
       } catch (error) {
         console.error('Error al cargar los cursos:', error);
+      } finally {
+        isLoading.value = false; // Finaliza la carga
       }
     };
 
@@ -105,6 +128,7 @@ export default defineComponent({
       filteredCourses,
       navigateToDetails,
       formatDate,
+      isLoading,
     };
   },
 });

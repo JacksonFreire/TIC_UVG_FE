@@ -6,6 +6,8 @@ import ForgotPassword from '@/views/ForgotPassword.vue';
 import ResetPassword from '@/views/ResetPassword.vue';
 import CoursesList from '@/views/CoursesList.vue';
 import CourseDetails from '@/views/CourseDetails.vue';
+import EventsList from '@/views/EventsList.vue';
+import EventDetails from '@/views/EventDetails.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -38,6 +40,17 @@ const routes: Array<RouteRecordRaw> = [
     path: '/courses/:id', 
     name: 'CourseDetails',
     component: CourseDetails,
+  },
+  {
+    path: '/events',
+    name: 'EventsList',
+    component: EventsList,
+  },
+  {
+    path: '/events/:id',
+    name: 'EventDetails',
+    component: EventDetails,
+    props: true,
   },
 ];
 
