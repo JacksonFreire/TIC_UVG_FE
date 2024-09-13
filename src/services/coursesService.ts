@@ -1,8 +1,6 @@
-// src/services/coursesService.ts
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_APP_BASE_URL_API;
-//const API_URL = 'http://localhost:8080/api/available/courses';
 
 export const getAllCourses = async (page: number, size: number) => {
   try {
