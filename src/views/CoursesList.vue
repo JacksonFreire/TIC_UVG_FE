@@ -15,8 +15,19 @@
       </svg>
     </div>
 
+    <!-- Indicador de carga -->
+    <div v-if="isLoading" class="flex justify-center items-center">
+      <div class="flex items-center space-x-2">
+        <svg class="animate-spin h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8h8c0 4.42-3.58 8-8 8a8 8 0 01-8-8z"></path>
+        </svg>
+        <span class="text-gray-700 font-medium">Cargando cursos...</span>
+      </div>
+    </div>
+
     <!-- Lista de cursos -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <div
         v-for="course in filteredCourses"
         :key="course.id"
@@ -80,12 +91,16 @@ export default defineComponent({
     const router = useRouter();
     const courses = ref<Course[]>([]);
     const searchQuery = ref<string>('');
+    const isLoading = ref<boolean>(true); // Estado de carga
 
     const fetchCourses = async () => {
+      isLoading.value = true; // Inicia la carga
       try {
         courses.value = await getAllCourses();
       } catch (error) {
         console.error('Error al cargar los cursos:', error);
+      } finally {
+        isLoading.value = false; // Finaliza la carga
       }
     };
 
@@ -113,6 +128,7 @@ export default defineComponent({
       filteredCourses,
       navigateToDetails,
       formatDate,
+      isLoading,
     };
   },
 });

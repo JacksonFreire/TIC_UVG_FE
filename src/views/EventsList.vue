@@ -15,8 +15,19 @@
       </svg>
     </div>
 
+    <!-- Mostrar indicador de carga mientras se esperan los eventos -->
+    <div v-if="isLoading" class="flex justify-center items-center">
+      <div class="flex items-center space-x-2">
+        <svg class="animate-spin h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8h8c0 4.42-3.58 8-8 8a8 8 0 01-8-8z"></path>
+        </svg>
+        <span class="text-gray-700 font-medium">Cargando eventos...</span>
+      </div>
+    </div>
+
     <!-- Lista de eventos -->
-    <div class="divide-y divide-gray-200">
+    <div v-else class="divide-y divide-gray-200">
       <EventItem
         v-for="event in filteredEvents"
         :key="event.id"
@@ -27,7 +38,7 @@
     </div>
 
     <!-- Paginación Mejorada -->
-    <div class="flex justify-center mt-8">
+    <div v-if="!isLoading" class="flex justify-center mt-8">
       <button
         @click="fetchEvents(currentPage - 1)"
         :disabled="currentPage === 0"
@@ -78,9 +89,11 @@ export default defineComponent({
     const searchQuery = ref<string>('');
     const currentPage = ref<number>(0);
     const totalPages = ref<number>(0);
-    const size = 4; 
+    const size = 4; // Tamaño de la página, 5 eventos por página
+    const isLoading = ref<boolean>(true); // Estado de carga
 
     const fetchEvents = async (page: number) => {
+      isLoading.value = true; // Inicia la carga
       try {
         const response = await getAllEvents(page, size);
         events.value = response.content;
@@ -88,6 +101,8 @@ export default defineComponent({
         currentPage.value = response.number;
       } catch (error) {
         console.error('Error al cargar los eventos:', error);
+      } finally {
+        isLoading.value = false; // Finaliza la carga
       }
     };
 
@@ -118,6 +133,7 @@ export default defineComponent({
       fetchEvents,
       navigateToDetails,
       formatDate,
+      isLoading,
     };
   },
 });
