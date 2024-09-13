@@ -1,15 +1,20 @@
 <template>
   <div class="container mx-auto py-8 px-4">
+    <!-- Botón para volver a la lista de cursos -->
+    <button @click="goBack" class="mb-6 bg-blue-500 text-white px-4 py-2 rounded-full shadow-md hover:bg-blue-600 transition duration-300">
+      &larr; Volver a la lista de cursos
+    </button>
+
     <div v-if="course" class="bg-white shadow-md rounded-lg p-6">
-      <!-- Encabezado del curso -->
-      <div class="flex justify-between items-start mb-6">
+      <!-- Encabezado del curso usando Flexbox para alinear el texto y la imagen -->
+      <div class="flex flex-col md:flex-row items-start mb-6 space-y-4 md:space-y-0 md:space-x-6">
         <div class="flex-1">
-          <h1 class="text-4xl font-bold text-gray-800 mb-4">{{ course.name }}</h1>
+          <h1 class="text-4xl font-bold text-gray-800 mb-2">{{ course.name }}</h1>
           <p class="text-lg text-gray-600 mb-2">{{ course.description }}</p>
-          <p class="text-sm text-gray-500 mb-2">
+          <p class="text-sm text-gray-500 mb-1">
             <span class="font-semibold">Fecha:</span> {{ formatDate(course.startDate) }} - {{ formatDate(course.endDate) }}
           </p>
-          <p class="text-sm text-gray-500 mb-2">
+          <p class="text-sm text-gray-500">
             <span class="font-semibold">Lugar:</span> {{ course.eventPlace }}
           </p>
         </div>
@@ -19,7 +24,7 @@
       </div>
 
       <!-- Información del Instructor -->
-      <div v-if="course.instructor" class="flex items-center mb-6">
+      <div v-if="course.instructor" class="flex items-center mb-6 border-t pt-4">
         <div class="w-16 h-16 mr-4">
           <img :src="'data:image/jpeg;base64,' + course.instructor.profileImage" alt="Instructor Image" class="rounded-full w-full h-full object-cover shadow-md">
         </div>
@@ -63,7 +68,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { getCourseById } from '@/services/coursesService';
 
 interface Course {
@@ -107,6 +112,7 @@ export default defineComponent({
   name: 'CourseDetails',
   setup() {
     const route = useRoute();
+    const router = useRouter();
     const course = ref<Course | null>(null);
     const isLoading = ref(true);
     const error = ref<string | null>(null);
@@ -122,6 +128,10 @@ export default defineComponent({
       }
     };
 
+    const goBack = () => {
+      router.push({ name: 'CoursesList' });
+    };
+
     const formatDate = (date: string): string => {
       const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
       return new Date(date).toLocaleDateString('es-ES', options);
@@ -134,6 +144,7 @@ export default defineComponent({
       isLoading,
       error,
       formatDate,
+      goBack, // Agregar función de regreso
     };
   },
 });
