@@ -60,6 +60,27 @@
         </button>
       </div>
     </div>
+
+    <!-- Paginación Mejorada -->
+    <div v-if="!isLoading" class="flex justify-center mt-8">
+      <button
+        @click="fetchCourses(currentPage - 1)"
+        :disabled="currentPage === 0"
+        class="px-4 py-2 mx-1 text-sm font-medium text-white bg-blue-500 rounded-full shadow-md hover:bg-blue-600 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed"
+      >
+        &larr; Anterior
+      </button>
+      <span class="px-4 py-2 text-sm font-medium text-gray-700">
+        Página {{ currentPage + 1 }} de {{ totalPages }}
+      </span>
+      <button
+        @click="fetchCourses(currentPage + 1)"
+        :disabled="currentPage >= totalPages - 1"
+        class="px-4 py-2 mx-1 text-sm font-medium text-white bg-blue-500 rounded-full shadow-md hover:bg-blue-600 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed"
+      >
+        Siguiente &rarr;
+      </button>
+    </div>
   </div>
 </template>
 
@@ -92,11 +113,17 @@ export default defineComponent({
     const courses = ref<Course[]>([]);
     const searchQuery = ref<string>('');
     const isLoading = ref<boolean>(true); // Estado de carga
+    const currentPage = ref<number>(0);
+    const totalPages = ref<number>(0);
+    const size = 6; // Tamaño de la página, 6 cursos por página
 
-    const fetchCourses = async () => {
+    const fetchCourses = async (page: number) => {
       isLoading.value = true; // Inicia la carga
       try {
-        courses.value = await getAllCourses();
+        const response = await getAllCourses(page, size);
+        courses.value = response.content;
+        totalPages.value = response.totalPages;
+        currentPage.value = response.number;
       } catch (error) {
         console.error('Error al cargar los cursos:', error);
       } finally {
@@ -120,7 +147,7 @@ export default defineComponent({
       return new Date(date).toLocaleDateString('es-ES', options);
     };
 
-    onMounted(fetchCourses);
+    onMounted(() => fetchCourses(currentPage.value));
 
     return {
       courses,
@@ -129,6 +156,9 @@ export default defineComponent({
       navigateToDetails,
       formatDate,
       isLoading,
+      currentPage,
+      totalPages,
+      fetchCourses,
     };
   },
 });
