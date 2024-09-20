@@ -6,7 +6,7 @@
     </button>
 
     <div v-if="course" class="bg-white shadow-md rounded-lg p-6">
-      <!-- Encabezado del curso usando Flexbox para alinear el texto y la imagen -->
+      <!-- Encabezado del curso -->
       <div class="flex flex-col md:flex-row items-start mb-6 space-y-4 md:space-y-0 md:space-x-6">
         <div class="flex-1">
           <h1 class="text-4xl font-bold text-gray-800 mb-2">{{ course.name }}</h1>
@@ -52,7 +52,7 @@
 
       <!-- Botón de Inscripción -->
       <div class="text-center">
-        <button class="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-green-600 transition duration-300">
+        <button @click="handleEnroll" class="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-green-600 transition duration-300">
           Inscribirme
         </button>
       </div>
@@ -63,13 +63,24 @@
       <p v-if="isLoading" class="text-center text-gray-500">Cargando detalles del curso...</p>
       <p v-else class="text-center text-red-500">Error al cargar los detalles del curso.</p>
     </div>
+
+    <!-- Modal para mensajes -->
+    <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div class="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto">
+        <p class="text-lg text-gray-700">{{ modalMessage }}</p>
+        <button @click="closeModal" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+          Cerrar
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { getCourseById } from '@/services/coursesService';
+import { useAuthStore } from '@/stores/auth';
+import { getCourseById, enrollInCourse } from '@/services/coursesService';
 
 interface Course {
   id: number;
@@ -113,24 +124,51 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const router = useRouter();
+    const authStore = useAuthStore();
     const course = ref<Course | null>(null);
     const isLoading = ref(true);
-    const error = ref<string | null>(null);
+    const showModal = ref(false);
+    const modalMessage = ref('');
 
     const fetchCourseDetails = async () => {
       try {
         const courseId = route.params.id as string;
         const courseData = await getCourseById(courseId);
-        
-        // Ordenar el currículo por el campo "order"
-        courseData.curriculums.sort((a: Curriculum, b: Curriculum) => (a.order ?? 0) - (b.order ?? 0));
-        
         course.value = courseData;
       } catch (err) {
-        error.value = 'Error al cargar los detalles del curso.';
+        console.error('Error al cargar los detalles del curso:', err);
       } finally {
         isLoading.value = false;
       }
+    };
+
+    const handleEnroll = async () => {
+      if (!authStore.isLoggedIn) {
+        authStore.setRedirectUrl(router.currentRoute.value.fullPath);
+        router.push({ name: 'Login' });
+        return;
+      }
+
+      if (!course.value || !authStore.userDetails?.userId) {
+        modalMessage.value = 'Información insuficiente para la inscripción.';
+        showModal.value = true;
+        return;
+      }
+
+      try {
+        modalMessage.value = 'Procesando tu inscripción...';
+        showModal.value = true;
+
+        await enrollInCourse(course.value.id, authStore.userDetails.userId); 
+
+        modalMessage.value = 'Te has inscrito con éxito al curso.';
+      } catch (error) {
+        modalMessage.value = 'Hubo un error al inscribirse. Inténtalo de nuevo.';
+      }
+    };
+
+    const closeModal = () => {
+      showModal.value = false;
     };
 
     const goBack = () => {
@@ -147,10 +185,17 @@ export default defineComponent({
     return {
       course,
       isLoading,
-      error,
+      showModal,
+      modalMessage,
+      handleEnroll,
+      closeModal,
+      goBack,
       formatDate,
-      goBack, // Agregar función de regreso
     };
   },
 });
 </script>
+
+<style scoped>
+/* Estilos para la modal y otros elementos */
+</style>

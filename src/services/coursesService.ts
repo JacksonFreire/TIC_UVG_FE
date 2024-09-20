@@ -24,3 +24,11 @@ export const getCourseById = async (id: string) => {
     throw new Error('Error al recuperar el detalle del curso.');
   }
 };
+
+export const enrollInCourse = async (courseId: number, userId: number) => {
+  const token = localStorage.getItem('token');
+  if (!token) throw new Error('No authenticated');
+
+  const headers = { Authorization: `Bearer ${token}` };
+  await axios.post(`${API_URL}/api/enrollments/course/${courseId}`, { userId }, { headers });
+};

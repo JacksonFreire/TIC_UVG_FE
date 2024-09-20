@@ -5,7 +5,7 @@
       <!-- Logotipo -->
       <div class="flex items-center">
         <img src="@/assets/logo.jpg" alt="Logotipo" class="h-8 mr-4" />
-        <a href="/" class="text-lg font-bold">Univeritas Group</a>
+        <router-link to="/" class="text-lg font-bold">Univeritas Group</router-link>
       </div>
 
       <!-- Botón de Menú para Dispositivos Móviles -->
@@ -17,14 +17,33 @@
 
       <!-- Menú de Navegación -->
       <div :class="{'hidden': !isMenuOpen, 'flex': isMenuOpen, 'md:flex': true}" class="flex-col md:flex-row md:space-x-8 mt-4 md:mt-0">
-        <a href="/" class="hover:text-gray-200">Home</a>
-        <a href="#" class="hover:text-gray-200">Quiénes somos</a>
-        <a href="#" class="hover:text-gray-200">Servicios</a>
-       <!-- <a href="#" class="hover:text-gray-200">Cursos</a> -->
+        <router-link to="/" class="hover:text-gray-200">Home</router-link>
+        <router-link to="/about" class="hover:text-gray-200">Quiénes somos</router-link>
+        <router-link to="/services" class="hover:text-gray-200">Servicios</router-link>
         <router-link to="/courses" class="hover:text-gray-200">Cursos</router-link>
         <router-link to="/events" class="hover:text-gray-200">Eventos</router-link>
-        <a href="#" class="hover:text-gray-200">Contactos</a>
-        <router-link to="/login" class="hover:text-gray-200">Iniciar sesión</router-link>
+        <router-link to="/contact" class="hover:text-gray-200">Contactos</router-link>
+
+        <!-- Menú de usuario cuando está logueado -->
+        <div v-if="authStore.isLoggedIn" class="relative">
+          <button @click="toggleUserMenu" class="flex items-center space-x-2 focus:outline-none">
+            <span>Hola, {{ authStore.userDetails?.username }}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06-.02l2.47 2.44 2.47-2.44a.75.75 0 111.04 1.08l-3 3a.75.75 0 01-1.04 0l-3-3a.75.75 0 01-.02-1.06z" clip-rule="evenodd" />
+            </svg>
+          </button>
+
+          <!-- Submenú de usuario -->
+          <div v-if="isUserMenuOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-10">
+            <router-link to="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Perfil</router-link>
+            <button @click="logout" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+              Cerrar sesión
+            </button>
+          </div>
+        </div>
+
+        <!-- Opción de inicio de sesión cuando no está logueado -->
+        <router-link v-else to="/login" class="hover:text-gray-200">Iniciar sesión</router-link>
       </div>
     </div>
   </nav>
@@ -32,21 +51,37 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import { useAuthStore } from '@/stores/auth';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
-  name: 'Navbar',
+  name: 'AppNavbar',
   setup() {
-    // Estado para controlar si el menú está abierto o cerrado
+    const authStore = useAuthStore();
+    const router = useRouter();
     const isMenuOpen = ref(false);
+    const isUserMenuOpen = ref(false);
 
-    // Función para alternar el estado del menú
     const toggleMenu = () => {
       isMenuOpen.value = !isMenuOpen.value;
     };
 
+    const toggleUserMenu = () => {
+      isUserMenuOpen.value = !isUserMenuOpen.value;
+    };
+
+    const logout = () => {
+      authStore.logout(router);
+      isUserMenuOpen.value = false;
+    };
+
     return {
+      authStore,
       isMenuOpen,
       toggleMenu,
+      isUserMenuOpen,
+      toggleUserMenu,
+      logout,
     };
   },
 });
