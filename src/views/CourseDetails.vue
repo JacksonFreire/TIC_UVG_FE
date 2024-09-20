@@ -144,7 +144,8 @@ export default defineComponent({
 
     const handleEnroll = async () => {
       if (!authStore.isLoggedIn) {
-        authStore.setRedirectUrl(router.currentRoute.value.fullPath);
+        // Guarda la URL actual para redirigir después del login
+        localStorage.setItem('redirectUrl', router.currentRoute.value.fullPath);
         router.push({ name: 'Login' });
         return;
       }
@@ -159,9 +160,11 @@ export default defineComponent({
         modalMessage.value = 'Procesando tu inscripción...';
         showModal.value = true;
 
-        await enrollInCourse(course.value.id, authStore.userDetails.userId); 
+        // Realiza la inscripción
+        await enrollInCourse(course.value.id, authStore.userDetails.userId);
 
         modalMessage.value = 'Te has inscrito con éxito al curso.';
+        setTimeout(closeModal, 3000); // Cierra el modal después de 3 segundos
       } catch (error) {
         modalMessage.value = 'Hubo un error al inscribirse. Inténtalo de nuevo.';
       }
