@@ -1,15 +1,16 @@
 // src/composables/useLoginForm.ts
-
 import { ref, reactive } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import useVuelidate from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
+import { useRouter } from 'vue-router'; // Asegúrate de importar useRouter
 
 export function useLoginForm() {
   const authStore = useAuthStore();
+  const router = useRouter(); // Obtener el router para pasar como argumento
 
   const form = reactive({
-    username: '', // Cambiado a 'username' en lugar de 'email'
+    username: '',
     password: '',
   });
 
@@ -40,7 +41,8 @@ export function useLoginForm() {
       isSubmitting.value = true;
       authError.value = '';
       try {
-        await authStore.login(form.username, form.password); // Cambiado a 'username'
+        // Pasar el router como tercer argumento al llamar a login
+        await authStore.login(form.username, form.password, router);
       } catch (error) {
         authError.value = 'Credenciales incorrectas o error al iniciar sesión.';
       } finally {
@@ -53,7 +55,7 @@ export function useLoginForm() {
     form,
     touched,
     isSubmitting,
-    v$, // Cambiado de 'validations' a 'v$'
+    v$, 
     submit,
     validateForm,
     authError,

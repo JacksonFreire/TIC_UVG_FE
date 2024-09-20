@@ -8,6 +8,7 @@ import CoursesList from '@/views/CoursesList.vue';
 import CourseDetails from '@/views/CourseDetails.vue';
 import EventsList from '@/views/EventsList.vue';
 import EventDetails from '@/views/EventDetails.vue';
+import Profile from '@/views/Profile.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -51,6 +52,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'EventDetails',
     component: EventDetails,
     props: true,
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: Profile, 
   },
 ];
 

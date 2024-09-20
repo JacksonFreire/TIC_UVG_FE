@@ -2,7 +2,6 @@ import axios from 'axios';
 
 // URL base para la API
 const API_URL = import.meta.env.VITE_APP_BASE_URL_API;
-// const API_URL = 'http://localhost:8080/api/available/events';
 
 // Función para obtener todos los eventos paginados
 export const getAllEvents = async (page: number, size: number) => {
@@ -28,12 +27,27 @@ export const getEventById = async (id: string) => {
   }
 };
 
-export const registerForEvent = async (id: number) => {
-  try {
-    const response = await axios.post(`${API_URL}/api/available/events/${id}/register`);
-    return response.data;
-  } catch (error) {
-    console.error('Error al inscribirse en el evento:', error);
-    throw new Error('Error al inscribirse en el evento.');
-  }
+// Inscribir a un usuario en un evento
+export const registerForEvent = async (eventId: number, userId: number) => {
+  const token = localStorage.getItem('token');
+  if (!token) throw new Error('No authenticated');
+
+  const headers = { Authorization: `Bearer ${token}` };
+  await axios.post(`${API_URL}/api/enrollments/event/${eventId}`, { userId }, { headers });
+};
+
+// Verificar si el usuario está inscrito en un evento
+export const checkEventRegistration = async (eventId: string, userId: number) => {
+  const token = localStorage.getItem('token');
+  if (!token) throw new Error('No authenticated');
+
+  const headers = { Authorization: `Bearer ${token}` };
+  const response = await axios.get(`${API_URL}/api/enrollments/isEnrolledEvent`, {
+    headers,
+    params: {
+      eventId,
+      userId,
+    },
+  });
+  return response.data;
 };
