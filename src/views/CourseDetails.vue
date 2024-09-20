@@ -52,7 +52,11 @@
 
       <!-- Botón de Inscripción -->
       <div class="text-center">
-        <button @click="handleEnroll" class="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-green-600 transition duration-300">
+        <button 
+          @click="handleEnroll" 
+          :disabled="isEnrolled || isLoading" 
+          class="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-green-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
           Inscribirme
         </button>
       </div>
@@ -80,7 +84,7 @@
 import { defineComponent, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
-import { getCourseById, enrollInCourse } from '@/services/coursesService';
+import { getCourseById, enrollInCourse, checkEnrollment } from '@/services/coursesService';
 
 interface Course {
   id: number;
@@ -129,12 +133,19 @@ export default defineComponent({
     const isLoading = ref(true);
     const showModal = ref(false);
     const modalMessage = ref('');
+    const isEnrolled = ref(false);
 
     const fetchCourseDetails = async () => {
       try {
         const courseId = route.params.id as string;
         const courseData = await getCourseById(courseId);
         course.value = courseData;
+
+        // Verificar si el usuario ya está inscrito
+        if (authStore.userDetails?.userId) {
+          const enrolled = await checkEnrollment(courseId, authStore.userDetails.userId);
+          isEnrolled.value = enrolled;
+        }
       } catch (err) {
         console.error('Error al cargar los detalles del curso:', err);
       } finally {
@@ -163,6 +174,8 @@ export default defineComponent({
         // Realiza la inscripción
         await enrollInCourse(course.value.id, authStore.userDetails.userId);
 
+        // Marcar como inscrito
+        isEnrolled.value = true;
         modalMessage.value = 'Te has inscrito con éxito al curso.';
         setTimeout(closeModal, 3000); // Cierra el modal después de 3 segundos
       } catch (error) {
@@ -194,6 +207,7 @@ export default defineComponent({
       closeModal,
       goBack,
       formatDate,
+      isEnrolled,
     };
   },
 });

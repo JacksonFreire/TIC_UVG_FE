@@ -32,3 +32,19 @@ export const enrollInCourse = async (courseId: number, userId: number) => {
   const headers = { Authorization: `Bearer ${token}` };
   await axios.post(`${API_URL}/api/enrollments/course/${courseId}`, { userId }, { headers });
 };
+
+// Verificar si el usuario está inscrito en un curso
+export const checkEnrollment = async (courseId: string, userId: number) => {
+  const token = localStorage.getItem('token');
+  if (!token) throw new Error('No authenticated');
+
+  const headers = { Authorization: `Bearer ${token}` };
+  const response = await axios.get(`${API_URL}/api/enrollments/isEnrolled`, {
+    headers,
+    params: {
+      courseId,
+      userId,
+    },
+  });
+  return response.data; // Devuelve true si está inscrito, false si no lo está
+};
