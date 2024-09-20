@@ -17,7 +17,7 @@
 
       <!-- Menú de Navegación -->
       <div :class="{ 'hidden': !isMenuOpen, 'flex': isMenuOpen, 'md:flex': true }"
-        class="flex-col md:flex-row md:space-x-8 mt-4 md:mt-0">
+        class="flex-col md:flex-row md:space-x-8 mt-4 md:mt-0 items-center">
         <router-link to="/" class="hover:text-gray-200">Home</router-link>
         <a href="#" class="hover:text-gray-200 cursor-pointer">Quiénes somos</a>
         <a href="#" class="hover:text-gray-200 cursor-pointer">Servicios</a>
@@ -26,9 +26,9 @@
         <a href="#" class="hover:text-gray-200 cursor-pointer">Contactos</a>
 
         <!-- Menú de usuario cuando está logueado -->
-        <div v-if="authStore.isLoggedIn" class="relative">
+        <div v-if="authStore.isLoggedIn" class="relative md:ml-4 flex items-center">
           <button @click="toggleUserMenu" class="flex items-center space-x-2 focus:outline-none">
-            <span>Hola, {{ authStore.userDetails?.username }}</span>
+            <span class="whitespace-nowrap">Hola, {{ authStore.userDetails?.username }}</span>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd"
                 d="M5.23 7.21a.75.75 0 011.06-.02l2.47 2.44 2.47-2.44a.75.75 0 111.04 1.08l-3 3a.75.75 0 01-1.04 0l-3-3a.75.75 0 01-.02-1.06z"
@@ -38,8 +38,7 @@
 
           <!-- Submenú de usuario -->
           <div v-if="isUserMenuOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-10">
-            <router-link to="/profile"
-              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Perfil</router-link>
+            <router-link to="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Perfil</router-link>
             <button @click="logout" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
               Cerrar sesión
             </button>
@@ -96,7 +95,7 @@ export default defineComponent({
   font-size: 24px;
 }
 
-/* Estilos adicionales para el menú responsive */
+/* Ajustes para alinear correctamente en diferentes dispositivos */
 @media (max-width: 768px) {
   .material-icons {
     font-size: 28px;
