@@ -6,15 +6,17 @@
       <label for="username" class="block text-sm font-medium text-gray-700">
         Usuario <span class="text-red-500">*</span>
       </label>
-      <input 
-        id="username" 
-        v-model="form.username" 
-        type="text" 
+      <input
+        id="username"
+        v-model="form.username"
+        type="text"
         @blur="touched.username = true"
         :class="{'border-red-500': touched.username && v$.username.$invalid}"
-        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" 
+        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
       />
-      <p v-if="touched.username && v$.username.$invalid" class="text-red-500 text-sm mt-1">El usuario no puede estar vacío.</p>
+      <p v-if="touched.username && v$.username.$invalid" class="text-red-500 text-sm mt-1">
+        El usuario no puede estar vacío.
+      </p>
     </div>
 
     <!-- Campo de Contraseña -->
@@ -22,25 +24,34 @@
       <label for="password" class="block text-sm font-medium text-gray-700">
         Contraseña <span class="text-red-500">*</span>
       </label>
-      <input 
-        id="password" 
-        v-model="form.password" 
-        type="password" 
+      <input
+        id="password"
+        v-model="form.password"
+        type="password"
         @blur="touched.password = true"
         :class="{'border-red-500': touched.password && v$.password.$invalid}"
-        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" 
+        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
       />
-      <p v-if="touched.password && v$.password.$invalid" class="text-red-500 text-sm mt-1">La contraseña no puede estar vacía.</p>
+      <p v-if="touched.password && v$.password.$invalid" class="text-red-500 text-sm mt-1">
+        La contraseña no puede estar vacía.
+      </p>
     </div>
 
     <!-- Botón de Enviar -->
-    <button 
-      type="submit" 
+    <button
+      type="submit"
       :disabled="!validateForm() || isSubmitting"
       class="w-full px-4 py-2 mt-4 font-medium text-white bg-blue-600 rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm hover:bg-blue-700 transition-all"
     >
-      Enviar
+      <!-- Cambiar el texto del botón según el estado -->
+      <span v-if="!isSubmitting">Enviar</span>
+      <span v-else>Procesando...</span>
     </button>
+
+    <!-- Indicador de carga -->
+    <div v-if="isSubmitting" class="mt-2 text-blue-500 text-center">
+      <span>Cargando, por favor espera...</span>
+    </div>
 
     <!-- Enlaces de Recuperar Contraseña y Crear Nuevo Usuario -->
     <div class="mt-4 flex justify-between">
@@ -112,11 +123,13 @@ export default defineComponent({
   border-color: #f87171;
 }
 
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.5s;
 }
 
-.fade-enter, .fade-leave-to {
+.fade-enter,
+.fade-leave-to {
   opacity: 0;
 }
 </style>
