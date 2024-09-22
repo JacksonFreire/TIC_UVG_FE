@@ -27,7 +27,7 @@
 
         <!-- Menú de usuario cuando está logueado -->
         <div v-if="authStore.isLoggedIn" class="relative md:ml-4 flex items-center">
-          <button @click="toggleUserMenu" class="flex items-center space-x-2 focus:outline-none">
+          <button @click="toggleUserMenu" ref="userMenu" class="flex items-center space-x-2 focus:outline-none">
             <span class="whitespace-nowrap">Hola, {{ authStore.userDetails?.username }}</span>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd"
@@ -53,7 +53,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, onBeforeUnmount } from 'vue'; // Se ha eliminado onMounted ya que no se utiliza.
 import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
 
@@ -64,6 +64,7 @@ export default defineComponent({
     const router = useRouter();
     const isMenuOpen = ref(false);
     const isUserMenuOpen = ref(false);
+    const userMenu = ref<HTMLElement | null>(null);
 
     const toggleMenu = () => {
       isMenuOpen.value = !isMenuOpen.value;
@@ -71,12 +72,30 @@ export default defineComponent({
 
     const toggleUserMenu = () => {
       isUserMenuOpen.value = !isUserMenuOpen.value;
+
+      if (isUserMenuOpen.value) {
+        document.addEventListener('click', handleClickOutside);
+      } else {
+        document.removeEventListener('click', handleClickOutside);
+      }
+    };
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (userMenu.value && !userMenu.value.contains(event.target as Node)) {
+        isUserMenuOpen.value = false;
+        document.removeEventListener('click', handleClickOutside);
+      }
     };
 
     const logout = () => {
       authStore.logout(router);
       isUserMenuOpen.value = false;
     };
+
+    // Limpieza del listener cuando el componente se destruye.
+    onBeforeUnmount(() => {
+      document.removeEventListener('click', handleClickOutside);
+    });
 
     return {
       authStore,
@@ -85,6 +104,7 @@ export default defineComponent({
       isUserMenuOpen,
       toggleUserMenu,
       logout,
+      userMenu,
     };
   },
 });
