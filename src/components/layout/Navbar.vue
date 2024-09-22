@@ -18,16 +18,16 @@
       <!-- Menú de Navegación -->
       <div :class="{ 'hidden': !isMenuOpen, 'flex': isMenuOpen, 'md:flex': true }"
         class="flex-col md:flex-row md:space-x-8 mt-4 md:mt-0 items-center">
-        <router-link to="/" class="hover:text-gray-200">Home</router-link>
-        <a href="#" class="hover:text-gray-200 cursor-pointer">Quiénes somos</a>
-        <a href="#" class="hover:text-gray-200 cursor-pointer">Servicios</a>
-        <router-link to="/courses" class="hover:text-gray-200">Cursos</router-link>
-        <router-link to="/events" class="hover:text-gray-200">Eventos</router-link>
-        <a href="#" class="hover:text-gray-200 cursor-pointer">Contactos</a>
+        <router-link to="/" class="hover:text-gray-200" @click="closeMenu">Home</router-link>
+        <a href="#" class="hover:text-gray-200 cursor-pointer" @click="closeMenu">Quiénes somos</a>
+        <a href="#" class="hover:text-gray-200 cursor-pointer" @click="closeMenu">Servicios</a>
+        <router-link to="/courses" class="hover:text-gray-200" @click="closeMenu">Cursos</router-link>
+        <router-link to="/events" class="hover:text-gray-200" @click="closeMenu">Eventos</router-link>
+        <a href="#" class="hover:text-gray-200 cursor-pointer" @click="closeMenu">Contactos</a>
 
         <!-- Menú de usuario cuando está logueado -->
         <div v-if="authStore.isLoggedIn" class="relative md:ml-4 flex items-center">
-          <button @click="toggleUserMenu" ref="userMenu" class="flex items-center space-x-2 focus:outline-none">
+          <button @click="toggleUserMenu" class="flex items-center space-x-2 focus:outline-none">
             <span class="whitespace-nowrap">Hola, {{ authStore.userDetails?.username }}</span>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd"
@@ -38,7 +38,7 @@
 
           <!-- Submenú de usuario -->
           <div v-if="isUserMenuOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-10">
-            <router-link to="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Perfil</router-link>
+            <router-link to="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" @click="closeMenu">Perfil</router-link>
             <button @click="logout" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
               Cerrar sesión
             </button>
@@ -46,14 +46,14 @@
         </div>
 
         <!-- Opción de inicio de sesión cuando no está logueado -->
-        <router-link v-else to="/login" class="hover:text-gray-200">Iniciar sesión</router-link>
+        <router-link v-else to="/login" class="hover:text-gray-200" @click="closeMenu">Iniciar sesión</router-link>
       </div>
     </div>
   </nav>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onBeforeUnmount } from 'vue'; // Se ha eliminado onMounted ya que no se utiliza.
+import { defineComponent, ref } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
 
@@ -64,47 +64,33 @@ export default defineComponent({
     const router = useRouter();
     const isMenuOpen = ref(false);
     const isUserMenuOpen = ref(false);
-    const userMenu = ref<HTMLElement | null>(null);
 
     const toggleMenu = () => {
       isMenuOpen.value = !isMenuOpen.value;
     };
 
-    const toggleUserMenu = () => {
-      isUserMenuOpen.value = !isUserMenuOpen.value;
-
-      if (isUserMenuOpen.value) {
-        document.addEventListener('click', handleClickOutside);
-      } else {
-        document.removeEventListener('click', handleClickOutside);
-      }
+    const closeMenu = () => {
+      isMenuOpen.value = false;
     };
 
-    const handleClickOutside = (event: MouseEvent) => {
-      if (userMenu.value && !userMenu.value.contains(event.target as Node)) {
-        isUserMenuOpen.value = false;
-        document.removeEventListener('click', handleClickOutside);
-      }
+    const toggleUserMenu = () => {
+      isUserMenuOpen.value = !isUserMenuOpen.value;
     };
 
     const logout = () => {
       authStore.logout(router);
       isUserMenuOpen.value = false;
+      closeMenu(); // Cierra el menú hamburguesa al cerrar sesión
     };
-
-    // Limpieza del listener cuando el componente se destruye.
-    onBeforeUnmount(() => {
-      document.removeEventListener('click', handleClickOutside);
-    });
 
     return {
       authStore,
       isMenuOpen,
       toggleMenu,
+      closeMenu,
       isUserMenuOpen,
       toggleUserMenu,
       logout,
-      userMenu,
     };
   },
 });
