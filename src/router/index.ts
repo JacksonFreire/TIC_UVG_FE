@@ -9,13 +9,12 @@ import CourseDetails from '@/views/CourseDetails.vue';
 import EventsList from '@/views/EventsList.vue';
 import EventDetails from '@/views/EventDetails.vue';
 import Profile from '@/views/Profile.vue';
-import Home from '@/views/Home.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'Home',
-    component: Home,
+    redirect: '/Register' // Redirigir la ruta raíz ("/") a "/courses"
   },
   {
     path: '/register',
