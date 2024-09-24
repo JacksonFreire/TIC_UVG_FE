@@ -131,7 +131,7 @@ export default defineComponent({
 
     const fetchUpcomingEvents = async () => {
       try {
-        const response = await getAllEvents(1, 3);
+        const response = await getAllEvents(0, 3);
         if (response && response.content) {
           upcomingEvents.value = response.content;
         } else {
@@ -186,7 +186,8 @@ export default defineComponent({
 }
 
 .event-item {
-  display: flex;
+  display: grid;
+  grid-template-columns: 120px 1fr 100px; /* Fija el ancho de las columnas */
   align-items: center;
   padding: 15px;
   background: #fff;
@@ -208,7 +209,9 @@ export default defineComponent({
   color: #1d4ed8;
   padding-right: 20px;
   min-width: 100px;
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .date-number {
@@ -224,8 +227,10 @@ export default defineComponent({
 }
 
 .content-container {
-  flex: 1;
   padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .event-title {
@@ -242,15 +247,12 @@ export default defineComponent({
 }
 
 .event-description {
-  font-size: 0.875rem;
-  color: #4B5563;
+  font-size: 0.85rem;
+  color: #555;
   line-height: 1.4;
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
-  /* Prefijo para navegadores antiguos */
-  line-clamp: 2;
-  /* Propiedad estándar */
   -webkit-box-orient: vertical;
 }
 
@@ -259,6 +261,7 @@ export default defineComponent({
   height: 80px;
   object-fit: cover;
   border-radius: 5px;
+  align-self: center; /* Centra la imagen verticalmente */
 }
 
 .course-item {
@@ -273,13 +276,18 @@ export default defineComponent({
 
 @media (max-width: 768px) {
   .event-item {
-    flex-direction: column;
-    align-items: flex-start;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    align-items: start;
   }
 
   .date-container {
     padding-right: 0;
     margin-bottom: 10px;
+  }
+
+  .event-image {
+    margin-top: 10px;
   }
 }
 </style>
