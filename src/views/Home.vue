@@ -247,13 +247,14 @@ export default defineComponent({
 }
 
 .event-description {
-  font-size: 0.85rem;
-  color: #555;
+  font-size: 0.875rem;
+  color: #4B5563;
   line-height: 1.4;
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 2; /* Prefijo para navegadores basados en WebKit */
   -webkit-box-orient: vertical;
+  line-clamp: 2; /* Propiedad estándar */
 }
 
 .event-image {
