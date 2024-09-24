@@ -18,11 +18,11 @@
       <!-- Menú de Navegación -->
       <div :class="{ 'hidden': !isMenuOpen, 'flex': isMenuOpen, 'md:flex': true }"
         class="flex-col md:flex-row md:space-x-8 mt-4 md:mt-0 items-center">
-        <router-link to="/" class="hover:text-gray-200" @click="closeMenu">Home</router-link>
-        <a href="#" class="hover:text-gray-200 cursor-pointer" @click="closeMenu">Quiénes somos</a>
-        <a href="#" class="hover:text-gray-200 cursor-pointer" @click="closeMenu">Servicios</a>
+        <router-link to="/" class="hover:text-gray-200" @click="closeMenu">Inicio</router-link>
         <router-link to="/courses" class="hover:text-gray-200" @click="closeMenu">Cursos</router-link>
         <router-link to="/events" class="hover:text-gray-200" @click="closeMenu">Eventos</router-link>
+        <router-link to="/about" class="hover:text-gray-200" @click="closeMenu">Sobre Nosotros</router-link>
+      <!--  <a href="#" class="hover:text-gray-200 cursor-pointer" @click="closeMenu">Servicios</a>-->
         <a href="#" class="hover:text-gray-200 cursor-pointer" @click="closeMenu">Contactos</a>
 
         <!-- Menú de usuario cuando está logueado -->

@@ -10,6 +10,7 @@ import EventsList from '@/views/EventsList.vue';
 import EventDetails from '@/views/EventDetails.vue';
 import Profile from '@/views/Profile.vue';
 import Home from '@/views/Home.vue';
+import AboutPage from '@/views/AboutPage.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -53,6 +54,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'EventDetails',
     component: EventDetails,
     props: true,
+  },
+  {
+    path: '/about',
+    name: 'About',
+    component: AboutPage,
   },
   {
     path: '/profile',
