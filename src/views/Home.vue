@@ -70,16 +70,25 @@
         <div
           v-for="course in upcomingCourses"
           :key="course.id"
-          class="course-item bg-white shadow-md rounded p-6"
+          class="course-item bg-white shadow-md rounded overflow-hidden transform transition hover:scale-105"
         >
           <img
             :src="`data:image/jpeg;base64,${course.image}`"
-            alt="Curso"
-            class="w-full h-32 object-cover mb-4 rounded"
+            alt="Imagen del Curso"
+            class="w-full h-40 object-cover"
           >
-          <h3 class="course-title text-xl font-semibold text-blue-700">{{ course.title }}</h3>
-          <p class="truncate">{{ course.description }}</p>
-          <router-link :to="`/courses/${course.id}`" class="text-blue-600 hover:underline">Más Info</router-link>
+          <div class="p-4">
+            <h3 class="text-xl font-semibold text-blue-700 mb-2">{{ course.name }}</h3>
+            <p class="text-sm text-gray-600 mb-4">
+              {{ formatDate(course.startDate) }} - {{ formatDate(course.endDate) }}
+            </p>
+            <router-link
+              :to="`/courses/${course.id}`"
+              class="inline-block px-4 py-2 mt-2 text-white bg-blue-600 rounded hover:bg-blue-700"
+            >
+              Más Información
+            </router-link>
+          </div>
         </div>
       </div>
     </section>
@@ -95,9 +104,11 @@ import bannerImage from '@/assets/Banner.png';
 
 interface Course {
   id: number;
-  title: string;
+  name: string;
   description: string;
   image: string;
+  startDate: string;
+  endDate: string;
 }
 
 interface Event {
@@ -118,7 +129,7 @@ export default defineComponent({
 
     const fetchUpcomingCourses = async () => {
       try {
-        const response = await getAllCourses(1, 3);
+        const response = await getAllCourses(0, 3);
         if (response && response.content) {
           upcomingCourses.value = response.content;
         } else {
@@ -143,13 +154,11 @@ export default defineComponent({
     };
 
     const navigateToEventDetails = (id: number) => {
-      // Asegúrate de que el nombre coincide exactamente con el nombre de la ruta en tu router
       router.push({ name: 'EventDetails', params: { id: id.toString() } });
     };
 
-    const formatDate = (date: string, format: string) => {
+    const formatDate = (date: string, format?: string) => {
       let options: Intl.DateTimeFormatOptions = {};
-
       if (format === 'DD') {
         options = { day: '2-digit' };
       } else if (format === 'MMMM YYYY') {
@@ -157,7 +166,6 @@ export default defineComponent({
       } else {
         options = { day: '2-digit', month: 'long', year: 'numeric' };
       }
-
       return new Date(date).toLocaleDateString('es-ES', options);
     };
 
@@ -177,7 +185,6 @@ export default defineComponent({
 });
 </script>
 
-
 <style scoped>
 .hero {
   background-size: cover;
@@ -187,7 +194,7 @@ export default defineComponent({
 
 .event-item {
   display: grid;
-  grid-template-columns: 120px 1fr 100px; /* Fija el ancho de las columnas */
+  grid-template-columns: 120px 1fr 100px;
   align-items: center;
   padding: 15px;
   background: #fff;
@@ -252,9 +259,9 @@ export default defineComponent({
   line-height: 1.4;
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* Prefijo para navegadores basados en WebKit */
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  line-clamp: 2; /* Propiedad estándar */
+  line-clamp: 2;
 }
 
 .event-image {
@@ -262,13 +269,19 @@ export default defineComponent({
   height: 80px;
   object-fit: cover;
   border-radius: 5px;
-  align-self: center; /* Centra la imagen verticalmente */
+  align-self: center;
 }
 
 .course-item {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.course-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .course-title {
