@@ -2,8 +2,9 @@
   <div class="home-page">
     <!-- Sección Hero -->
     <section class="hero bg-cover bg-center py-16" :style="{ backgroundImage: `url(${bannerImage})` }">
-      <div class="container mx-auto text-center text-white">
-        <h1 class="text-4xl font-bold mb-4">
+      <div class="overlay"></div>
+      <div class="container mx-auto text-center text-white relative z-10">
+        <h1 class="text-4xl font-bold mb-4 animate-fadeIn">
           Inscríbete fácil y rápido. Potencia tu integración en Italia con nuestra plataforma digital.
         </h1>
       </div>
@@ -13,21 +14,21 @@
     <section class="my-12">
       <h2 class="text-3xl font-bold text-center text-blue-700 mb-8">¿Por qué elegirnos?</h2>
       <div class="container mx-auto grid md:grid-cols-3 gap-8">
-        <div class="bg-white shadow-md rounded p-6">
+        <div class="card bg-white shadow-md rounded p-6 transform transition hover:scale-105">
           <img src="@/assets/comunidad.png" alt="Compromiso" class="w-full h-32 object-cover mb-4 rounded">
           <h3 class="text-xl font-semibold text-blue-700">Compromiso con la Comunidad</h3>
           <p>
             Promovemos el desarrollo educativo y profesional con cursos adaptados a la comunidad ecuatoriana en Italia.
           </p>
         </div>
-        <div class="bg-white shadow-md rounded p-6">
+        <div class="card bg-white shadow-md rounded p-6 transform transition hover:scale-105">
           <img src="@/assets/diversidad.png" alt="Diversidad" class="w-full h-32 object-cover mb-4 rounded">
           <h3 class="text-xl font-semibold text-blue-700">Diversidad de Oferta Educativa</h3>
           <p>
             Ofrecemos cursos presenciales y eventos online, desde informática hasta idiomas, para todas las edades.
           </p>
         </div>
-        <div class="bg-white shadow-md rounded p-6">
+        <div class="card bg-white shadow-md rounded p-6 transform transition hover:scale-105">
           <img src="@/assets/innovacion.png" alt="Innovación" class="w-full h-32 object-cover mb-4 rounded">
           <h3 class="text-xl font-semibold text-blue-700">Innovación y Tecnología Educativa</h3>
           <p>Utilizamos tecnología avanzada para mejorar la experiencia de aprendizaje.</p>
@@ -70,7 +71,7 @@
         <div
           v-for="course in upcomingCourses"
           :key="course.id"
-          class="course-item bg-white shadow-md rounded overflow-hidden transform transition hover:scale-105"
+          class="course-item bg-white shadow-md rounded overflow-hidden transform transition hover:scale-105 hover:rotate-1"
         >
           <img
             :src="`data:image/jpeg;base64,${course.image}`"
@@ -187,9 +188,42 @@ export default defineComponent({
 
 <style scoped>
 .hero {
+  position: relative;
   background-size: cover;
   background-position: center;
   height: 300px;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.animate-fadeIn {
+  animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.card {
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 
 .event-item {
@@ -211,9 +245,12 @@ export default defineComponent({
 }
 
 .date-container {
+  background: #1d4ed8;
+  color: #fff;
+  border-radius: 8px;
+  padding: 5px 10px;
   text-align: center;
   font-size: 1.2rem;
-  color: #1d4ed8;
   padding-right: 20px;
   min-width: 100px;
   display: flex;
@@ -270,6 +307,11 @@ export default defineComponent({
   object-fit: cover;
   border-radius: 5px;
   align-self: center;
+  transition: transform 0.3s;
+}
+
+.event-image:hover {
+  transform: scale(1.05);
 }
 
 .course-item {
@@ -282,10 +324,6 @@ export default defineComponent({
 .course-item:hover {
   transform: scale(1.05);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-.course-title {
-  margin-bottom: 5px;
 }
 
 @media (max-width: 768px) {
