@@ -2,7 +2,8 @@
   <div class="contact-page">
     <!-- Sección de Encabezado -->
     <section class="hero bg-cover bg-center py-24" :style="{ backgroundImage: `url(${bannerContact})` }">
-      <div class="container mx-auto text-center text-white">
+      <div class="overlay"></div>
+      <div class="container mx-auto text-center text-white relative z-10 px-6">
         <h1 class="text-5xl font-bold mb-6">Contactos</h1>
         <p class="text-lg max-w-2xl mx-auto">
           ¿Tienes alguna pregunta? ¡Estamos aquí para ayudarte!
@@ -12,7 +13,7 @@
 
     <!-- Sección: Información de Contacto -->
     <section class="my-16">
-      <div class="container mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-8 px-6">
+      <div class="container mx-auto grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-6">
         <div class="contact-item bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
           <img src="@/assets/email.jpg" alt="Correo Electrónico" class="w-full h-40 object-cover rounded mb-4">
           <h3 class="text-xl font-semibold text-blue-700">Correo Electrónico</h3>
@@ -112,7 +113,7 @@
         <p class="text-lg text-gray-700 mb-8">
           Síguenos y mantente informado sobre nuestras actividades, cursos y eventos:
         </p>
-        <div class="flex justify-center space-x-6">
+        <div class="flex flex-wrap justify-center space-x-6">
           <a href="https://www.facebook.com/UniveritasGroup" target="_blank" class="text-blue-600 hover:underline flex items-center">
             <font-awesome-icon :icon="['fab', 'facebook']" class="w-6 h-6 mr-2" /> Facebook: @UniveritasGroup
           </a>
@@ -166,7 +167,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import bannerContact from '@/assets/BannerContact.jpg';
-import { sendEmail, EmailData } from '@/services/emailService'; // Importa el servicio de envío de correos
+import { sendEmail, EmailData } from '@/services/emailService';
 
 export default defineComponent({
   name: 'ContactPage',
@@ -184,7 +185,6 @@ export default defineComponent({
     const emailError = ref('');
     const nameError = ref('');
 
-    // Función para validar el nombre completo
     const validateName = () => {
       const namePattern = /^[a-zA-Z\s]+$/;
       if (!namePattern.test(form.value.name) || form.value.name.length < 3) {
@@ -194,7 +194,6 @@ export default defineComponent({
       }
     };
 
-    // Función para validar el correo electrónico
     const validateEmail = () => {
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailPattern.test(form.value.email)) {
@@ -204,17 +203,13 @@ export default defineComponent({
       }
     };
 
-    // Función para enviar el formulario
     const submitForm = async () => {
-      // Verificar el honeypot para evitar envíos de bots
       if (honeypot.value) {
-        // Si honeypot tiene contenido, bloquea el envío
         message.value = 'Error: se ha detectado un intento de spam.';
         messageType.value = 'error';
         return;
       }
 
-      // Evita el envío si hay un error en el correo electrónico o nombre
       if (emailError.value || nameError.value) {
         return;
       }
@@ -223,11 +218,10 @@ export default defineComponent({
       message.value = '';
 
       try {
-        // Llama al servicio de envío de correos con los datos del formulario
         await sendEmail(form.value);
         message.value = 'Mensaje enviado correctamente.';
         messageType.value = 'success';
-        form.value = { name: '', email: '', message: '' }; // Resetear formulario
+        form.value = { name: '', email: '', message: '' };
       } catch (error) {
         message.value = 'Error al enviar el formulario. Inténtalo nuevamente.';
         messageType.value = 'error';
@@ -239,7 +233,7 @@ export default defineComponent({
     return {
       bannerContact,
       form,
-      honeypot, // Incluye honeypot en el return para que sea accesible en el template
+      honeypot,
       isSubmitting,
       message,
       messageType,
@@ -257,14 +251,29 @@ export default defineComponent({
 .hero {
   background-size: cover;
   background-position: center;
+  position: relative;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.contact-item {
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .contact-item:hover {
   transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 button:disabled {
-  background-color: #cbd5e1; /* Color gris claro para el botón deshabilitado */
+  background-color: #cbd5e1;
   cursor: not-allowed;
 }
 
@@ -274,5 +283,23 @@ button:hover {
 
 .flex a i {
   margin-right: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .flex {
+    flex-wrap: wrap;
+  }
+
+  .hero h1 {
+    font-size: 2.5rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .contact-item {
+    padding: 4px;
+  }
 }
 </style>
