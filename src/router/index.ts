@@ -11,6 +11,7 @@ import EventDetails from '@/views/EventDetails.vue';
 import Profile from '@/views/Profile.vue';
 import Home from '@/views/Home.vue';
 import AboutPage from '@/views/AboutPage.vue';
+import ContactPage from '@/views/ContactPage.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -33,7 +34,10 @@ const routes: Array<RouteRecordRaw> = [
     name: 'ForgotPassword',
     component: ForgotPassword,
   },
-  { path: '/reset-password', name: 'ResetPassword', component: ResetPassword },
+  { path: '/reset-password', 
+    name: 'ResetPassword', 
+    component: ResetPassword 
+  },
   {
     path: '/courses', 
     name: 'CoursesList',
@@ -59,6 +63,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/about',
     name: 'About',
     component: AboutPage,
+  },
+  {
+    path: '/contact',
+    name: 'Contact',
+    component: ContactPage,
   },
   {
     path: '/profile',

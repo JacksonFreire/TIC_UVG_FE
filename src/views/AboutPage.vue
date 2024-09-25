@@ -112,9 +112,11 @@
           <p class="text-lg text-gray-700 max-w-2xl mx-auto">
             Forma parte de esta misión. Tu camino hacia una nueva vida comienza con nosotros.
           </p>
+          <router-link to="/contact">
           <button class="mt-6 px-8 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition">
             Contáctanos
           </button>
+        </router-link>
         </div>
       </section>
     </div>

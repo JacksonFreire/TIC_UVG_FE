@@ -23,7 +23,7 @@
         <router-link to="/events" class="hover:text-gray-200" @click="closeMenu">Eventos</router-link>
         <router-link to="/about" class="hover:text-gray-200" @click="closeMenu">Sobre Nosotros</router-link>
       <!--  <a href="#" class="hover:text-gray-200 cursor-pointer" @click="closeMenu">Servicios</a>-->
-        <a href="#" class="hover:text-gray-200 cursor-pointer" @click="closeMenu">Contactos</a>
+        <router-link to="/Contact" href="#" class="hover:text-gray-200 cursor-pointer" @click="closeMenu">Contactos</router-link>
 
         <!-- Menú de usuario cuando está logueado -->
         <div v-if="authStore.isLoggedIn" class="relative md:ml-4 flex items-center">
