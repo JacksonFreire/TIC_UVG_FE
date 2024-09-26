@@ -4,49 +4,46 @@
     <div class="container mx-auto flex items-center justify-between">
       <!-- Logotipo -->
       <div class="flex items-center">
-        <img src="@/assets/logo.jpg" alt="Logotipo" class="h-8 mr-4" />
-        <router-link to="/" class="text-lg font-bold">Univeritas Group</router-link>
+        <img src="@/assets/logo.jpg" alt="Logotipo" class="h-8 mr-4 rounded-full shadow-sm" />
+        <router-link to="/" class="text-lg font-bold hover:text-blue-200 transition duration-300">Univeritas Group</router-link>
       </div>
 
       <!-- Botón de Menú para Dispositivos Móviles -->
       <button @click="toggleMenu" class="block md:hidden focus:outline-none">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
+        <font-awesome-icon icon="bars" class="h-6 w-6 text-white hover:text-blue-300 transition duration-300" />
       </button>
 
       <!-- Menú de Navegación -->
       <div :class="{ 'hidden': !isMenuOpen, 'flex': isMenuOpen, 'md:flex': true }"
-        class="flex-col md:flex-row md:space-x-8 mt-4 md:mt-0 items-center">
-        <router-link to="/" class="hover:text-gray-200" @click="closeMenu">Inicio</router-link>
-        <router-link to="/courses" class="hover:text-gray-200" @click="closeMenu">Cursos</router-link>
-        <router-link to="/events" class="hover:text-gray-200" @click="closeMenu">Eventos</router-link>
-        <router-link to="/about" class="hover:text-gray-200" @click="closeMenu">Sobre Nosotros</router-link>
-      <!--  <a href="#" class="hover:text-gray-200 cursor-pointer" @click="closeMenu">Servicios</a>-->
-        <router-link to="/Contact" href="#" class="hover:text-gray-200 cursor-pointer" @click="closeMenu">Contactos</router-link>
+        class="flex-col md:flex-row md:space-x-8 mt-4 md:mt-0 items-center transition duration-300">
+        <router-link to="/" class="hover:text-blue-300 transition duration-300" @click="closeMenu">Inicio</router-link>
+        <router-link to="/courses" class="hover:text-blue-300 transition duration-300" @click="closeMenu">Cursos</router-link>
+        <router-link to="/events" class="hover:text-blue-300 transition duration-300" @click="closeMenu">Eventos</router-link>
+        <router-link to="/about" class="hover:text-blue-300 transition duration-300" @click="closeMenu">Sobre Nosotros</router-link>
+        <router-link to="/contact" class="hover:text-blue-300 transition duration-300" @click="closeMenu">Contactos</router-link>
 
         <!-- Menú de usuario cuando está logueado -->
         <div v-if="authStore.isLoggedIn" class="relative md:ml-4 flex items-center">
-          <button @click="toggleUserMenu" class="flex items-center space-x-2 focus:outline-none">
+          <button @click="toggleUserMenu" class="flex items-center space-x-2 focus:outline-none hover:text-blue-300 transition duration-300">
             <span class="whitespace-nowrap">Hola, {{ authStore.userDetails?.username }}</span>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M5.23 7.21a.75.75 0 011.06-.02l2.47 2.44 2.47-2.44a.75.75 0 111.04 1.08l-3 3a.75.75 0 01-1.04 0l-3-3a.75.75 0 01-.02-1.06z"
-                clip-rule="evenodd" />
-            </svg>
+            <font-awesome-icon icon="chevron-down" class="h-4 w-4" />
           </button>
 
           <!-- Submenú de usuario -->
           <div v-if="isUserMenuOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-10">
-            <router-link to="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" @click="closeMenu">Perfil</router-link>
-            <button @click="logout" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-              Cerrar sesión
+            <router-link to="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-300" @click="closeMenu">
+              <font-awesome-icon icon="user" class="mr-2" /> Perfil
+            </router-link>
+            <button @click="logout" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-300">
+              <font-awesome-icon icon="sign-out-alt" class="mr-2" /> Cerrar sesión
             </button>
           </div>
         </div>
 
         <!-- Opción de inicio de sesión cuando no está logueado -->
-        <router-link v-else to="/login" class="hover:text-gray-200" @click="closeMenu">Iniciar sesión</router-link>
+        <router-link v-else to="/login" class="hover:text-blue-300 transition duration-300" @click="closeMenu">
+          <font-awesome-icon icon="sign-in-alt" class="mr-2" /> Iniciar sesión
+        </router-link>
       </div>
     </div>
   </nav>
@@ -56,9 +53,13 @@
 import { defineComponent, ref } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'; // Asegúrate de que este componente esté registrado
 
 export default defineComponent({
   name: 'AppNavbar',
+  components: {
+    FontAwesomeIcon, // Registra FontAwesomeIcon como un componente global
+  },
   setup() {
     const authStore = useAuthStore();
     const router = useRouter();
@@ -80,7 +81,7 @@ export default defineComponent({
     const logout = () => {
       authStore.logout(router);
       isUserMenuOpen.value = false;
-      closeMenu(); // Cierra el menú hamburguesa al cerrar sesión
+      closeMenu();
     };
 
     return {
@@ -97,14 +98,43 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.material-icons {
-  font-size: 24px;
+/* Ajustes generales para la barra de navegación */
+nav {
+  background-color: #1d4ed8; /* Ajuste de color más moderno */
 }
 
-/* Ajustes para alinear correctamente en diferentes dispositivos */
+nav a {
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+nav a:hover {
+  color: #93c5fd; /* Color de hover suave */
+}
+
+/* Menú responsivo y ajuste de la iconografía */
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.5);
+}
+
 @media (max-width: 768px) {
-  .material-icons {
-    font-size: 28px;
+  nav {
+    padding: 10px;
   }
+}
+
+/* Estilo del submenú de usuario */
+.submenu {
+  transition: all 0.3s ease-in-out;
+  transform-origin: top right;
+}
+
+.submenu-enter-active, .submenu-leave-active {
+  transition: opacity 0.2s ease-in-out;
+}
+
+.submenu-enter, .submenu-leave-to {
+  opacity: 0;
 }
 </style>
