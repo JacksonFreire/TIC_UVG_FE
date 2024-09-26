@@ -2,14 +2,14 @@
   <!-- Pie de página -->
   <footer class="bg-blue-600 text-white py-2">
     <div class="container mx-auto flex justify-between items-center text-xs">
-      <!-- Logo y Texto de Misión -->
-      <div class="flex items-center space-x-3">
+      <!-- Logo y Texto de Misión (Solo visible en Desktop) -->
+      <div class="desktop-only flex items-center space-x-3">
         <img src="@/assets/logo.jpg" alt="Univeritas Group" class="h-6">
         <p>Apoyamos a los migrantes en su integración en Italia.</p>
       </div>
 
-      <!-- Redes Sociales -->
-      <div class="flex space-x-3">
+      <!-- Redes Sociales (Solo visible en Desktop) -->
+      <div class="desktop-only flex space-x-3">
         <a href="https://www.facebook.com/UniveritasGroup" target="_blank" aria-label="Facebook" class="hover:text-blue-400">
           <font-awesome-icon :icon="['fab', 'facebook']" class="h-5 w-5" />
         </a>
@@ -22,7 +22,7 @@
       </div>
 
       <!-- Copyright -->
-      <div class="text-white">
+      <div class="footer-text text-white">
         &copy; 2024 - Jackson Freire - UTPL.
       </div>
     </div>
@@ -61,5 +61,24 @@ footer p {
 
 footer .text-xs {
   font-size: 0.75rem; /* Tamaño reducido para coherencia y limpieza */
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none; /* Oculta elementos adicionales en dispositivos móviles */
+  }
+
+  footer {
+    padding: 4px 0; /* Reduce la altura del footer en móviles */
+    text-align: center; /* Centra todo el texto del footer */
+  }
+
+  .footer-text {
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    width: 100%; /* Asegura que el texto esté centrado */
+    font-size: 0.7rem; /* Tamaño ajustado para móviles */
+  }
 }
 </style>
