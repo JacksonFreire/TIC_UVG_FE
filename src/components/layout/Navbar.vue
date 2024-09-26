@@ -3,19 +3,24 @@
   <nav class="bg-blue-600 text-white py-4 px-6 shadow-md fixed top-0 left-0 right-0 z-50">
     <div class="container mx-auto flex items-center justify-between">
       <!-- Logotipo -->
-      <div class="flex items-center">
-        <img src="@/assets/logo.jpg" alt="Logotipo" class="h-8 mr-4 rounded-full shadow-sm" />
-        <router-link to="/" class="text-lg font-bold hover:text-blue-200 transition duration-300">Univeritas Group</router-link>
-      </div>
-
+      <router-link to="/">
+        <div class="flex items-center">
+          <img src="@/assets/logo.jpg" alt="Logotipo" class="h-8 mr-4 rounded-full shadow-sm" />
+          <router-link to="/" class="text-lg font-bold hover:text-blue-200 transition duration-300">
+            Univeritas Group
+          </router-link>
+        </div>
+      </router-link>
       <!-- Botón de Menú para Dispositivos Móviles -->
       <button @click="toggleMenu" class="block md:hidden focus:outline-none">
         <font-awesome-icon icon="bars" class="h-6 w-6 text-white hover:text-blue-300 transition duration-300" />
       </button>
 
       <!-- Menú de Navegación -->
-      <div :class="{ 'hidden': !isMenuOpen, 'flex': isMenuOpen, 'md:flex': true }"
-        class="flex-col md:flex-row md:space-x-8 mt-4 md:mt-0 items-center transition duration-300">
+      <div
+        :class="{ hidden: !isMenuOpen, flex: isMenuOpen, 'md:flex': true }"
+        class="flex-col md:flex-row md:space-x-8 mt-4 md:mt-0 items-center transition duration-300"
+      >
         <router-link to="/" class="hover:text-blue-300 transition duration-300" @click="closeMenu">Inicio</router-link>
         <router-link to="/courses" class="hover:text-blue-300 transition duration-300" @click="closeMenu">Cursos</router-link>
         <router-link to="/events" class="hover:text-blue-300 transition duration-300" @click="closeMenu">Eventos</router-link>
@@ -24,20 +29,36 @@
 
         <!-- Menú de usuario cuando está logueado -->
         <div v-if="authStore.isLoggedIn" class="relative md:ml-4 flex items-center">
-          <button @click="toggleUserMenu" class="flex items-center space-x-2 focus:outline-none hover:text-blue-300 transition duration-300">
+          <button
+            @click.stop="toggleUserMenu"
+            class="flex items-center space-x-2 focus:outline-none hover:text-blue-300 transition duration-300"
+          >
             <span class="whitespace-nowrap">Hola, {{ authStore.userDetails?.username }}</span>
             <font-awesome-icon icon="chevron-down" class="h-4 w-4" />
           </button>
 
           <!-- Submenú de usuario -->
-          <div v-if="isUserMenuOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-10">
-            <router-link to="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-300" @click="closeMenu">
-              <font-awesome-icon icon="user" class="mr-2" /> Perfil
-            </router-link>
-            <button @click="logout" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-300">
-              <font-awesome-icon icon="sign-out-alt" class="mr-2" /> Cerrar sesión
-            </button>
-          </div>
+          <transition name="fade">
+            <div
+              v-if="isUserMenuOpen"
+              ref="userMenu"
+              class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-10 submenu"
+            >
+              <router-link
+                to="/profile"
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-300"
+                @click="closeMenu"
+              >
+                <font-awesome-icon icon="user" class="mr-2" /> Perfil
+              </router-link>
+              <button
+                @click="logout"
+                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-300"
+              >
+                <font-awesome-icon icon="sign-out-alt" class="mr-2" /> Cerrar sesión
+              </button>
+            </div>
+          </transition>
         </div>
 
         <!-- Opción de inicio de sesión cuando no está logueado -->
@@ -50,21 +71,22 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, onMounted, onBeforeUnmount } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'; // Asegúrate de que este componente esté registrado
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 export default defineComponent({
   name: 'AppNavbar',
   components: {
-    FontAwesomeIcon, // Registra FontAwesomeIcon como un componente global
+    FontAwesomeIcon,
   },
   setup() {
     const authStore = useAuthStore();
     const router = useRouter();
     const isMenuOpen = ref(false);
     const isUserMenuOpen = ref(false);
+    const userMenu = ref<HTMLElement | null>(null);
 
     const toggleMenu = () => {
       isMenuOpen.value = !isMenuOpen.value;
@@ -72,6 +94,7 @@ export default defineComponent({
 
     const closeMenu = () => {
       isMenuOpen.value = false;
+      isUserMenuOpen.value = false;
     };
 
     const toggleUserMenu = () => {
@@ -84,6 +107,20 @@ export default defineComponent({
       closeMenu();
     };
 
+    const handleClickOutside = (event: MouseEvent) => {
+      if (userMenu.value && !userMenu.value.contains(event.target as Node)) {
+        isUserMenuOpen.value = false;
+      }
+    };
+
+    onMounted(() => {
+      document.addEventListener('click', handleClickOutside);
+    });
+
+    onBeforeUnmount(() => {
+      document.removeEventListener('click', handleClickOutside);
+    });
+
     return {
       authStore,
       isMenuOpen,
@@ -92,6 +129,7 @@ export default defineComponent({
       isUserMenuOpen,
       toggleUserMenu,
       logout,
+      userMenu,
     };
   },
 });
@@ -100,7 +138,7 @@ export default defineComponent({
 <style scoped>
 /* Ajustes generales para la barra de navegación */
 nav {
-  background-color: #1d4ed8; /* Ajuste de color más moderno */
+  background-color: #1d4ed8;
 }
 
 nav a {
@@ -109,7 +147,7 @@ nav a {
 }
 
 nav a:hover {
-  color: #93c5fd; /* Color de hover suave */
+  color: #93c5fd;
 }
 
 /* Menú responsivo y ajuste de la iconografía */
@@ -130,11 +168,13 @@ button:focus {
   transform-origin: top right;
 }
 
-.submenu-enter-active, .submenu-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.2s ease-in-out;
 }
 
-.submenu-enter, .submenu-leave-to {
+.fade-enter,
+.fade-leave-to {
   opacity: 0;
 }
 </style>
