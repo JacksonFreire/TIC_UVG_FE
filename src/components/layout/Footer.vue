@@ -1,11 +1,11 @@
 <template>
   <!-- Pie de página -->
   <footer class="bg-blue-600 text-white py-2">
-    <div class="container mx-auto flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
-      <!-- Logo y Misión -->
-      <div class="flex items-center">
-        <img src="@/assets/logo.jpg" alt="Univeritas Group" class="h-8 mr-2">
-        <p class="text-xs">Apoyamos a los migrantes en su integración en Italia.</p>
+    <div class="container mx-auto flex justify-between items-center text-xs">
+      <!-- Logo y Texto de Misión -->
+      <div class="flex items-center space-x-3">
+        <img src="@/assets/logo.jpg" alt="Univeritas Group" class="h-6">
+        <p>Apoyamos a los migrantes en su integración en Italia.</p>
       </div>
 
       <!-- Redes Sociales -->
@@ -20,11 +20,11 @@
           <font-awesome-icon :icon="['fab', 'linkedin']" class="h-5 w-5" />
         </a>
       </div>
-    </div>
 
-    <!-- Copyright -->
-    <div class="mt-1 text-center text-xs text-white">
-      &copy; 2024 - Jackson Freire - UTPL. Todos los derechos reservados.
+      <!-- Copyright -->
+      <div class="text-white">
+        &copy; 2024 - Jackson Freire - UTPL.
+      </div>
     </div>
   </footer>
 </template>
@@ -44,18 +44,22 @@ export default defineComponent({
 <style scoped>
 footer {
   background-color: #1d4ed8; /* Mismo color que el navbar */
-  padding: 8px 0; /* Ajuste de padding para reducir altura */
+  padding: 8px 0; /* Ajuste de padding para mantener el footer delgado */
+}
+
+footer img {
+  max-width: 80px; /* Ajuste del tamaño del logo para que sea discreto */
 }
 
 footer a {
   transition: color 0.3s ease;
 }
 
-footer img {
-  max-width: 100px; /* Tamaño ajustado del logo */
+footer p {
+  margin: 0;
 }
 
 footer .text-xs {
-  font-size: 0.75rem; /* Tamaño de fuente ajustado */
+  font-size: 0.75rem; /* Tamaño reducido para coherencia y limpieza */
 }
 </style>
