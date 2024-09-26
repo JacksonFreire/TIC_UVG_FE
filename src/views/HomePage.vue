@@ -3,40 +3,39 @@
     <!-- Sección Hero -->
     <section class="hero bg-cover bg-center py-16" :style="{ backgroundImage: `url(${bannerImage})` }">
       <div class="overlay"></div>
-      <div class="container mx-auto text-center text-white relative z-10 px-4 sm:px-8">
-        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 animate-fadeIn">
+      <div class="container mx-auto text-center text-white relative z-10">
+        <h1 class="text-4xl font-bold mb-4 animate-fadeIn">
           Inscríbete fácil y rápido. Potencia tu integración en Italia con nuestra plataforma digital.
         </h1>
       </div>
     </section>
 
     <!-- Sección: ¿Por qué elegirnos? -->
-    <section class="my-8 sm:my-12 px-4">
-      <h2 class="text-2xl sm:text-3xl font-bold text-center text-blue-700 mb-6 sm:mb-8">¿Por qué elegirnos?</h2>
-      <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+    <section class="my-12">
+      <h2 class="text-3xl font-bold text-center text-blue-700 mb-8">¿Por qué elegirnos?</h2>
+      <div class="container mx-auto grid md:grid-cols-3 gap-8">
         <router-link to="/about">
-          <div class="card bg-white shadow-md rounded p-4 md:p-6 transform transition hover:scale-105">
+          <div class="card bg-white shadow-md rounded p-6 transform transition hover:scale-105">
             <img src="@/assets/comunidad.png" alt="Compromiso" class="w-full h-32 object-cover mb-4 rounded">
-            <h3 class="text-lg sm:text-xl font-semibold text-blue-700">Compromiso con la Comunidad</h3>
+            <h3 class="text-xl font-semibold text-blue-700">Compromiso con la Comunidad</h3>
             <p>
-              Promovemos el desarrollo educativo y profesional con cursos adaptados a la comunidad ecuatoriana en
-              Italia.
+              Promovemos el desarrollo educativo y profesional con cursos adaptados a la comunidad ecuatoriana en Italia.
             </p>
           </div>
         </router-link>
         <router-link to="/about">
-          <div class="card bg-white shadow-md rounded p-4 md:p-6 transform transition hover:scale-105">
+          <div class="card bg-white shadow-md rounded p-6 transform transition hover:scale-105">
             <img src="@/assets/diversidad.png" alt="Diversidad" class="w-full h-32 object-cover mb-4 rounded">
-            <h3 class="text-lg sm:text-xl font-semibold text-blue-700">Diversidad de Oferta Educativa</h3>
+            <h3 class="text-xl font-semibold text-blue-700">Diversidad de Oferta Educativa</h3>
             <p>
               Ofrecemos cursos presenciales y eventos online, desde informática hasta idiomas, para todas las edades.
             </p>
           </div>
         </router-link>
         <router-link to="/about">
-          <div class="card bg-white shadow-md rounded p-4 md:p-6 transform transition hover:scale-105">
+          <div class="card bg-white shadow-md rounded p-6 transform transition hover:scale-105">
             <img src="@/assets/innovacion.png" alt="Innovación" class="w-full h-32 object-cover mb-4 rounded">
-            <h3 class="text-lg sm:text-xl font-semibold text-blue-700">Innovación y Tecnología Educativa</h3>
+            <h3 class="text-xl font-semibold text-blue-700">Innovación y Tecnología Educativa</h3>
             <p>Utilizamos tecnología avanzada para mejorar la experiencia de aprendizaje.</p>
           </div>
         </router-link>
@@ -44,16 +43,14 @@
     </section>
 
     <!-- Sección: Eventos que se acercan -->
-    <section class="my-8 sm:my-12 px-4">
-      <h2 class="text-2xl sm:text-3xl font-bold text-center text-blue-700 mb-6 sm:mb-8">Eventos que se acercan</h2>
-      <!-- Skeleton Loader mientras se cargan los eventos -->
+    <section class="my-12">
+      <h2 class="text-3xl font-bold text-center text-blue-700 mb-8">Eventos que se acercan</h2>
       <div v-if="isLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
         <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
         <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
         <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
       </div>
-      <!-- Mostrar eventos cuando no está cargando -->
-      <div v-else class="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div v-else class="container mx-auto">
         <div v-for="event in homeEvents" :key="event.id" class="event-item" @click="navigateToEventDetails(event.id)">
           <div class="date-container">
             <div class="date-number">{{ formatDate(event.startDate, 'DD') }}</div>
@@ -70,20 +67,18 @@
     </section>
 
     <!-- Sección: Cursos que se acercan -->
-    <section class="my-8 sm:my-12 px-4">
-      <h2 class="text-2xl sm:text-3xl font-bold text-center text-blue-700 mb-6 sm:mb-8">Cursos que se acercan</h2>
-      <!-- Skeleton Loader mientras se cargan los cursos -->
+    <section class="my-12">
+      <h2 class="text-3xl font-bold text-center text-blue-700 mb-8">Cursos que se acercan</h2>
       <div v-if="isLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
         <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
         <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
         <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
       </div>
-      <!-- Mostrar cursos cuando no está cargando -->
-      <div v-else class="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div v-else class="container mx-auto grid md:grid-cols-3 gap-8">
         <div v-for="course in homeCourses" :key="course.id" class="course-item bg-white shadow-md rounded overflow-hidden transform transition hover:scale-105 hover:rotate-1">
           <img :src="`data:image/jpeg;base64,${course.image}`" alt="Imagen del Curso" class="w-full h-40 object-cover">
           <div class="p-4">
-            <h3 class="text-lg sm:text-xl font-semibold text-blue-700 mb-2">{{ course.name }}</h3>
+            <h3 class="text-xl font-semibold text-blue-700 mb-2">{{ course.name }}</h3>
             <p class="text-sm text-gray-600 mb-4">
               {{ formatDate(course.startDate) }} - {{ formatDate(course.endDate) }}
             </p>
@@ -154,7 +149,7 @@ export default defineComponent({
   position: relative;
   background-size: cover;
   background-position: center;
-  height: 200px; /* Ajuste para pantallas más pequeñas */
+  height: 300px;
 }
 
 .overlay {
@@ -164,6 +159,20 @@ export default defineComponent({
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
+}
+
+.animate-fadeIn {
+  animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .card {
@@ -178,7 +187,7 @@ export default defineComponent({
 
 .event-item {
   display: grid;
-  grid-template-columns: 100px 1fr;
+  grid-template-columns: 120px 1fr 100px;
   align-items: center;
   padding: 15px;
   background: #fff;
@@ -201,10 +210,67 @@ export default defineComponent({
   padding: 5px 10px;
   text-align: center;
   font-size: 1.2rem;
-  min-width: 80px;
+  padding-right: 20px;
+  min-width: 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.date-number {
+  font-size: 2rem;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.date-month {
+  font-size: 1rem;
+  text-transform: uppercase;
+  margin-top: 5px;
+}
+
+.content-container {
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.event-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.event-location {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.event-description {
+  font-size: 0.875rem;
+  color: #4B5563;
+  line-height: 1.4;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-clamp: 2;
+}
+
+.event-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 5px;
+  align-self: center;
+  transition: transform 0.3s;
+}
+
+.event-image:hover {
+  transform: scale(1.05);
 }
 
 .course-item {
@@ -220,18 +286,19 @@ export default defineComponent({
 }
 
 @media (max-width: 768px) {
-  .hero {
-    height: 150px; /* Ajuste adicional para pantallas pequeñas */
-  }
-
   .event-item {
     grid-template-columns: 1fr;
-    grid-template-rows: auto auto;
+    grid-template-rows: auto auto auto;
     align-items: start;
   }
 
   .date-container {
+    padding-right: 0;
     margin-bottom: 10px;
+  }
+
+  .event-image {
+    margin-top: 10px;
   }
 }
 </style>
