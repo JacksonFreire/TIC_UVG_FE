@@ -9,7 +9,7 @@ import CourseDetails from '@/views/CourseDetails.vue';
 import EventsList from '@/views/EventsList.vue';
 import EventDetails from '@/views/EventDetails.vue';
 import Profile from '@/views/Profile.vue';
-import Home from '@/views/Home.vue';
+import Home from '@/views/HomePage.vue';
 import AboutPage from '@/views/AboutPage.vue';
 import ContactPage from '@/views/ContactPage.vue';
 

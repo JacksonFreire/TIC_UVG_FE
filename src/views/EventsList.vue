@@ -15,15 +15,11 @@
       </svg>
     </div>
 
-    <!-- Mostrar indicador de carga mientras se esperan los eventos -->
-    <div v-if="isLoading" class="flex justify-center items-center my-10">
-      <div class="flex items-center space-x-2">
-        <svg class="animate-spin h-10 w-10 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8h8c0 4.42-3.58 8-8 8a8 8 0 01-8-8z"></path>
-        </svg>
-        <span class="text-gray-700 font-medium text-lg">Cargando eventos...</span>
-      </div>
+    <!-- Skeleton Loaders mientras se carga -->
+    <div v-if="isLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+      <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
+      <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
+      <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
     </div>
 
     <!-- Lista de eventos -->
@@ -40,7 +36,7 @@
     <!-- Paginación Mejorada -->
     <div v-if="!isLoading" class="flex justify-center mt-8 space-x-2">
       <button
-        @click="fetchEvents(currentPage - 1)"
+        @click="loadPreviousPage"
         :disabled="currentPage === 0"
         class="px-4 py-2 mx-1 text-sm font-medium text-white bg-blue-500 rounded-full shadow-md hover:bg-blue-600 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed"
       >
@@ -50,7 +46,7 @@
         Página {{ currentPage + 1 }} de {{ totalPages }}
       </span>
       <button
-        @click="fetchEvents(currentPage + 1)"
+        @click="loadNextPage"
         :disabled="currentPage >= totalPages - 1"
         class="px-4 py-2 mx-1 text-sm font-medium text-white bg-blue-500 rounded-full shadow-md hover:bg-blue-600 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed"
       >
@@ -60,77 +56,49 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, computed, onMounted } from 'vue';
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { getAllEvents } from '@/services/eventService';
+import { useDataStore } from '@/stores/useDataStore'; // Importar la store de Pinia
 import EventItem from '@/components/events/EventItem.vue';
 
-interface Event {
-  id: number;
-  name: string;
-  description: string;
-  location: string;
-  price: number;
-  image: string;
-  startDate: string;
-  endDate: string;
-  category: string;
-}
+const dataStore = useDataStore();
+const router = useRouter();
 
-export default defineComponent({
-  name: 'EventsList',
-  components: {
-    EventItem,
-  },
-  setup() {
-    const router = useRouter();
-    const events = ref<Event[]>([]);
-    const searchQuery = ref<string>('');
-    const currentPage = ref<number>(0);
-    const totalPages = ref<number>(0);
-    const size = 4; // Tamaño de la página, 4 eventos por página
-    const isLoading = ref<boolean>(true);
+const searchQuery = ref<string>('');
+const currentPage = ref<number>(0);
 
-    const fetchEvents = async (page: number) => {
-      isLoading.value = true;
-      try {
-        const response = await getAllEvents(page, size);
-        events.value = response.content;
-        totalPages.value = response.totalPages;
-        currentPage.value = response.number;
-      } catch (error) {
-        console.error('Error al cargar los eventos:', error);
-      } finally {
-        isLoading.value = false;
-      }
-    };
+// Funciones para cargar las páginas anteriores y siguientes
+const loadPreviousPage = () => {
+  if (currentPage.value > 0) {
+    currentPage.value -= 1;
+    dataStore.fetchEvents(currentPage.value);
+  }
+};
 
-    const filteredEvents = computed(() => {
-      if (!searchQuery.value) return events.value;
-      return events.value.filter(event =>
-        event.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-      );
-    });
+const loadNextPage = () => {
+  currentPage.value += 1;
+  dataStore.fetchEvents(currentPage.value);
+};
 
-    const navigateToDetails = (id: number) => {
-      router.push({ name: 'EventDetails', params: { id: id.toString() } });
-    };
-
-    onMounted(() => fetchEvents(currentPage.value));
-
-    return {
-      events,
-      searchQuery,
-      filteredEvents,
-      currentPage,
-      totalPages,
-      fetchEvents,
-      navigateToDetails,
-      isLoading,
-    };
-  },
+// Computed para filtrar los eventos según la búsqueda
+const filteredEvents = computed(() => {
+  if (!searchQuery.value) return dataStore.events;
+  return dataStore.events.filter(event =>
+    event.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
 });
+
+// Función para navegar a los detalles del evento
+const navigateToDetails = (id: number) => {
+  router.push({ name: 'EventDetails', params: { id: id.toString() } });
+};
+
+// Cargamos los eventos al montar el componente
+onMounted(() => dataStore.fetchEvents(currentPage.value));
+
+// Acceso a los datos y al estado de carga desde la store
+const { isLoading, totalPages } = dataStore;
 </script>
 
 <style scoped>

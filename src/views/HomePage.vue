@@ -14,38 +14,49 @@
     <section class="my-12">
       <h2 class="text-3xl font-bold text-center text-blue-700 mb-8">¿Por qué elegirnos?</h2>
       <div class="container mx-auto grid md:grid-cols-3 gap-8">
-        <div class="card bg-white shadow-md rounded p-6 transform transition hover:scale-105">
-          <img src="@/assets/comunidad.png" alt="Compromiso" class="w-full h-32 object-cover mb-4 rounded">
-          <h3 class="text-xl font-semibold text-blue-700">Compromiso con la Comunidad</h3>
-          <p>
-            Promovemos el desarrollo educativo y profesional con cursos adaptados a la comunidad ecuatoriana en Italia.
-          </p>
-        </div>
-        <div class="card bg-white shadow-md rounded p-6 transform transition hover:scale-105">
-          <img src="@/assets/diversidad.png" alt="Diversidad" class="w-full h-32 object-cover mb-4 rounded">
-          <h3 class="text-xl font-semibold text-blue-700">Diversidad de Oferta Educativa</h3>
-          <p>
-            Ofrecemos cursos presenciales y eventos online, desde informática hasta idiomas, para todas las edades.
-          </p>
-        </div>
-        <div class="card bg-white shadow-md rounded p-6 transform transition hover:scale-105">
-          <img src="@/assets/innovacion.png" alt="Innovación" class="w-full h-32 object-cover mb-4 rounded">
-          <h3 class="text-xl font-semibold text-blue-700">Innovación y Tecnología Educativa</h3>
-          <p>Utilizamos tecnología avanzada para mejorar la experiencia de aprendizaje.</p>
-        </div>
+        <router-link to="/about">
+          <div class="card bg-white shadow-md rounded p-6 transform transition hover:scale-105">
+            <img src="@/assets/comunidad.png" alt="Compromiso" class="w-full h-32 object-cover mb-4 rounded">
+            <h3 class="text-xl font-semibold text-blue-700">Compromiso con la Comunidad</h3>
+            <p>
+              Promovemos el desarrollo educativo y profesional con cursos adaptados a la comunidad ecuatoriana en
+              Italia.
+            </p>
+          </div>
+        </router-link>
+        <router-link to="/about">
+          <div class="card bg-white shadow-md rounded p-6 transform transition hover:scale-105">
+            <img src="@/assets/diversidad.png" alt="Diversidad" class="w-full h-32 object-cover mb-4 rounded">
+            <h3 class="text-xl font-semibold text-blue-700">Diversidad de Oferta Educativa</h3>
+            <p>
+              Ofrecemos cursos presenciales y eventos online, desde informática hasta idiomas, para todas las edades.
+            </p>
+          </div>
+        </router-link>
+        <router-link to="/about">
+          <div class="card bg-white shadow-md rounded p-6 transform transition hover:scale-105">
+            <img src="@/assets/innovacion.png" alt="Innovación" class="w-full h-32 object-cover mb-4 rounded">
+            <h3 class="text-xl font-semibold text-blue-700">Innovación y Tecnología Educativa</h3>
+            <p>Utilizamos tecnología avanzada para mejorar la experiencia de aprendizaje.</p>
+          </div>
+        </router-link>
+      </div>
+    </section>
+
+    <!-- Skeleton Loader para Eventos -->
+    <section v-if="isLoading" class="my-12">
+      <div class="container mx-auto grid md:grid-cols-3 gap-6">
+        <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
+        <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
+        <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
       </div>
     </section>
 
     <!-- Sección: Eventos que se acercan -->
-    <section class="my-12">
+    <section v-else class="my-12">
       <h2 class="text-3xl font-bold text-center text-blue-700 mb-8">Eventos que se acercan</h2>
       <div class="container mx-auto">
-        <div
-          v-for="event in upcomingEvents"
-          :key="event.id"
-          class="event-item"
-          @click="navigateToEventDetails(event.id)"
-        >
+        <div v-for="event in homeEvents" :key="event.id" class="event-item" @click="navigateToEventDetails(event.id)">
           <div class="date-container">
             <div class="date-number">{{ formatDate(event.startDate, 'DD') }}</div>
             <div class="date-month">{{ formatDate(event.startDate, 'MMMM YYYY') }}</div>
@@ -55,38 +66,34 @@
             <p class="event-location">{{ event.location }}</p>
             <p class="event-description">{{ event.description }}</p>
           </div>
-          <img
-            :src="`data:image/jpeg;base64,${event.image}`"
-            alt="Event Image"
-            class="event-image"
-          />
+          <img :src="`data:image/jpeg;base64,${event.image}`" alt="Event Image" class="event-image" />
         </div>
       </div>
     </section>
 
+    <!-- Skeleton Loader para Cursos -->
+    <section v-if="isLoading" class="my-12">
+      <div class="container mx-auto grid md:grid-cols-3 gap-6">
+        <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
+        <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
+        <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
+      </div>
+    </section>
+
     <!-- Sección: Cursos que se acercan -->
-    <section class="my-12">
+    <section v-else class="my-12">
       <h2 class="text-3xl font-bold text-center text-blue-700 mb-8">Cursos que se acercan</h2>
       <div class="container mx-auto grid md:grid-cols-3 gap-8">
-        <div
-          v-for="course in upcomingCourses"
-          :key="course.id"
-          class="course-item bg-white shadow-md rounded overflow-hidden transform transition hover:scale-105 hover:rotate-1"
-        >
-          <img
-            :src="`data:image/jpeg;base64,${course.image}`"
-            alt="Imagen del Curso"
-            class="w-full h-40 object-cover"
-          >
+        <div v-for="course in homeCourses" :key="course.id"
+          class="course-item bg-white shadow-md rounded overflow-hidden transform transition hover:scale-105 hover:rotate-1">
+          <img :src="`data:image/jpeg;base64,${course.image}`" alt="Imagen del Curso" class="w-full h-40 object-cover">
           <div class="p-4">
             <h3 class="text-xl font-semibold text-blue-700 mb-2">{{ course.name }}</h3>
             <p class="text-sm text-gray-600 mb-4">
               {{ formatDate(course.startDate) }} - {{ formatDate(course.endDate) }}
             </p>
-            <router-link
-              :to="`/courses/${course.id}`"
-              class="inline-block px-4 py-2 mt-2 text-white bg-blue-600 rounded hover:bg-blue-700"
-            >
+            <router-link :to="`/courses/${course.id}`"
+              class="inline-block px-4 py-2 mt-2 text-white bg-blue-600 rounded hover:bg-blue-700">
               Más Información
             </router-link>
           </div>
@@ -96,94 +103,41 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
+<script setup lang="ts">
+import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { getAllCourses } from '@/services/coursesService';
-import { getAllEvents } from '@/services/eventService';
+import { useDataStore } from '@/stores/useDataStore';
 import bannerImage from '@/assets/Banner.png';
 
-interface Course {
-  id: number;
-  name: string;
-  description: string;
-  image: string;
-  startDate: string;
-  endDate: string;
-}
+// Utilizamos la store de Pinia para manejar los datos y el estado
+const dataStore = useDataStore();
+const router = useRouter();
 
-interface Event {
-  id: number;
-  name: string;
-  description: string;
-  startDate: string;
-  location: string;
-  image: string;
-}
+// Función para navegar a los detalles de un evento
+const navigateToEventDetails = (id: number) => {
+  router.push({ name: 'EventDetails', params: { id: id.toString() } });
+};
 
-export default defineComponent({
-  name: 'HomePage',
-  setup() {
-    const router = useRouter();
-    const upcomingCourses = ref<Course[]>([]);
-    const upcomingEvents = ref<Event[]>([]);
+// Formateo de fechas
+const formatDate = (date: string, format?: string) => {
+  let options: Intl.DateTimeFormatOptions = {};
+  if (format === 'DD') {
+    options = { day: '2-digit' };
+  } else if (format === 'MMMM YYYY') {
+    options = { month: 'long', year: 'numeric' };
+  } else {
+    options = { day: '2-digit', month: 'long', year: 'numeric' };
+  }
+  return new Date(date).toLocaleDateString('es-ES', options);
+};
 
-    const fetchUpcomingCourses = async () => {
-      try {
-        const response = await getAllCourses(0, 3);
-        if (response && response.content) {
-          upcomingCourses.value = response.content;
-        } else {
-          console.error('No data found in courses response:', response);
-        }
-      } catch (error) {
-        console.error('Error al obtener los cursos:', error);
-      }
-    };
-
-    const fetchUpcomingEvents = async () => {
-      try {
-        const response = await getAllEvents(0, 3);
-        if (response && response.content) {
-          upcomingEvents.value = response.content;
-        } else {
-          console.error('No data found in events response:', response);
-        }
-      } catch (error) {
-        console.error('Error al obtener los eventos:', error);
-      }
-    };
-
-    const navigateToEventDetails = (id: number) => {
-      router.push({ name: 'EventDetails', params: { id: id.toString() } });
-    };
-
-    const formatDate = (date: string, format?: string) => {
-      let options: Intl.DateTimeFormatOptions = {};
-      if (format === 'DD') {
-        options = { day: '2-digit' };
-      } else if (format === 'MMMM YYYY') {
-        options = { month: 'long', year: 'numeric' };
-      } else {
-        options = { day: '2-digit', month: 'long', year: 'numeric' };
-      }
-      return new Date(date).toLocaleDateString('es-ES', options);
-    };
-
-    onMounted(() => {
-      fetchUpcomingCourses();
-      fetchUpcomingEvents();
-    });
-
-    return {
-      bannerImage,
-      upcomingCourses,
-      upcomingEvents,
-      navigateToEventDetails,
-      formatDate,
-    };
-  },
+// Cargamos los datos para la Home Page
+onMounted(() => {
+  dataStore.fetchHomeData();
 });
+
+// Acceso a los datos de cursos, eventos y al estado de carga
+const { homeCourses, homeEvents, isLoading } = dataStore;
 </script>
 
 <style scoped>
@@ -211,6 +165,7 @@ export default defineComponent({
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
