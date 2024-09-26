@@ -3,8 +3,8 @@
     <!-- Sección Hero -->
     <section class="hero bg-cover bg-center py-16" :style="{ backgroundImage: `url(${bannerImage})` }">
       <div class="overlay"></div>
-      <div class="container mx-auto text-center text-white relative z-10">
-        <h1 class="text-4xl font-bold mb-4 animate-fadeIn">
+      <div class="container mx-auto text-center text-white relative z-10 px-4">
+        <h1 class="text-4xl sm:text-5xl font-bold mb-4 animate-fadeIn">
           Inscríbete fácil y rápido. Potencia tu integración en Italia con nuestra plataforma digital.
         </h1>
       </div>
@@ -13,7 +13,7 @@
     <!-- Sección: ¿Por qué elegirnos? -->
     <section class="my-12">
       <h2 class="text-3xl font-bold text-center text-blue-700 mb-8">¿Por qué elegirnos?</h2>
-      <div class="container mx-auto grid md:grid-cols-3 gap-8">
+      <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
         <router-link to="/about">
           <div class="card bg-white shadow-md rounded p-6 transform transition hover:scale-105">
             <img src="@/assets/comunidad.png" alt="Compromiso" class="w-full h-32 object-cover mb-4 rounded">
@@ -45,23 +45,32 @@
     <!-- Sección: Eventos que se acercan -->
     <section class="my-12">
       <h2 class="text-3xl font-bold text-center text-blue-700 mb-8">Eventos que se acercan</h2>
-      <div v-if="isLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+      <div v-if="isLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6 px-4">
         <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
         <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
         <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
       </div>
-      <div v-else class="container mx-auto">
-        <div v-for="event in homeEvents" :key="event.id" class="event-item" @click="navigateToEventDetails(event.id)">
-          <div class="date-container">
+      <div v-else class="container mx-auto px-4">
+        <div
+          v-for="event in homeEvents"
+          :key="event.id"
+          class="event-item flex items-center p-4 bg-white shadow-md rounded-lg mb-4 transition hover:scale-105 cursor-pointer"
+          @click="navigateToEventDetails(event.id)"
+        >
+          <div class="date-container flex-shrink-0 mr-4">
             <div class="date-number">{{ formatDate(event.startDate, 'DD') }}</div>
             <div class="date-month">{{ formatDate(event.startDate, 'MMMM YYYY') }}</div>
           </div>
-          <div class="content-container">
-            <h3 class="event-title">{{ event.name }}</h3>
-            <p class="event-location">{{ event.location }}</p>
-            <p class="event-description">{{ event.description }}</p>
+          <div class="content-container flex-grow">
+            <h3 class="event-title text-lg font-bold mb-1">{{ event.name }}</h3>
+            <p class="event-location text-sm text-gray-600 mb-1">{{ event.location }}</p>
+            <p class="event-description text-sm text-gray-700">{{ event.description }}</p>
           </div>
-          <img :src="`data:image/jpeg;base64,${event.image}`" alt="Event Image" class="event-image" />
+          <img
+            :src="`data:image/jpeg;base64,${event.image}`"
+            alt="Event Image"
+            class="event-image w-20 h-20 object-cover rounded-lg ml-4"
+          />
         </div>
       </div>
     </section>
@@ -69,20 +78,29 @@
     <!-- Sección: Cursos que se acercan -->
     <section class="my-12">
       <h2 class="text-3xl font-bold text-center text-blue-700 mb-8">Cursos que se acercan</h2>
-      <div v-if="isLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+      <div v-if="isLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6 px-4">
         <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
         <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
         <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
       </div>
-      <div v-else class="container mx-auto grid md:grid-cols-3 gap-8">
-        <div v-for="course in homeCourses" :key="course.id" class="course-item bg-white shadow-md rounded overflow-hidden transform transition hover:scale-105 hover:rotate-1">
-          <img :src="`data:image/jpeg;base64,${course.image}`" alt="Imagen del Curso" class="w-full h-40 object-cover">
+      <div v-else class="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
+        <div
+          v-for="course in homeCourses"
+          :key="course.id"
+          class="course-item bg-white shadow-md rounded overflow-hidden transform transition hover:scale-105 hover:rotate-1"
+        >
+          <img
+            :src="`data:image/jpeg;base64,${course.image}`"
+            alt="Imagen del Curso"
+            class="w-full h-40 object-cover"
+          />
           <div class="p-4">
             <h3 class="text-xl font-semibold text-blue-700 mb-2">{{ course.name }}</h3>
-            <p class="text-sm text-gray-600 mb-4">
-              {{ formatDate(course.startDate) }} - {{ formatDate(course.endDate) }}
-            </p>
-            <router-link :to="`/courses/${course.id}`" class="inline-block px-4 py-2 mt-2 text-white bg-blue-600 rounded hover:bg-blue-700">
+            <p class="text-sm text-gray-600 mb-4">{{ formatDate(course.startDate) }} - {{ formatDate(course.endDate) }}</p>
+            <router-link
+              :to="`/courses/${course.id}`"
+              class="inline-block px-4 py-2 mt-2 text-white bg-blue-600 rounded hover:bg-blue-700"
+            >
               Más Información
             </router-link>
           </div>
@@ -290,6 +308,7 @@ export default defineComponent({
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto;
     align-items: start;
+    text-align: center;
   }
 
   .date-container {
@@ -299,6 +318,8 @@ export default defineComponent({
 
   .event-image {
     margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 </style>
