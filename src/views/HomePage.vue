@@ -43,19 +43,17 @@
       </div>
     </section>
 
-    <!-- Skeleton Loader para Eventos -->
-    <section v-if="isLoading" class="my-12">
-      <div class="container mx-auto grid md:grid-cols-3 gap-6">
+    <!-- Sección: Eventos que se acercan -->
+    <section class="my-12">
+      <h2 class="text-3xl font-bold text-center text-blue-700 mb-8">Eventos que se acercan</h2>
+      <!-- Skeleton Loader mientras se cargan los eventos -->
+      <div v-if="isLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
         <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
         <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
         <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
       </div>
-    </section>
-
-    <!-- Sección: Eventos que se acercan -->
-    <section v-else class="my-12">
-      <h2 class="text-3xl font-bold text-center text-blue-700 mb-8">Eventos que se acercan</h2>
-      <div class="container mx-auto">
+      <!-- Mostrar eventos cuando no está cargando -->
+      <div v-else class="container mx-auto">
         <div v-for="event in homeEvents" :key="event.id" class="event-item" @click="navigateToEventDetails(event.id)">
           <div class="date-container">
             <div class="date-number">{{ formatDate(event.startDate, 'DD') }}</div>
@@ -71,21 +69,18 @@
       </div>
     </section>
 
-    <!-- Skeleton Loader para Cursos -->
-    <section v-if="isLoading" class="my-12">
-      <div class="container mx-auto grid md:grid-cols-3 gap-6">
+    <!-- Sección: Cursos que se acercan -->
+    <section class="my-12">
+      <h2 class="text-3xl font-bold text-center text-blue-700 mb-8">Cursos que se acercan</h2>
+      <!-- Skeleton Loader mientras se cargan los cursos -->
+      <div v-if="isLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
         <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
         <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
         <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
       </div>
-    </section>
-
-    <!-- Sección: Cursos que se acercan -->
-    <section v-else class="my-12">
-      <h2 class="text-3xl font-bold text-center text-blue-700 mb-8">Cursos que se acercan</h2>
-      <div class="container mx-auto grid md:grid-cols-3 gap-8">
-        <div v-for="course in homeCourses" :key="course.id"
-          class="course-item bg-white shadow-md rounded overflow-hidden transform transition hover:scale-105 hover:rotate-1">
+      <!-- Mostrar cursos cuando no está cargando -->
+      <div v-else class="container mx-auto grid md:grid-cols-3 gap-8">
+        <div v-for="course in homeCourses" :key="course.id" class="course-item bg-white shadow-md rounded overflow-hidden transform transition hover:scale-105 hover:rotate-1">
           <img :src="`data:image/jpeg;base64,${course.image}`" alt="Imagen del Curso" class="w-full h-40 object-cover">
           <div class="p-4">
             <h3 class="text-xl font-semibold text-blue-700 mb-2">{{ course.name }}</h3>
@@ -103,44 +98,60 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { onMounted } from 'vue';
+<script lang="ts">
+import { defineComponent, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { useDataStore } from '@/stores/useDataStore';
+import { useDataStore } from '@/stores/useDataStore'; // Importar la store de Pinia
 import bannerImage from '@/assets/Banner.png';
 
-// Utilizamos la store de Pinia para manejar los datos y el estado
-const dataStore = useDataStore();
-const router = useRouter();
+export default defineComponent({
+  name: 'HomePage',
+  setup() {
+    const dataStore = useDataStore();
+    const router = useRouter();
 
-// Función para navegar a los detalles de un evento
-const navigateToEventDetails = (id: number) => {
-  router.push({ name: 'EventDetails', params: { id: id.toString() } });
-};
+    // Cargar los datos para la home cuando el componente se monta
+    onMounted(async () => {
+      await dataStore.fetchHomeData(); // Llamar a la función para cargar cursos y eventos
+    });
 
-// Formateo de fechas
-const formatDate = (date: string, format?: string) => {
-  let options: Intl.DateTimeFormatOptions = {};
-  if (format === 'DD') {
-    options = { day: '2-digit' };
-  } else if (format === 'MMMM YYYY') {
-    options = { month: 'long', year: 'numeric' };
-  } else {
-    options = { day: '2-digit', month: 'long', year: 'numeric' };
-  }
-  return new Date(date).toLocaleDateString('es-ES', options);
-};
+    // Computed para asegurar que los datos se actualicen y sean reactivos
+    const homeCourses = computed(() => dataStore.homeCourses);
+    const homeEvents = computed(() => dataStore.homeEvents);
+    const isLoading = computed(() => dataStore.isLoading);
 
-// Cargamos los datos para la Home Page
-onMounted(() => {
-  dataStore.fetchHomeData();
+    // Función para navegar a los detalles del evento
+    const navigateToEventDetails = (id: number) => {
+      router.push({ name: 'EventDetails', params: { id: id.toString() } });
+    };
+
+    // Función para formatear fechas
+    const formatDate = (date: string, format?: string) => {
+      let options: Intl.DateTimeFormatOptions = {};
+      if (format === 'DD') {
+        options = { day: '2-digit' };
+      } else if (format === 'MMMM YYYY') {
+        options = { month: 'long', year: 'numeric' };
+      } else {
+        options = { day: '2-digit', month: 'long', year: 'numeric' };
+      }
+      return new Date(date).toLocaleDateString('es-ES', options);
+    };
+
+    return {
+      bannerImage,
+      homeCourses,
+      homeEvents,
+      isLoading,
+      navigateToEventDetails,
+      formatDate,
+    };
+  },
 });
-
-// Acceso a los datos de cursos, eventos y al estado de carga
-const { homeCourses, homeEvents, isLoading } = dataStore;
 </script>
 
 <style scoped>
+/* Estilos preexistentes */
 .hero {
   position: relative;
   background-size: cover;
@@ -165,7 +176,6 @@ const { homeCourses, homeEvents, isLoading } = dataStore;
   from {
     opacity: 0;
   }
-
   to {
     opacity: 1;
   }
