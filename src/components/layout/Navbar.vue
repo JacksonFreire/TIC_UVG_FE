@@ -11,6 +11,7 @@
           </router-link>
         </div>
       </router-link>
+
       <!-- Botón de Menú para Dispositivos Móviles -->
       <button @click="toggleMenu" class="block md:hidden focus:outline-none">
         <font-awesome-icon icon="bars" class="h-6 w-6 text-white hover:text-blue-300 transition duration-300" />
@@ -19,16 +20,19 @@
       <!-- Menú de Navegación -->
       <div
         :class="{ hidden: !isMenuOpen, flex: isMenuOpen, 'md:flex': true }"
-        class="flex-col md:flex-row md:space-x-8 mt-4 md:mt-0 items-center transition duration-300"
+        class="flex-col md:flex-row md:space-x-8 mt-4 md:mt-0 items-start md:items-center transition duration-300"
       >
-        <router-link to="/" class="hover:text-blue-300 transition duration-300" @click="closeMenu">Inicio</router-link>
-        <router-link to="/courses" class="hover:text-blue-300 transition duration-300" @click="closeMenu">Cursos</router-link>
-        <router-link to="/events" class="hover:text-blue-300 transition duration-300" @click="closeMenu">Eventos</router-link>
-        <router-link to="/about" class="hover:text-blue-300 transition duration-300" @click="closeMenu">Sobre Nosotros</router-link>
-        <router-link to="/contact" class="hover:text-blue-300 transition duration-300" @click="closeMenu">Contactos</router-link>
+        <router-link to="/" class="hover:text-blue-300 transition duration-300 px-4 py-2 md:py-0" @click="closeMenu">Inicio</router-link>
+        <router-link to="/courses" class="hover:text-blue-300 transition duration-300 px-4 py-2 md:py-0" @click="closeMenu">Cursos</router-link>
+        <router-link to="/events" class="hover:text-blue-300 transition duration-300 px-4 py-2 md:py-0" @click="closeMenu">Eventos</router-link>
+        <router-link to="/about" class="hover:text-blue-300 transition duration-300 px-4 py-2 md:py-0" @click="closeMenu">Sobre Nosotros</router-link>
+        <router-link to="/contact" class="hover:text-blue-300 transition duration-300 px-4 py-2 md:py-0" @click="closeMenu">Contactos</router-link>
+      </div>
 
+      <!-- Opciones de Usuario -->
+      <div class="flex items-center space-x-4">
         <!-- Menú de usuario cuando está logueado -->
-        <div v-if="authStore.isLoggedIn" class="relative md:ml-4 flex items-center">
+        <div v-if="authStore.isLoggedIn" class="relative flex items-center">
           <button
             @click.stop="toggleUserMenu"
             class="flex items-center space-x-2 focus:outline-none hover:text-blue-300 transition duration-300"
@@ -159,6 +163,11 @@ button:focus {
 @media (max-width: 768px) {
   nav {
     padding: 10px;
+  }
+
+  .flex-col {
+    align-items: flex-start; /* Asegura que las opciones estén alineadas correctamente en versión móvil */
+    padding-left: 10px; /* Ajuste de padding para mejor alineación */
   }
 }
 
