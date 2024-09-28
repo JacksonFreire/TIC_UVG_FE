@@ -1,27 +1,25 @@
 <template>
-  <!-- Barra de navegación -->
+  <!-- Navbar -->
   <nav class="bg-blue-600 text-white py-4 px-6 shadow-md fixed top-0 left-0 right-0 z-50">
     <div class="container mx-auto flex items-center justify-between">
-      <!-- Logotipo -->
+      <!-- Logo -->
       <router-link to="/">
         <div class="flex items-center">
-          <img src="@/assets/logo.jpg" alt="Logotipo" class="h-8 mr-4 rounded-full shadow-sm" />
+          <img src="@/assets/logo.jpg" alt="Logo" class="h-8 mr-4 rounded-full shadow-sm" />
           <router-link to="/" class="text-lg font-bold hover:text-blue-200 transition duration-300">
             Univeritas Group
           </router-link>
         </div>
       </router-link>
 
-      <!-- Botón de Menú para Dispositivos Móviles -->
+      <!-- Mobile Menu Button -->
       <button @click="toggleMenu" class="block md:hidden focus:outline-none">
         <font-awesome-icon icon="bars" class="h-6 w-6 text-white hover:text-blue-300 transition duration-300" />
       </button>
 
-      <!-- Menú de Navegación -->
-      <div
-        :class="{ hidden: !isMenuOpen, flex: isMenuOpen, 'md:flex': true }"
-        class="flex-col md:flex-row md:space-x-8 mt-4 md:mt-0 items-start md:items-center transition duration-300"
-      >
+      <!-- Navigation Menu -->
+      <div :class="{ 'hidden': !showMenu, 'flex': showMenu }"
+           class="flex-col md:flex md:flex-row md:space-x-8 mt-4 md:mt-0 items-start md:items-center transition duration-300">
         <router-link to="/" class="hover:text-blue-300 transition duration-300 px-4 py-2 md:py-0" @click="closeMenu">Inicio</router-link>
         <router-link to="/courses" class="hover:text-blue-300 transition duration-300 px-4 py-2 md:py-0" @click="closeMenu">Cursos</router-link>
         <router-link to="/events" class="hover:text-blue-300 transition duration-300 px-4 py-2 md:py-0" @click="closeMenu">Eventos</router-link>
@@ -29,43 +27,26 @@
         <router-link to="/contact" class="hover:text-blue-300 transition duration-300 px-4 py-2 md:py-0" @click="closeMenu">Contactos</router-link>
       </div>
 
-      <!-- Opciones de Usuario -->
+      <!-- User Options -->
       <div class="flex items-center space-x-4">
-        <!-- Menú de usuario cuando está logueado -->
         <div v-if="authStore.isLoggedIn" class="relative flex items-center">
-          <button
-            @click.stop="toggleUserMenu"
-            class="flex items-center space-x-2 focus:outline-none hover:text-blue-300 transition duration-300"
-          >
+          <button @click.stop="toggleUserMenu" class="flex items-center space-x-2 focus:outline-none hover:text-blue-300 transition duration-300">
             <span class="whitespace-nowrap">Hola, {{ authStore.userDetails?.username }}</span>
             <font-awesome-icon icon="chevron-down" class="h-4 w-4" />
           </button>
 
-          <!-- Submenú de usuario -->
+          <!-- User Dropdown Menu -->
           <transition name="fade">
-            <div
-              v-if="isUserMenuOpen"
-              ref="userMenu"
-              class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-10 submenu"
-            >
-              <router-link
-                to="/profile"
-                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-300"
-                @click="closeMenu"
-              >
+            <div v-if="isUserMenuOpen" ref="userMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-10 submenu">
+              <router-link to="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-300" @click="closeMenu">
                 <font-awesome-icon icon="user" class="mr-2" /> Perfil
               </router-link>
-              <button
-                @click="logout"
-                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-300"
-              >
+              <button @click="logout" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-300">
                 <font-awesome-icon icon="sign-out-alt" class="mr-2" /> Cerrar sesión
               </button>
             </div>
           </transition>
         </div>
-
-        <!-- Opción de inicio de sesión cuando no está logueado -->
         <router-link v-else to="/login" class="hover:text-blue-300 transition duration-300" @click="closeMenu">
           <font-awesome-icon icon="sign-in-alt" class="mr-2" /> Iniciar sesión
         </router-link>
@@ -88,16 +69,16 @@ export default defineComponent({
   setup() {
     const authStore = useAuthStore();
     const router = useRouter();
-    const isMenuOpen = ref(false);
+    const showMenu = ref(false);
     const isUserMenuOpen = ref(false);
     const userMenu = ref<HTMLElement | null>(null);
 
     const toggleMenu = () => {
-      isMenuOpen.value = !isMenuOpen.value;
+      showMenu.value = !showMenu.value;
     };
 
     const closeMenu = () => {
-      isMenuOpen.value = false;
+      showMenu.value = false;
       isUserMenuOpen.value = false;
     };
 
@@ -127,7 +108,7 @@ export default defineComponent({
 
     return {
       authStore,
-      isMenuOpen,
+      showMenu,
       toggleMenu,
       closeMenu,
       isUserMenuOpen,
@@ -140,7 +121,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-/* Ajustes generales para la barra de navegación */
+/* General Navbar Styles */
 nav {
   background-color: #1d4ed8;
 }
@@ -154,24 +135,19 @@ nav a:hover {
   color: #93c5fd;
 }
 
-/* Menú responsivo y ajuste de la iconografía */
-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.5);
-}
-
+/* Responsive Menu Styles */
 @media (max-width: 768px) {
   nav {
     padding: 10px;
   }
 
   .flex-col {
-    align-items: flex-start; /* Asegura que las opciones estén alineadas correctamente en versión móvil */
-    padding-left: 10px; /* Ajuste de padding para mejor alineación */
+    align-items: flex-start;
+    padding-left: 10px;
   }
 }
 
-/* Estilo del submenú de usuario */
+/* User Menu Styles */
 .submenu {
   transition: all 0.3s ease-in-out;
   transform-origin: top right;
