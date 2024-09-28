@@ -12,19 +12,24 @@
         </div>
       </router-link>
 
-      <!-- Mobile Menu Button -->
-      <button @click="toggleMenu" class="block md:hidden focus:outline-none">
-        <font-awesome-icon icon="bars" class="h-6 w-6 text-white hover:text-blue-300 transition duration-300" />
-      </button>
+      <!-- Navigation and Hamburger Menu -->
+      <div class="flex items-center">
+        <!-- Mobile Menu Button (Visible on Tablets and Smartphones) -->
+        <button @click="toggleMenu" class="block lg:hidden focus:outline-none mr-4">
+          <font-awesome-icon icon="bars" class="h-6 w-6 text-white hover:text-blue-300 transition duration-300" />
+        </button>
 
-      <!-- Navigation Menu -->
-      <div :class="{ 'hidden': !showMenu, 'flex': showMenu }"
-           class="flex-col md:flex md:flex-row md:space-x-8 mt-4 md:mt-0 items-start md:items-center transition duration-300">
-        <router-link to="/" class="hover:text-blue-300 transition duration-300 px-4 py-2 md:py-0" @click="closeMenu">Inicio</router-link>
-        <router-link to="/courses" class="hover:text-blue-300 transition duration-300 px-4 py-2 md:py-0" @click="closeMenu">Cursos</router-link>
-        <router-link to="/events" class="hover:text-blue-300 transition duration-300 px-4 py-2 md:py-0" @click="closeMenu">Eventos</router-link>
-        <router-link to="/about" class="hover:text-blue-300 transition duration-300 px-4 py-2 md:py-0" @click="closeMenu">Sobre Nosotros</router-link>
-        <router-link to="/contact" class="hover:text-blue-300 transition duration-300 px-4 py-2 md:py-0" @click="closeMenu">Contactos</router-link>
+        <!-- Navigation Menu -->
+        <div
+          :class="{ 'hidden': !showMenu, 'flex': showMenu }"
+          class="flex-col lg:flex lg:flex-row lg:space-x-8 mt-4 lg:mt-0 items-center justify-center transition duration-300"
+        >
+          <router-link to="/" class="hover:text-blue-300 transition duration-300 px-4 py-2 lg:py-0" @click="closeMenu">Inicio</router-link>
+          <router-link to="/courses" class="hover:text-blue-300 transition duration-300 px-4 py-2 lg:py-0" @click="closeMenu">Cursos</router-link>
+          <router-link to="/events" class="hover:text-blue-300 transition duration-300 px-4 py-2 lg:py-0" @click="closeMenu">Eventos</router-link>
+          <router-link to="/about" class="hover:text-blue-300 transition duration-300 px-4 py-2 lg:py-0" @click="closeMenu">Sobre Nosotros</router-link>
+          <router-link to="/contact" class="hover:text-blue-300 transition duration-300 px-4 py-2 lg:py-0" @click="closeMenu">Contactos</router-link>
+        </div>
       </div>
 
       <!-- User Options -->
@@ -136,13 +141,24 @@ nav a:hover {
 }
 
 /* Responsive Menu Styles */
+@media (max-width: 1024px) {
+  .flex-col {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center; /* Center menu items horizontally */
+    justify-content: center; /* Center the entire menu */
+    width: 100%;
+    padding-left: 10px;
+  }
+}
+
 @media (max-width: 768px) {
   nav {
     padding: 10px;
   }
 
   .flex-col {
-    align-items: flex-start;
+    align-items: center; /* Center menu items horizontally */
     padding-left: 10px;
   }
 }
