@@ -1,15 +1,15 @@
 <template>
   <!-- Pie de página -->
   <footer class="bg-blue-600 text-white py-2">
-    <div class="container mx-auto flex items-center justify-between text-xs relative">
+    <div class="container mx-auto flex flex-col items-center text-xs relative lg:flex-row lg:justify-between">
       <!-- Logo y Texto de Misión (Solo visible en Desktop) -->
-      <div class="desktop-only flex items-center space-x-3">
+      <div class="hidden lg:flex items-center space-x-3">
         <img src="@/assets/logo.jpg" alt="Univeritas Group" class="h-6">
         <p>Apoyamos a los migrantes en su integración en Italia.</p>
       </div>
 
-      <!-- Redes Sociales Centradas Absolutamente -->
-      <div class="social-icons absolute left-1/2 transform -translate-x-1/2 flex space-x-3">
+      <!-- Redes Sociales Centradas Absolutamente en Desktop -->
+      <div class="flex space-x-3 mb-4 lg:mb-0 lg:absolute lg:left-1/2 lg:transform lg:-translate-x-1/2">
         <a href="https://www.facebook.com/UniveritasGroup" target="_blank" aria-label="Facebook" class="hover:text-blue-400">
           <font-awesome-icon :icon="['fab', 'facebook']" class="h-5 w-5" />
         </a>
@@ -22,7 +22,7 @@
       </div>
 
       <!-- Copyright -->
-      <div class="footer-text text-white">
+      <div class="text-center lg:text-right">
         &copy; 2024 - Jackson Freire - UTPL.
       </div>
     </div>
@@ -63,30 +63,10 @@ footer .text-xs {
   font-size: 0.75rem; /* Tamaño reducido para coherencia y limpieza */
 }
 
-/* Estilo para centrar las redes sociales */
-.social-icons {
-  position: absolute; /* Permite centrarlo independientemente del contenedor padre */
-  left: 50%; /* Posiciona el contenedor de redes sociales en el centro horizontal */
-  transform: translateX(-50%); /* Ajusta el contenedor para estar perfectamente centrado */
-}
-
 /* Ajuste para dispositivos móviles */
 @media (max-width: 768px) {
-  .desktop-only {
-    display: none; /* Oculta elementos adicionales en dispositivos móviles */
-  }
-
   footer {
     padding: 4px 0; /* Reduce la altura del footer en móviles */
-    text-align: center; /* Centra todo el texto del footer */
-  }
-
-  .footer-text {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%; /* Asegura que el texto esté centrado */
-    font-size: 0.7rem; /* Tamaño ajustado para móviles */
   }
 }
 </style>
