@@ -1,3 +1,4 @@
+// main.ts
 import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
@@ -9,11 +10,28 @@ import './assets/tailwind.css';
 // Importar y configurar Font Awesome
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
+// Importar los iconos que ya tenías
 import { faBars, faUser, faSignInAlt, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
-import { faFacebook, faInstagram, faLinkedin } from '@fortawesome/free-brands-svg-icons'; // Importar los íconos de marcas
+import { faFacebook, faInstagram, faLinkedin } from '@fortawesome/free-brands-svg-icons';
+
+// **Importar los nuevos iconos que necesitamos**
+import { faSearch, faMapMarkerAlt, faTag, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 
 // Añadir íconos a la biblioteca
-library.add(faFacebook, faInstagram, faLinkedin, faBars, faUser, faSignInAlt, faSignOutAlt);
+library.add(
+  faFacebook,
+  faInstagram,
+  faLinkedin,
+  faBars,
+  faUser,
+  faSignInAlt,
+  faSignOutAlt,
+  faSearch,
+  faMapMarkerAlt,
+  faTag,
+  faCalendarAlt
+);
 
 const app = createApp(App);
 

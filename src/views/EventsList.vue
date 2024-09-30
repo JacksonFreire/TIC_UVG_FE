@@ -8,39 +8,73 @@
         placeholder="Buscar eventos..."
         class="w-full p-4 pl-12 border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
       />
-      <svg class="absolute left-4 top-4 h-6 w-6 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
-        <path
-          d="M21 21l-4.35-4.35a8 8 0 1 0-1.65 1.65L21 21zM4 10a6 6 0 1 1 12 0A6 6 0 0 1 4 10z"
-        />
-      </svg>
+      <font-awesome-icon
+        icon="search"
+        class="absolute left-4 top-4 h-6 w-6 text-gray-400 pointer-events-none"
+      />
     </div>
 
     <!-- Skeleton Loaders mientras se carga -->
-    <div v-if="isLoading" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-      <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
-      <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
-      <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
+    <div v-if="isLoading" class="space-y-6 mb-6">
+      <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-64"></div>
+      <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-64"></div>
+      <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-64"></div>
     </div>
 
     <!-- Lista de eventos -->
     <div v-else>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <EventItem
+      <div class="space-y-6">
+        <div
           v-for="event in filteredEvents"
           :key="event.id"
-          :event="event"
+          class="event-item bg-white rounded-lg shadow hover:shadow-lg transition duration-200 cursor-pointer flex flex-col lg:flex-row h-auto lg:h-64 overflow-hidden"
           @click="navigateToDetails(event.id)"
-          class="cursor-pointer hover:bg-gray-50 transition duration-200 p-4 rounded-lg shadow hover:shadow-lg"
-        />
+        >
+          <!-- Información del Evento -->
+          <div class="w-full lg:w-2/3 p-6 flex flex-col order-2 lg:order-1">
+            <h2 class="text-2xl font-bold mb-2 line-clamp-1">{{ event.name }}</h2>
+            <!-- Limitar la descripción a 3 líneas -->
+            <p class="text-gray-700 mb-4 overflow-hidden line-clamp-3 flex-grow">
+              {{ event.description }}
+            </p>
+            <!-- Ubicación y Precio -->
+            <div class="mt-2 text-gray-600">
+              <p class="flex items-center">
+                <font-awesome-icon icon="map-marker-alt" class="h-5 w-5 text-blue-600 mr-2" />
+                {{ event.location }}
+              </p>
+              <p class="flex items-center mt-1">
+                <font-awesome-icon icon="tag" class="h-5 w-5 text-green-600 mr-2" />
+                {{ formatPrice(event.price) }}
+              </p>
+            </div>
+            <!-- Fecha -->
+            <p class="mt-4 text-gray-800 font-medium">
+              <font-awesome-icon icon="calendar-alt" class="h-5 w-5 text-red-600 inline-block mr-2" />
+              {{ formatDateRange(event.startDate, event.endDate) }}
+            </p>
+          </div>
+          <!-- Imagen del Evento -->
+          <div class="w-full lg:w-1/3 flex-shrink-0 flex items-center justify-center bg-gray-100 order-1 lg:order-2">
+            <img
+              :src="`data:image/jpeg;base64,${event.image}`"
+              alt="Imagen del evento"
+              class="w-full h-48 lg:h-full object-cover transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- Paginación Mejorada -->
-    <div v-if="!isLoading" class="flex flex-col items-center mt-8 space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-2">
+    <div
+      v-if="!isLoading"
+      class="flex flex-col items-center mt-8 space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-2"
+    >
       <button
         @click="loadPreviousPage"
         :disabled="currentPage === 0"
-        class="px-4 py-2 mx-1 text-sm font-medium text-white bg-blue-500 rounded-full shadow-md hover:bg-blue-600 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed"
+        class="px-4 py-2 mx-1 text-sm font-medium text-white bg-blue-600 rounded-full shadow-md hover:bg-blue-700 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed"
       >
         &larr; Anterior
       </button>
@@ -50,7 +84,7 @@
       <button
         @click="loadNextPage"
         :disabled="currentPage >= totalPages - 1"
-        class="px-4 py-2 mx-1 text-sm font-medium text-white bg-blue-500 rounded-full shadow-md hover:bg-blue-600 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed"
+        class="px-4 py-2 mx-1 text-sm font-medium text-white bg-blue-600 rounded-full shadow-md hover:bg-blue-700 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed"
       >
         Siguiente &rarr;
       </button>
@@ -61,8 +95,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { useDataStore } from '@/stores/useDataStore'; // Importar la store de Pinia
-import EventItem from '@/components/events/EventItem.vue';
+import { useDataStore } from '@/stores/useDataStore'; // Importa tu store de Pinia
 
 const dataStore = useDataStore();
 const router = useRouter();
@@ -94,6 +127,27 @@ const filteredEvents = computed(() => {
 // Función para navegar a los detalles del evento
 const navigateToDetails = (id: number) => {
   router.push({ name: 'EventDetails', params: { id: id.toString() } });
+};
+
+// Función para formatear el rango de fechas
+const formatDateRange = (start: string, end: string) => {
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+  const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+
+  if (start === end) {
+    return startDate.toLocaleDateString('es-ES', options);
+  } else {
+    return `${startDate.toLocaleDateString('es-ES', options)} - ${endDate.toLocaleDateString('es-ES', options)}`;
+  }
+};
+
+// Función para formatear el precio
+const formatPrice = (amount: number) => {
+  if (amount === 0) {
+    return 'Gratis';
+  }
+  return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(amount);
 };
 
 // Cargamos los eventos al montar el componente
@@ -128,5 +182,16 @@ button {
 button:focus {
   outline: none;
   box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.5);
+}
+
+.event-item:hover .event-image {
+  transform: scale(1.05);
+}
+
+.event-item:hover .event-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.1);
 }
 </style>
