@@ -16,25 +16,27 @@
     </div>
 
     <!-- Skeleton Loaders mientras se carga -->
-    <div v-if="isLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+    <div v-if="isLoading" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
       <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
       <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
       <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
     </div>
 
     <!-- Lista de eventos -->
-    <div v-else class="divide-y divide-gray-200">
-      <EventItem
-        v-for="event in filteredEvents"
-        :key="event.id"
-        :event="event"
-        @click="navigateToDetails(event.id)"
-        class="cursor-pointer hover:bg-gray-50 transition duration-200 p-4 rounded-lg shadow hover:shadow-lg"
-      />
+    <div v-else>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <EventItem
+          v-for="event in filteredEvents"
+          :key="event.id"
+          :event="event"
+          @click="navigateToDetails(event.id)"
+          class="cursor-pointer hover:bg-gray-50 transition duration-200 p-4 rounded-lg shadow hover:shadow-lg"
+        />
+      </div>
     </div>
 
     <!-- Paginación Mejorada -->
-    <div v-if="!isLoading" class="flex justify-center mt-8 space-x-2">
+    <div v-if="!isLoading" class="flex flex-col items-center mt-8 space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-2">
       <button
         @click="loadPreviousPage"
         :disabled="currentPage === 0"
