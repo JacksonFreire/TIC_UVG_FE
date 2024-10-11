@@ -11,11 +11,9 @@ import './assets/tailwind.css';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
-// Importar los iconos que ya tenías
-import { faBars, faUser, faSignInAlt, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+// Importar los iconos ya utilizados
+import { faBars, faUser, faSignInAlt, faSignOutAlt, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { faFacebook, faInstagram, faLinkedin } from '@fortawesome/free-brands-svg-icons';
-
-// **Importar los nuevos iconos que necesitamos**
 import { faSearch, faMapMarkerAlt, faTag, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 
 // Añadir íconos a la biblioteca
@@ -30,12 +28,13 @@ library.add(
   faSearch,
   faMapMarkerAlt,
   faTag,
-  faCalendarAlt
+  faCalendarAlt,
+  faChevronDown // Asegurarse de incluir el ícono faltante
 );
 
 const app = createApp(App);
 
-// Configura Font Awesome como un componente global
+// Configurar Font Awesome como componente global
 app.component('font-awesome-icon', FontAwesomeIcon);
 
 app.use(createPinia());

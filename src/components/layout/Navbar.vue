@@ -1,6 +1,6 @@
 <template>
   <!-- Navbar -->
-  <nav class="bg-blue-600 text-white py-4 px-6 shadow-md fixed top-0 left-0 right-0 z-50">
+  <nav class="bg-blue-700 text-white py-4 px-6 shadow-md fixed top-0 left-0 right-0 z-50">
     <div class="container mx-auto flex items-center justify-between">
       <!-- Logo -->
       <router-link to="/">

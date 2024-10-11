@@ -1,6 +1,6 @@
 <template>
   <!-- Pie de página -->
-  <footer class="bg-blue-600 text-white py-2">
+  <footer class="bg-blue-700 text-white py-2">
     <div class="container mx-auto flex flex-col items-center text-xs relative lg:flex-row lg:justify-between">
       <!-- Logo y Texto de Misión (Solo visible en Desktop) -->
       <div class="hidden lg:flex items-center space-x-3">

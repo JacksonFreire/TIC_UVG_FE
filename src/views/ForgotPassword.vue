@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full max-w-md mx-auto mt-20 p-8 bg-white rounded-lg shadow-lg">
+    <div class="w-full max-w-md mx-auto mt-36 p-8 bg-white rounded-lg shadow-lg">
       <!-- Componente de Formulario de Recuperación de Contraseña -->
       <ForgotPasswordForm />
     </div>
