@@ -1,6 +1,15 @@
 <template>
   <div class="container mx-auto py-8 px-4">
-    <h2 class="text-3xl font-bold mb-6 text-gray-800">Lista de Eventos</h2>
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-3xl font-bold text-gray-800">Lista de Eventos</h2>
+      <button
+          class="flex items-center bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors"
+          @click="addEvent"
+      >
+        <font-awesome-icon :icon="['fas', 'plus']" class="mr-2" />
+        <span>Añadir Evento</span>
+      </button>
+    </div>
 
     <!-- Lista de Eventos -->
     <div class="overflow-x-auto bg-white shadow-md rounded-lg">
@@ -115,6 +124,12 @@ const editEvent = (eventId: string) => {
 // Eliminar evento (Placeholder)
 const deleteEvent = (eventId: string) => {
   console.log('Eliminar evento:', eventId);
+};
+
+// Añadir un evento
+const addEvent = () => {
+  // Lógica para añadir un nuevo evento
+  console.log('Añadir nuevo evento');
 };
 
 // Formatear la fecha de los eventos

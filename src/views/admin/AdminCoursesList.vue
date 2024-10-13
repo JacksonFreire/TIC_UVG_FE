@@ -1,6 +1,15 @@
 <template>
   <div class="container mx-auto py-8 px-4">
-    <h2 class="text-3xl font-bold mb-6 text-gray-800">Lista de Cursos</h2>
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-3xl font-bold text-gray-800">Lista de Cursos</h2>
+      <button
+          class="flex items-center bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors"
+          @click="addCourse"
+      >
+        <font-awesome-icon :icon="['fas', 'plus']" class="mr-2" />
+        <span>Añadir Curso</span>
+      </button>
+    </div>
 
     <!-- Lista de Cursos -->
     <div class="overflow-x-auto bg-white shadow-md rounded-lg">
@@ -20,13 +29,37 @@
           <td class="py-3 px-6">{{ course.name }}</td>
           <td class="py-3 px-6">{{ formatDate(course.startDate) }}</td>
           <td class="py-3 px-6 text-center">
-            <!-- Botón para ver inscripciones -->
-            <button
-                @click="viewEnrollments(course.id, course.name)"
-                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300"
-            >
-              Ver Inscripciones
-            </button>
+            <!-- Botones de acciones con tooltips usando CSS mejorado -->
+            <div class="relative inline-block mx-2">
+              <button
+                  @click="viewEnrollments(course.id, course.name)"
+                  class="text-blue-500 hover:text-blue-700"
+                  aria-label="Ver Inscripciones"
+              >
+                <font-awesome-icon :icon="['fas', 'user']" />
+              </button>
+              <span class="tooltip-text">Ver Inscripciones</span>
+            </div>
+            <div class="relative inline-block mx-2">
+              <button
+                  @click="editCourse(course.id)"
+                  class="text-yellow-500 hover:text-yellow-700"
+                  aria-label="Editar Curso"
+              >
+                <font-awesome-icon :icon="['fas', 'edit']" />
+              </button>
+              <span class="tooltip-text">Editar Curso</span>
+            </div>
+            <div class="relative inline-block mx-2">
+              <button
+                  @click="deleteCourse(course.id)"
+                  class="text-red-500 hover:text-red-700"
+                  aria-label="Eliminar Curso"
+              >
+                <font-awesome-icon :icon="['fas', 'trash']" />
+              </button>
+              <span class="tooltip-text">Eliminar Curso</span>
+            </div>
           </td>
         </tr>
         <tr v-if="!courses.length && !isLoading" class="text-center">
@@ -43,6 +76,7 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useCourseStore } from '@/stores/courseStore'; // Importar el store de cursos
 import { getAllCourses } from '@/services/coursesService'; // Servicio para obtener la lista de cursos
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 const courses = ref([]);   // Almacena la lista de cursos
 const isLoading = ref(true); // Estado de carga de los datos
@@ -67,6 +101,24 @@ const viewEnrollments = (courseId: string, courseName: string) => {
   router.push({ name: 'CourseEnrollments', params: { courseId } }); // Navegar a la vista de inscripciones
 };
 
+// Editar un curso
+const editCourse = (courseId: string) => {
+  // Lógica para editar un curso
+  console.log('Editar curso:', courseId);
+};
+
+// Eliminar un curso
+const deleteCourse = (courseId: string) => {
+  // Lógica para eliminar un curso
+  console.log('Eliminar curso:', courseId);
+};
+
+// Añadir un curso
+const addCourse = () => {
+  // Lógica para añadir un nuevo curso
+  console.log('Añadir nuevo curso');
+};
+
 // Formatear la fecha de los cursos
 const formatDate = (date: string) => {
   const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -75,5 +127,36 @@ const formatDate = (date: string) => {
 </script>
 
 <style scoped>
-/* Estilos opcionales */
+/* Estilos para tooltips mejorados */
+.tooltip-text {
+  visibility: hidden;
+  width: auto;
+  background-color: #4a4a4a;
+  color: #fff;
+  text-align: center;
+  border-radius: 4px;
+  padding: 8px;
+  position: absolute;
+  z-index: 10;
+  bottom: 140%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.4s, transform 0.4s;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.relative:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(-50%) translateY(-5px);
+}
+
+.relative button {
+  transition: transform 0.2s;
+}
+
+.relative:hover button {
+  transform: scale(1.1);
+}
 </style>
