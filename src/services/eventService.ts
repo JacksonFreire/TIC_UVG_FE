@@ -51,3 +51,27 @@ export const checkEventRegistration = async (eventId: string, userId: number) =>
   });
   return response.data;
 };
+
+// Función para obtener inscripciones de un evento por su ID, con filtro opcional por estado
+export const getEnrollmentsByEvent = async (eventId: string, status?: string) => {
+  const token = localStorage.getItem('token');
+  if (!token) throw new Error('No authenticated');
+
+  const headers = { Authorization: `Bearer ${token}` };
+  try {
+    // Ajuste en la URL del endpoint para ser más específico en los permisos de administrador
+    const response = await axios.get(`${API_URL}/api/enrollments/admin/event/${eventId}`, {
+      headers,
+      params: { status },
+    });
+    return response.data;
+  } catch (error) {
+    // Manejo del error para identificar problemas de autenticación específicamente
+    if (error.response && error.response.status === 403) {
+      console.error('Acceso prohibido. Verifique los permisos de administrador.');
+    } else {
+      console.error('Error al recuperar las inscripciones del evento:', error);
+    }
+    throw new Error('Error al recuperar las inscripciones del evento.');
+  }
+};

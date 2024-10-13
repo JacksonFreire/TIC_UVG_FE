@@ -13,7 +13,9 @@ import AboutPage from '@/views/AboutPage.vue';
 import ContactPage from '@/views/ContactPage.vue';
 import DashboardAdminView from '@/views/admin/DashboardAdminView.vue';
 import CourseEnrollments from '@/views/admin/CourseEnrollments.vue';
-import AdminCoursesList from '@/views/admin/AdminCoursesList.vue'; // Nueva vista para la lista de cursos
+import AdminCoursesList from '@/views/admin/AdminCoursesList.vue';
+import AdminEventsList from '@/views/admin/AdminEventsList.vue';
+import EventEnrollments from '@/views/admin/EventEnrollments.vue';
 import { useAuthStore } from '@/stores/auth';
 
 // Definición de rutas
@@ -35,27 +37,39 @@ const routes: Array<RouteRecordRaw> = [
     name: 'AdminDashboard',
     component: DashboardAdminView,
     meta: { requiresAuth: true, role: 'ADMIN' },
-    redirect: { name: 'AdminCoursesList' }, // Redirigir automáticamente a la lista de cursos
+    redirect: { name: 'AdminCoursesList' },
     children: [
       {
         path: 'courses',
-        name: 'AdminCoursesList', // Ruta para ver la lista de cursos
+        name: 'AdminCoursesList',
         component: AdminCoursesList,
         meta: { requiresAuth: true, role: 'ADMIN' }
       },
       {
-        path: 'courses/:courseId',  // Ruta para ver inscripciones de un curso específico
+        path: 'courses/:courseId',
         name: 'CourseEnrollments',
         component: CourseEnrollments,
         meta: { requiresAuth: true, role: 'ADMIN' }
       },
+      {
+        path: 'events',
+        name: 'AdminEventsList',
+        component: AdminEventsList,
+        meta: { requiresAuth: true, role: 'ADMIN' }
+      },
+      {
+        path: 'events/:eventId',
+        name: 'EventEnrollments',
+        component: EventEnrollments,
+        meta: { requiresAuth: true, role: 'ADMIN' }
+      }
     ],
   },
   // Ruta para manejar páginas no encontradas (404)
   {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
-    component: () => import('@/views/NotFound.vue'), // Ruta a la vista de página no encontrada
+    component: () => import('@/views/NotFound.vue'),
   },
 ];
 

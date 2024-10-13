@@ -1,4 +1,3 @@
-// main.ts
 import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
@@ -12,24 +11,22 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 // Importar los iconos ya utilizados
-import { faBars, faUser, faSignInAlt, faSignOutAlt, faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faUser, faSignInAlt, faSignOutAlt, faChevronDown, faEdit, faTrash, faEye } from '@fortawesome/free-solid-svg-icons';
 import { faFacebook, faInstagram, faLinkedin } from '@fortawesome/free-brands-svg-icons';
-import { faSearch, faMapMarkerAlt, faTag, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 
 // Añadir íconos a la biblioteca
 library.add(
-  faFacebook,
-  faInstagram,
-  faLinkedin,
-  faBars,
-  faUser,
-  faSignInAlt,
-  faSignOutAlt,
-  faSearch,
-  faMapMarkerAlt,
-  faTag,
-  faCalendarAlt,
-  faChevronDown // Asegurarse de incluir el ícono faltante
+    faFacebook,
+    faInstagram,
+    faLinkedin,
+    faBars,
+    faUser,
+    faSignInAlt,
+    faSignOutAlt,
+    faChevronDown,
+    faEdit,
+    faTrash,
+    faEye
 );
 
 const app = createApp(App);
