@@ -67,3 +67,18 @@ export const getEnrollmentsByCourse = async (courseId: string, status: string | 
     throw new Error('Error al obtener las inscripciones.');
   }
 };
+
+// Guardar cambios en la inscripción de un participante
+export const saveEnrollmentChanges = async (participant) => {
+  const token = localStorage.getItem('token');
+  if (!token) throw new Error('No authenticated');
+
+  const headers = { Authorization: `Bearer ${token}` };
+  try {
+    await axios.put(`${API_URL}/api/enrollments/admin/updateEnrollment`, participant, { headers });
+    console.log('Cambios guardados correctamente');
+  } catch (error) {
+    console.error('Error al guardar los cambios en la inscripción:', error);
+    throw new Error('Error al guardar los cambios en la inscripción.');
+  }
+};

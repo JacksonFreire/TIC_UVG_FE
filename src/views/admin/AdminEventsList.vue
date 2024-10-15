@@ -30,7 +30,7 @@
           <td class="py-3 px-6">{{ formatDate(event.startDate) }}</td>
           <td class="py-3 px-6 text-center">
             <!-- Botones de acciones con tooltips usando CSS mejorado -->
-            <div class="relative inline-block mx-2">
+            <div class="relative inline-block group mx-2">
               <button
                   @click="viewEnrollments(event.id, event.name)"
                   class="text-blue-500 hover:text-blue-700"
@@ -38,9 +38,9 @@
               >
                 <font-awesome-icon :icon="['fas', 'user']" />
               </button>
-              <span class="tooltip-text">Ver Inscripciones</span>
+              <span class="tooltip-text group-hover:opacity-100">Ver Inscripciones</span>
             </div>
-            <div class="relative inline-block mx-2">
+            <div class="relative inline-block group mx-2">
               <button
                   @click="editEvent(event.id)"
                   class="text-yellow-500 hover:text-yellow-700"
@@ -48,9 +48,9 @@
               >
                 <font-awesome-icon :icon="['fas', 'edit']" />
               </button>
-              <span class="tooltip-text">Editar Evento</span>
+              <span class="tooltip-text group-hover:opacity-100">Editar Evento</span>
             </div>
-            <div class="relative inline-block mx-2">
+            <div class="relative inline-block group mx-2">
               <button
                   @click="deleteEvent(event.id)"
                   class="text-red-500 hover:text-red-700"
@@ -58,9 +58,9 @@
               >
                 <font-awesome-icon :icon="['fas', 'trash']" />
               </button>
-              <span class="tooltip-text">Eliminar Evento</span>
+              <span class="tooltip-text group-hover:opacity-100">Eliminar Evento</span>
             </div>
-            <div class="relative inline-block mx-2">
+            <div class="relative inline-block group mx-2">
               <button
                   @click="viewDetails(event.id)"
                   class="text-green-500 hover:text-green-700"
@@ -68,7 +68,7 @@
               >
                 <font-awesome-icon :icon="['fas', 'eye']" />
               </button>
-              <span class="tooltip-text">Ver Detalles</span>
+              <span class="tooltip-text group-hover:opacity-100">Ver Detalles</span>
             </div>
           </td>
         </tr>
@@ -151,7 +151,7 @@ const formatDate = (date: string) => {
   padding: 8px;
   position: absolute;
   z-index: 10;
-  bottom: 140%;
+  bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
   opacity: 0;
@@ -159,7 +159,7 @@ const formatDate = (date: string) => {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.relative:hover .tooltip-text {
+.group:hover .tooltip-text {
   visibility: visible;
   opacity: 1;
   transform: translateX(-50%) translateY(-5px);

@@ -8,10 +8,10 @@
       <!-- Botón de "Generar Reporte" mejorado -->
       <button
           @click="generateReport"
-          class="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+          class="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
           title="Generar Reporte de Inscritos"
       >
-        <i class="fas fa-file-alt mr-2"></i>
+        <font-awesome-icon :icon="['fas', 'file-alt']" class="mr-2" />
         <span>Generar Reporte</span>
       </button>
     </div>
@@ -23,13 +23,13 @@
           v-model="searchQuery"
           type="text"
           placeholder="Buscar: nombre, username, teléfono"
-          class="border border-gray-300 rounded-lg px-4 py-2 w-full md:w-2/3 lg:w-1/2"
+          class="border border-gray-300 rounded-lg px-4 py-2 w-full md:w-2/3 lg:w-1/2 focus:outline-none focus:border-blue-400 focus:shadow-lg transition-shadow duration-300"
       />
 
       <!-- Filtro por estado mejorado -->
       <select
           v-model="statusFilter"
-          class="border border-gray-300 rounded-lg px-4 py-2 w-full md:w-1/3 lg:w-1/4"
+          class="border border-gray-300 rounded-lg px-4 py-2 w-full md:w-1/3 lg:w-1/4 focus:outline-none focus:border-blue-400 focus:shadow-lg transition-shadow duration-300"
       >
         <option value="">Todos los estados</option>
         <option value="confirmed">Confirmado</option>
@@ -54,27 +54,51 @@
         <tr v-if="isLoading" class="text-center">
           <td colspan="5" class="py-3 px-6 text-gray-500">Cargando participantes...</td>
         </tr>
-        <tr v-else v-for="participant in filteredParticipants" :key="participant.username" class="hover:bg-gray-50 transition duration-200">
-          <td class="py-3 px-6">{{ participant.firstName }} {{ participant.lastName }}</td>
-          <td class="py-3 px-6">{{ participant.username }}</td>
-          <td class="py-3 px-6">{{ participant.phoneNumber }}</td>
-          <td class="py-3 px-6">
-              <span
-                  :class="{
-                  'text-green-600 font-bold': participant.status === 'confirmed',
-                  'text-yellow-600 font-bold': participant.status === 'pending',
-                  'text-red-600 font-bold': participant.status === 'canceled',
-                }"
-              >
-                {{ formatStatus(participant.status) }}
-              </span>
-          </td>
-          <td class="py-3 px-6 text-center">
-            <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300">
-              Ver Detalles
-            </button>
-          </td>
-        </tr>
+        <template v-else v-for="participant in filteredParticipants" :key="participant.username">
+          <tr class="hover:bg-gray-50 transition duration-200">
+            <td class="py-3 px-6">{{ participant.firstName }} {{ participant.lastName }}</td>
+            <td class="py-3 px-6">{{ participant.username }}</td>
+            <td class="py-3 px-6">{{ participant.phoneNumber }}</td>
+            <td class="py-3 px-6">
+              <select v-model="participant.status" class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-400">
+                <option value="confirmed">Confirmado</option>
+                <option value="pending">Pendiente</option>
+                <option value="canceled">Cancelado</option>
+              </select>
+            </td>
+            <td class="py-3 px-6 text-center relative">
+              <div class="relative inline-block group">
+                <button
+                    @click="toggleComment(participant)"
+                    class="text-blue-500 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    aria-label="Agregar Comentario"
+                >
+                  <font-awesome-icon :icon="['fas', 'comment']" />
+                </button>
+                <span class="tooltip-text group-hover:opacity-100">Agregar Comentario</span>
+              </div>
+              <div class="relative inline-block group ml-4">
+                <button
+                    @click="saveChanges(participant)"
+                    class="text-green-500 hover:text-green-700 focus:outline-none focus:ring-2 focus:ring-green-400"
+                    aria-label="Guardar Cambios"
+                >
+                  <font-awesome-icon :icon="['fas', 'save']" />
+                </button>
+                <span class="tooltip-text group-hover:opacity-100">Guardar Cambios</span>
+              </div>
+            </td>
+          </tr>
+          <tr v-if="participant.showComment || participant.comment">
+            <td colspan="5" class="py-3 px-6">
+                <textarea
+                    v-model="participant.comment"
+                    placeholder="Agregar comentario..."
+                    class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-blue-400"
+                ></textarea>
+            </td>
+          </tr>
+        </template>
         <tr v-if="!filteredParticipants.length && !isLoading" class="text-center">
           <td colspan="5" class="py-3 px-6 text-gray-500">No hay participantes inscritos en este evento.</td>
         </tr>
@@ -82,18 +106,41 @@
       </table>
     </div>
   </div>
+
+  <!-- Diálogo para notificaciones con diseño profesional -->
+  <dialog ref="notificationDialog" class="rounded-lg shadow-xl p-6 max-w-md w-full">
+    <div :class="{'bg-green-100': dialogType === 'success', 'bg-red-100': dialogType === 'error'}" class="flex items-start px-4 py-3 rounded-lg">
+      <div :class="{'text-green-600': dialogType === 'success', 'text-red-600': dialogType === 'error'}" class="flex-shrink-0 mr-4">
+        <font-awesome-icon :icon="dialogType === 'success' ? ['fas', 'check-circle'] : ['fas', 'exclamation-triangle']" class="text-3xl" />
+      </div>
+      <div>
+        <h3 class="text-lg font-semibold" :class="{'text-green-700': dialogType === 'success', 'text-red-700': dialogType === 'error'}">
+          {{ dialogType === 'success' ? 'Éxito' : 'Error' }}
+        </h3>
+        <p class="mt-2 text-gray-700">{{ dialogMessage }}</p>
+      </div>
+    </div>
+    <div class="flex justify-end mt-4">
+      <button @click="closeDialog" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-300 focus:ring-offset-2">Cerrar</button>
+    </div>
+  </dialog>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useEventStore } from '@/stores/eventStore';
-import { getEnrollmentsByEvent } from '@/services/eventService'; // Servicio para obtener los participantes
+import { getEnrollmentsByEvent, saveEnrollmentChanges } from '@/services/eventService'; // Servicio para obtener los participantes y guardar cambios
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 const participants = ref([]); // Lista de participantes
 const isLoading = ref(true); // Estado de carga
 const searchQuery = ref(''); // Búsqueda por nombre, username o teléfono
 const statusFilter = ref(''); // Filtro por estado
 const eventStore = useEventStore(); // Obtener el store del evento
+
+const notificationDialog = ref(null);
+const dialogMessage = ref('');
+const dialogType = ref('');
 
 onMounted(async () => {
   const eventId = eventStore.selectedEvent.id; // Obtener el ID del evento desde el store
@@ -105,7 +152,14 @@ onMounted(async () => {
   }
 
   try {
-    participants.value = await getEnrollmentsByEvent(eventId);
+    const enrollments = await getEnrollmentsByEvent(eventId);
+    participants.value = enrollments.map((participant) => {
+      return {
+        ...participant,
+        showComment: !!participant.comments, // Mostrar el comentario si ya existe
+        comment: participant.comments || '',
+      };
+    });
   } catch (error) {
     console.error('Error al cargar los participantes:', error);
   } finally {
@@ -128,17 +182,30 @@ const filteredParticipants = computed(() => {
   });
 });
 
-// Formatear el estado de inscripción
-const formatStatus = (status: string) => {
-  switch (status) {
-    case 'confirmed':
-      return 'Confirmado';
-    case 'pending':
-      return 'Pendiente';
-    case 'canceled':
-      return 'Cancelado';
-    default:
-      return status;
+const toggleComment = (participant) => {
+  participant.showComment = !participant.showComment;
+};
+
+const saveChanges = async (participant) => {
+  try {
+    const enrollmentDTO = {
+      userId: participant.userId,
+      eventId: eventStore.selectedEvent.id,
+      status: participant.status,
+      comments: participant.comment,
+    };
+
+    if (!enrollmentDTO.userId) {
+      throw new Error('Faltan datos requeridos para guardar los cambios: userId no encontrado.');
+    }
+
+    await saveEnrollmentChanges(enrollmentDTO);
+    // Mostrar notificación de éxito con diálogo
+    showDialog('Cambios guardados exitosamente', 'success');
+  } catch (error) {
+    console.error('Error al guardar los cambios:', error);
+    // Mostrar notificación de error con diálogo
+    showDialog('Error al guardar los cambios en la inscripción. Por favor verifica los datos e inténtalo de nuevo.', 'error');
   }
 };
 
@@ -147,8 +214,63 @@ const generateReport = () => {
   console.log('Generando reporte de inscritos...');
   // Aquí puedes implementar la lógica para generar un reporte
 };
+
+// Función para mostrar el diálogo de notificación
+const showDialog = (message, type) => {
+  dialogMessage.value = message;
+  dialogType.value = type;
+  if (notificationDialog.value) {
+    notificationDialog.value.showModal();
+  }
+};
+
+// Función para cerrar el diálogo
+const closeDialog = () => {
+  if (notificationDialog.value) {
+    notificationDialog.value.close();
+  }
+};
 </script>
 
 <style scoped>
 /* Estilos personalizados */
+.tooltip-text {
+  visibility: hidden;
+  width: auto;
+  background-color: #4a4a4a;
+  color: #fff;
+  text-align: center;
+  border-radius: 4px;
+  padding: 8px;
+  position: absolute;
+  z-index: 10;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.4s, transform 0.4s;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.group:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(-50%) translateY(-5px);
+}
+
+.relative button {
+  transition: transform 0.2s;
+}
+
+.relative:hover button {
+  transform: scale(1.1);
+}
+
+/* Estilos para el diálogo de notificación */
+dialog {
+  border: none;
+  padding: 0;
+  border-radius: 12px;
+  box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.2);
+}
 </style>

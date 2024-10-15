@@ -53,7 +53,7 @@ export const checkEventRegistration = async (eventId: string, userId: number) =>
 };
 
 // Función para obtener inscripciones de un evento por su ID, con filtro opcional por estado
-export const getEnrollmentsByEvent = async (eventId: string, status?: string) => {
+export const getEnrollmentsByEvent = async (eventId: number, status?: string) => {
   const token = localStorage.getItem('token');
   if (!token) throw new Error('No authenticated');
 
@@ -73,5 +73,20 @@ export const getEnrollmentsByEvent = async (eventId: string, status?: string) =>
       console.error('Error al recuperar las inscripciones del evento:', error);
     }
     throw new Error('Error al recuperar las inscripciones del evento.');
+  }
+};
+
+// Guardar cambios en la inscripción de un participante en el evento
+export const saveEnrollmentChanges = async (enrollmentDTO: { userId: number, eventId: number, status: string, comments: string, courseId?: number }) => {
+  const token = localStorage.getItem('token');
+  if (!token) throw new Error('No authenticated');
+
+  const headers = { Authorization: `Bearer ${token}` };
+  try {
+    await axios.put(`${API_URL}/api/enrollments/admin/updateEnrollment`, enrollmentDTO, { headers });
+    console.log('Cambios guardados correctamente');
+  } catch (error) {
+    console.error('Error al guardar los cambios en la inscripción:', error);
+    throw new Error('Error al guardar los cambios en la inscripción.');
   }
 };
