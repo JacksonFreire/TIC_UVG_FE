@@ -5,7 +5,7 @@ const API_URL = import.meta.env.VITE_APP_BASE_URL_API;
 // Función para obtener todos los cursos con paginación
 export const getAllCourses = async (page: number, size: number) => {
   try {
-    const response = await axios.get(`${API_URL}/api/available/courses`, {
+    const response = await axios.get(`${API_URL}/api/activities/courses/list`, {
       params: { page, size },
     });
     return response.data;
@@ -18,7 +18,7 @@ export const getAllCourses = async (page: number, size: number) => {
 // Función para obtener los detalles de un curso por ID
 export const getCourseById = async (id: string) => {
   try {
-    const response = await axios.get(`${API_URL}/api/available/courses/${id}`);
+    const response = await axios.get(`${API_URL}/api/activities/courses/details/${id}`);
     return response.data;
   } catch (error) {
     console.error('Error al recuperar el detalle del curso:', error);

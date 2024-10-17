@@ -6,7 +6,7 @@ const API_URL = import.meta.env.VITE_APP_BASE_URL_API;
 // Función para obtener todos los eventos paginados
 export const getAllEvents = async (page: number, size: number) => {
   try {
-    const response = await axios.get(`${API_URL}/api/available/events`, {
+    const response = await axios.get(`${API_URL}/api/activities/events`, {
       params: { page, size },
     });
     return response.data;
@@ -19,7 +19,7 @@ export const getAllEvents = async (page: number, size: number) => {
 // Función para obtener un evento por su ID
 export const getEventById = async (id: string) => {
   try {
-    const response = await axios.get(`${API_URL}/api/available/events/${id}`);
+    const response = await axios.get(`${API_URL}/api/activities/events/${id}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching event details:', error);

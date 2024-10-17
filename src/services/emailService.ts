@@ -18,7 +18,7 @@ export interface EmailData {
    */
   export async function sendEmail(emailData: EmailData): Promise<void> {
     try {
-      const response = await fetch(`${API_URL}/api/available/send`, {
+      const response = await fetch(`${API_URL}/api/users/send`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

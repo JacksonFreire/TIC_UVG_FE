@@ -11,10 +11,13 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 // Importar los iconos ya utilizados
-import { faBars, faUser, faSignInAlt, faSignOutAlt, faChevronDown, faEdit, faTrash, faEye, faSave, faComment, faCommentDots, faFileExcel, faPlus,faFileAlt,faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import {
+    faBars, faUser, faSignInAlt, faSignOutAlt, faChevronDown,
+    faEdit, faTrash, faEye, faSave, faCommentDots, faFileExcel,
+    faPlus, faExclamationTriangle, faSearch, faMapMarkerAlt, faTag, faCalendarAlt,faFileAlt, faComment,faCheckCircle
+} from '@fortawesome/free-solid-svg-icons';
 import { faFacebook, faInstagram, faLinkedin } from '@fortawesome/free-brands-svg-icons';
 
-// Añadir íconos a la biblioteca
 library.add(
     faFacebook,
     faInstagram,
@@ -28,12 +31,17 @@ library.add(
     faTrash,
     faEye,
     faSave,
-    faComment,
     faCommentDots,
     faFileExcel,
     faPlus,
+    faExclamationTriangle,
+    faSearch,
+    faMapMarkerAlt,
+    faTag,
+    faCalendarAlt,
     faFileAlt,
-    faExclamationTriangle
+    faComment,
+    faCheckCircle
 );
 
 const app = createApp(App);
