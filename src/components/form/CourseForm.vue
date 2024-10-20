@@ -198,9 +198,15 @@
     </button>
 
     <div>
-      <button type="submit" class="mt-6 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
-              :disabled="isSubmitting">
-        Guardar Curso
+      <button
+          type="submit"
+          class="mt-6 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
+          :disabled="isSubmittingLocal"
+      >
+        <font-awesome-icon v-if="!isSubmittingLocal" :icon="['fas', 'save']" class="mr-2" />
+        <font-awesome-icon v-else :icon="['fas', 'spinner']" class="fa-spin" />
+        <span v-if="!isSubmittingLocal">Guardar Curso</span>
+        <span v-else>Guardando...</span>
       </button>
     </div>
   </form>
@@ -226,7 +232,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { updateCourse } from '@/services/coursesService';
+import { createCourse, updateCourse } from '@/services/coursesService';
 import { useRouter } from 'vue-router';
 
 const props = defineProps({
@@ -255,6 +261,10 @@ const props = defineProps({
   isSubmitting: {
     type: Boolean,
     default: false,
+  },
+  isEditing: {
+    type: Boolean,
+    default: false, // Nuevo prop para determinar si es creación o edición
   }
 });
 
@@ -263,10 +273,11 @@ const notificationDialog = ref(null);
 const dialogMessage = ref('');
 const dialogTitle = ref('');
 const dialogClass = ref('');
-const dialogIcon = ref([]);
+const dialogIcon = ref(['fas', 'check-circle']);
 const dialogTitleClass = ref('');
 const router = useRouter();
 const previewImage = ref(form.value.image ? `data:image/jpeg;base64,${form.value.image}` : null); // URL para mostrar imagen
+const isSubmittingLocal = ref(false); // Variable local para gestionar el estado de envío
 
 // Mostrar el diálogo de éxito o error
 const showDialog = (message: string, type: 'success' | 'error') => {
@@ -279,7 +290,7 @@ const showDialog = (message: string, type: 'success' | 'error') => {
   } else {
     dialogTitle.value = 'Error';
     dialogClass.value = 'bg-red-100';
-    dialogIcon.value = ['fas', 'exclamation-triangle'];
+    dialogIcon.value = ['fas', 'triangle-exclamation'];
     dialogTitleClass.value = 'text-red-700';
   }
   notificationDialog.value?.showModal();
@@ -326,6 +337,10 @@ const onFileChange = (event: Event) => {
   const input = event.target as HTMLInputElement;
   if (input?.files?.length) {
     const file = input.files[0];
+    if (file.size > 9000000) { // 2 MB límite
+      console.error('El archivo es demasiado grande');
+      return;
+    }
     const reader = new FileReader();
     reader.onload = () => {
       form.value.image = reader.result as string;
@@ -344,31 +359,37 @@ const preparePayload = (courseData: any) => {
     payload.endDate = new Date(payload.endDate).toISOString();
   }
 
+  console.log('Payload preparado:', payload); // Verificar el payload antes de enviarlo
   return payload;
 };
 
-// Enviar el formulario para actualizar el curso
+// Enviar el formulario para actualizar o crear el curso
 const submitFormCourse = async () => {
-  if (props.isSubmitting) {
-    console.log('Formulario ya está en proceso de envío, no se puede enviar nuevamente.');
+  if (isSubmittingLocal.value) {
+    console.log('Formulario ya está en proceso de envío.');
     return;
   }
 
-  console.log('Iniciando el envío del formulario...');
-  if (!form.value.image) {
-    console.log('No hay imagen seleccionada, se enviará como null');
-    form.value.image = null;
-  }
-
-  const payload = preparePayload(form.value);
+  isSubmittingLocal.value = true; // Bloquear múltiples envíos
 
   try {
-    await updateCourse(form.value.id, payload);
-    console.log('Curso actualizado con éxito');
-    showDialog('Curso guardado exitosamente', 'success');
+    const payload = preparePayload(form.value);
+    console.log('Datos del formulario:', form.value); // Verificar los datos del formulario
+
+    if (props.isEditing) {
+      await updateCourse(form.value.id, payload);
+      console.log('Curso actualizado con éxito');
+      showDialog('Curso actualizado exitosamente', 'success');
+    } else {
+      await createCourse(payload); // Crear el curso si no está en modo edición
+      console.log('Curso creado con éxito');
+      showDialog('Curso creado exitosamente', 'success');
+    }
   } catch (error) {
-    console.error('Error al actualizar el curso:', error);
+    console.error('Error al guardar el curso:', error);
     showDialog('Error al guardar el curso. Por favor, inténtelo de nuevo', 'error');
+  } finally {
+    isSubmittingLocal.value = false; // Rehabilitar el botón después de la operación
   }
 };
 </script>

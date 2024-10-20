@@ -52,7 +52,7 @@
             </div>
             <div class="relative inline-block group mx-2">
               <button
-                  @click="deleteEvent(event.id)"
+                  @click="confirmDelete(event.id)"
                   class="text-red-500 hover:text-red-700"
                   aria-label="Eliminar Evento"
               >
@@ -78,37 +78,96 @@
         </tbody>
       </table>
     </div>
+
+    <!-- Diálogo de confirmación de eliminación -->
+    <dialog ref="deleteDialog" class="rounded-lg shadow-xl p-6 max-w-md w-full">
+      <div class="flex items-start px-4 py-3 rounded-lg bg-red-100">
+        <div class="flex-shrink-0 mr-4">
+          <font-awesome-icon :icon="['fas', 'triangle-exclamation']" class="text-3xl text-red-600" />
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold text-red-700">Confirmar Eliminación</h3>
+          <p class="mt-2 text-gray-700">¿Estás seguro de que deseas eliminar este evento?</p>
+        </div>
+      </div>
+      <div class="flex justify-end mt-4">
+        <button @click="closeDialog" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-all">
+          Cancelar
+        </button>
+        <button @click="deleteEvent" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-all ml-4" :disabled="isDeleting">
+          <font-awesome-icon v-if="!isDeleting" :icon="['fas', 'trash']" />
+          <font-awesome-icon v-else :icon="['fas', 'spinner']" class="fa-spin" />
+          <span v-if="!isDeleting">Eliminar</span>
+          <span v-else>Eliminando...</span>
+        </button>
+      </div>
+    </dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { useEventStore } from '@/stores/eventStore'; // Importar el store de eventos
-import { getAllEvents } from '@/services/eventService'; // Servicio para obtener la lista de eventos
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { useEventStore } from '@/stores/eventStore';
+import { getAllEvents, deleteEvent as deleteEventService } from '@/services/eventService'; // Servicio para obtener y eliminar eventos
 
 const events = ref([]);   // Almacena la lista de eventos
 const isLoading = ref(true); // Estado de carga de los datos
 const router = useRouter();
-const eventStore = useEventStore(); // Usar el store de eventos
+const eventStore = useEventStore();
+const deleteDialog = ref(null); // Referencia al diálogo de eliminación
+const eventIdToDelete = ref<string | null>(null); // Evento que se va a eliminar
+const isDeleting = ref(false); // Estado del proceso de eliminación
 
 onMounted(async () => {
   try {
-    // Llamada al servicio para obtener los eventos
     const response = await getAllEvents(0, 10); // Paginación opcional (0 = página, 10 = tamaño)
     events.value = response.content;
   } catch (error) {
     console.error('Error al cargar los eventos:', error);
   } finally {
-    isLoading.value = false; // Finaliza la carga
+    isLoading.value = false;
   }
 });
 
+// Confirmar eliminación de un evento
+const confirmDelete = (eventId: string) => {
+  eventIdToDelete.value = eventId;
+  deleteDialog.value?.showModal();
+};
+
+// Cerrar el diálogo de confirmación
+const closeDialog = () => {
+  deleteDialog.value?.close();
+  eventIdToDelete.value = null;
+};
+
+// Eliminar un evento con loader
+const deleteEvent = async () => {
+  if (!eventIdToDelete.value || isDeleting.value) return;
+
+  isDeleting.value = true; // Mostrar loader
+
+  try {
+    await deleteEventService(Number(eventIdToDelete.value));
+    events.value = events.value.filter(event => event.id !== eventIdToDelete.value);
+    closeDialog(); // Cerrar el diálogo después de eliminar
+  } catch (error) {
+    console.error('Error al eliminar el evento:', error);
+  } finally {
+    isDeleting.value = false; // Ocultar loader
+  }
+};
+
 // Navegar a la vista de inscripciones
 const viewEnrollments = (eventId: string, eventName: string) => {
-  eventStore.setSelectedEvent(eventId, eventName);  // Guardamos el evento seleccionado en el store
-  router.push({ name: 'EventEnrollments', params: { eventId: eventId } }); // Navegar a la vista de inscripciones
+  eventStore.setSelectedEvent(eventId, eventName);
+  router.push({ name: 'EventEnrollments', params: { eventId } });
+};
+
+// Navegar a la vista de edición de eventos
+const editEvent = (eventId: string) => {
+  router.push({ name: 'UpdateEvent', params: { id: eventId } });
 };
 
 // Ver detalles del evento (Placeholder)
@@ -116,20 +175,9 @@ const viewDetails = (eventId: string) => {
   console.log('Ver detalles del evento:', eventId);
 };
 
-// Editar evento (Placeholder)
-const editEvent = (eventId: string) => {
-  console.log('Editar evento:', eventId);
-};
-
-// Eliminar evento (Placeholder)
-const deleteEvent = (eventId: string) => {
-  console.log('Eliminar evento:', eventId);
-};
-
 // Añadir un evento
 const addEvent = () => {
-  // Lógica para añadir un nuevo evento
-  console.log('Añadir nuevo evento');
+  router.push({ name: 'AddEvent' });
 };
 
 // Formatear la fecha de los eventos

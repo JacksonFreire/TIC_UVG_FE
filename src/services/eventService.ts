@@ -22,8 +22,41 @@ export const getEventById = async (id: string) => {
     const response = await axios.get(`${API_URL}/api/activities/events/${id}`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching event details:', error);
+    console.error('Error al recuperar el detalle del evento:', error);
     throw new Error('Error al recuperar el detalle del evento.');
+  }
+};
+
+// Función para crear un evento
+export const createEvent = async (eventData: any) => {
+  try {
+    const response = await axios.post(`${API_URL}/api/activities/events/create`, eventData);
+    return response.data;
+  } catch (error) {
+    console.error('Error al crear el evento:', error);
+    throw new Error('Error al crear el evento.');
+  }
+};
+
+// Función para actualizar un evento
+export const updateEvent = async (id: number, eventData: any) => {
+  try {
+    const response = await axios.put(`${API_URL}/api/activities/events/update/${id}`, eventData);
+    return response.data;
+  } catch (error) {
+    console.error('Error al actualizar el evento:', error);
+    throw new Error('Error al actualizar el evento.');
+  }
+};
+
+// Función para eliminar un evento
+export const deleteEvent = async (id: number) => {
+  try {
+    const response = await axios.delete(`${API_URL}/api/activities/events/delete/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error al eliminar el evento:', error);
+    throw new Error('Error al eliminar el evento.');
   }
 };
 
@@ -59,14 +92,12 @@ export const getEnrollmentsByEvent = async (eventId: number, status?: string) =>
 
   const headers = { Authorization: `Bearer ${token}` };
   try {
-    // Ajuste en la URL del endpoint para ser más específico en los permisos de administrador
     const response = await axios.get(`${API_URL}/api/enrollments/admin/event/${eventId}`, {
       headers,
       params: { status },
     });
     return response.data;
   } catch (error) {
-    // Manejo del error para identificar problemas de autenticación específicamente
     if (error.response && error.response.status === 403) {
       console.error('Acceso prohibido. Verifique los permisos de administrador.');
     } else {

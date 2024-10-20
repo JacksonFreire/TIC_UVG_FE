@@ -1,18 +1,18 @@
 <template>
   <div class="container mx-auto py-8 px-4">
-    <h1 class="text-3xl font-bold text-gray-800 mb-6">Agregar Nuevo Curso</h1>
-    <CourseForm :isEditing="false" />
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Agregar Nuevo Evento</h1>
+    <EventForm :isEditing="false" />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import CourseForm from '@/components/form/CourseForm.vue';
+import EventForm from '@/components/form/EventForm.vue';
 
 export default defineComponent({
-  name: 'AddCourse',
+  name: 'AddEvent',
   components: {
-    CourseForm,
+    EventForm,
   },
 });
 </script>

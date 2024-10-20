@@ -14,7 +14,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import {
     faBars, faUser, faSignInAlt, faSignOutAlt, faChevronDown,
     faEdit, faTrash, faEye, faSave, faCommentDots, faFileExcel,
-    faPlus, faExclamationTriangle, faSearch, faMapMarkerAlt, faTag, faCalendarAlt,faFileAlt, faComment,faCheckCircle
+    faPlus, faTriangleExclamation, faSearch, faMapMarkerAlt, faTag, faCalendarAlt,faFileAlt, faComment,faCheckCircle,faSpinner
 } from '@fortawesome/free-solid-svg-icons';
 import { faFacebook, faInstagram, faLinkedin } from '@fortawesome/free-brands-svg-icons';
 
@@ -33,15 +33,16 @@ library.add(
     faSave,
     faCommentDots,
     faFileExcel,
+    faCheckCircle,
     faPlus,
-    faExclamationTriangle,
+    faTriangleExclamation,
     faSearch,
     faMapMarkerAlt,
     faTag,
     faCalendarAlt,
     faFileAlt,
     faComment,
-    faCheckCircle
+    faSpinner
 );
 
 const app = createApp(App);
