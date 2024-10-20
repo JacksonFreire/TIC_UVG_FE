@@ -74,8 +74,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { useCourseStore } from '@/stores/courseStore'; // Importar el store de cursos
-import { getAllCourses } from '@/services/coursesService'; // Servicio para obtener la lista de cursos
+import { useCourseStore } from '@/stores/courseStore';
+import { getAllCourses, deleteCourse } from '@/services/coursesService';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 const courses = ref([]);   // Almacena la lista de cursos
@@ -103,20 +103,23 @@ const viewEnrollments = (courseId: string, courseName: string) => {
 
 // Editar un curso
 const editCourse = (courseId: string) => {
-  // Lógica para editar un curso
-  console.log('Editar curso:', courseId);
+  router.push({ name: 'UpdateCourse', params: { id: courseId } }); // Navegar a la vista de edición del curso
 };
 
 // Eliminar un curso
-const deleteCourse = (courseId: string) => {
-  // Lógica para eliminar un curso
-  console.log('Eliminar curso:', courseId);
+const deleteCourseHandler = async (courseId: string) => {
+  try {
+    await deleteCourse(Number(courseId));
+    courses.value = courses.value.filter(course => course.id !== courseId); // Remover el curso de la lista
+    console.log('Curso eliminado con éxito');
+  } catch (error) {
+    console.error('Error al eliminar el curso:', error);
+  }
 };
 
 // Añadir un curso
 const addCourse = () => {
-  // Lógica para añadir un nuevo curso
-  console.log('Añadir nuevo curso');
+  router.push({ name: 'AddCourse' }); // Navegar a la vista de creación de un nuevo curso
 };
 
 // Formatear la fecha de los cursos

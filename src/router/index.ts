@@ -16,6 +16,8 @@ import CourseEnrollments from '@/views/admin/CourseEnrollments.vue';
 import AdminCoursesList from '@/views/admin/AdminCoursesList.vue';
 import AdminEventsList from '@/views/admin/AdminEventsList.vue';
 import EventEnrollments from '@/views/admin/EventEnrollments.vue';
+import AddCourse from '@/views/admin/AddCourse.vue';
+import UpdateCourse from '@/views/admin/UpdateCourse.vue';
 import { useAuthStore } from '@/stores/auth';
 
 // Definición de rutas
@@ -62,6 +64,19 @@ const routes: Array<RouteRecordRaw> = [
         name: 'EventEnrollments',
         component: EventEnrollments,
         meta: { requiresAuth: true, role: 'ADMIN' }
+      },
+      {
+        path: 'courses/add',
+        name: 'AddCourse',
+        component: AddCourse,
+        meta: { requiresAuth: true, role: 'ADMIN' }
+      },
+      {
+        path: 'courses/edit/:id',
+        name: 'UpdateCourse',
+        component: UpdateCourse,
+        meta: { requiresAuth: true, role: 'ADMIN' },
+        props: true
       }
     ],
   },
