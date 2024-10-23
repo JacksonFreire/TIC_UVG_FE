@@ -16,7 +16,7 @@
       <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
         <router-link to="/about">
           <div class="card bg-white shadow-md rounded p-6 transform transition hover:scale-105">
-            <img src="@/assets/comunidad.png" alt="Compromiso" class="w-full h-32 object-cover mb-4 rounded">
+            <img src="@/assets/comunidad.webp" alt="Compromiso" class="w-full h-32 object-cover mb-4 rounded">
             <h3 class="text-xl font-semibold text-blue-700">Compromiso con la Comunidad</h3>
             <p>
               Promovemos el desarrollo educativo y profesional con cursos adaptados a la comunidad ecuatoriana en Italia.
@@ -25,7 +25,7 @@
         </router-link>
         <router-link to="/about">
           <div class="card bg-white shadow-md rounded p-6 transform transition hover:scale-105">
-            <img src="@/assets/diversidad.png" alt="Diversidad" class="w-full h-32 object-cover mb-4 rounded">
+            <img src="@/assets/diversidad.webp" alt="Diversidad" class="w-full h-32 object-cover mb-4 rounded">
             <h3 class="text-xl font-semibold text-blue-700">Diversidad de Oferta Educativa</h3>
             <p>
               Ofrecemos cursos presenciales y eventos online, desde informática hasta idiomas, para todas las edades.
@@ -34,7 +34,7 @@
         </router-link>
         <router-link to="/about">
           <div class="card bg-white shadow-md rounded p-6 transform transition hover:scale-105">
-            <img src="@/assets/innovacion.png" alt="Innovación" class="w-full h-32 object-cover mb-4 rounded">
+            <img src="@/assets/innovacion.webp" alt="Innovación" class="w-full h-32 object-cover mb-4 rounded">
             <h3 class="text-xl font-semibold text-blue-700">Innovación y Tecnología Educativa</h3>
             <p>Utilizamos tecnología avanzada para mejorar la experiencia de aprendizaje.</p>
           </div>
@@ -114,7 +114,7 @@
 import { defineComponent, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useDataStore } from '@/stores/useDataStore'; // Importar la store de Pinia
-import bannerImage from '@/assets/Banner.png';
+import bannerImage from '@/assets/Banner.webp';
 
 export default defineComponent({
   name: 'HomePage',

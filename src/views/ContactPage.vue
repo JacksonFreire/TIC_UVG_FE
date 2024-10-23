@@ -15,21 +15,21 @@
     <section class="my-16">
       <div class="container mx-auto grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-6">
         <div class="contact-item bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
-          <img src="@/assets/email.jpg" alt="Correo Electrónico" class="w-full h-40 object-cover rounded mb-4">
+          <img src="@/assets/email.webp" alt="Correo Electrónico" class="w-full h-40 object-cover rounded mb-4">
           <h3 class="text-xl font-semibold text-blue-700">Correo Electrónico</h3>
           <p class="text-gray-700">
             Puedes escribirnos a: <a href="mailto:contacto@univeritasgroup.com" class="text-blue-600 hover:underline">contacto@univeritasgroup.com</a>. Respondemos a todas las consultas en un plazo máximo de 24 horas.
           </p>
         </div>
         <div class="contact-item bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
-          <img src="@/assets/phone.jpg" alt="Teléfono" class="w-full h-40 object-cover rounded mb-4">
+          <img src="@/assets/phone.webp" alt="Teléfono" class="w-full h-40 object-cover rounded mb-4">
           <h3 class="text-xl font-semibold text-blue-700">Teléfono</h3>
           <p class="text-gray-700">
             Llámanos al: <a href="tel:+391234567890" class="text-blue-600 hover:underline">+39 123 456 7890</a>. Nuestro horario de atención es de lunes a viernes, de 9:00 a 18:00 horas.
           </p>
         </div>
         <div class="contact-item bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
-          <img src="@/assets/location.jpg" alt="Dirección" class="w-full h-40 object-cover rounded mb-4">
+          <img src="@/assets/location.webp" alt="Dirección" class="w-full h-40 object-cover rounded mb-4">
           <h3 class="text-xl font-semibold text-blue-700">Dirección</h3>
           <p class="text-gray-700">
             Visítanos en nuestra oficina en: Via Roma 123, 00100 Roma, Italia. Te esperamos para brindarte atención personalizada.
@@ -137,7 +137,7 @@
           </p>
         </div>
         <div class="md:w-1/2">
-          <img src="@/assets/languages.jpg" alt="Atención en varios idiomas" class="rounded-lg shadow-md w-full h-auto">
+          <img src="@/assets/languages.webp" alt="Atención en varios idiomas" class="rounded-lg shadow-md w-full h-auto">
         </div>
       </div>
     </section>
@@ -166,7 +166,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import bannerContact from '@/assets/BannerContact.jpg';
+import bannerContact from '@/assets/BannerContact.webp';
 import { sendEmail, EmailData } from '@/services/emailService';
 
 export default defineComponent({
