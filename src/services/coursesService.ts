@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Participant } from '@/models/Participant';
 
 const API_URL = import.meta.env.VITE_APP_BASE_URL_API;
 
@@ -69,7 +70,7 @@ export const getEnrollmentsByCourse = async (courseId: string, status: string | 
 };
 
 // Guardar cambios en la inscripción de un participante
-export const saveEnrollmentChanges = async (participant) => {
+export const saveEnrollmentChanges = async (participant: Participant) => {
   const token = localStorage.getItem('token');
   if (!token) throw new Error('No authenticated');
 

@@ -5,7 +5,7 @@
         Lista de Participantes en {{ eventStore.selectedEvent.name }}
       </h2>
 
-      <!-- Botón de "Generar Reporte" mejorado -->
+      <!-- Botón de "Generar Reporte" -->
       <button
           @click="generateReport"
           class="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
@@ -18,7 +18,6 @@
 
     <!-- Filtros -->
     <div class="mb-4 flex flex-col md:flex-row justify-between md:items-center space-y-6 md:space-y-0">
-      <!-- Campo de búsqueda mejorado -->
       <input
           v-model="searchQuery"
           type="text"
@@ -26,7 +25,6 @@
           class="border border-gray-300 rounded-lg px-4 py-2 w-full md:w-2/3 lg:w-1/2 focus:outline-none focus:border-blue-400 focus:shadow-lg transition-shadow duration-300"
       />
 
-      <!-- Filtro por estado mejorado -->
       <select
           v-model="statusFilter"
           class="border border-gray-300 rounded-lg px-4 py-2 w-full md:w-1/3 lg:w-1/4 focus:outline-none focus:border-blue-400 focus:shadow-lg transition-shadow duration-300"
@@ -54,7 +52,7 @@
         <tr v-if="isLoading" class="text-center">
           <td colspan="5" class="py-3 px-6 text-gray-500">Cargando participantes...</td>
         </tr>
-        <template v-else v-for="participant in filteredParticipants" :key="participant.username">
+        <template v-else v-for="participant in filteredParticipants" :key="participant.userId">
           <tr class="hover:bg-gray-50 transition duration-200">
             <td class="py-3 px-6">{{ participant.firstName }} {{ participant.lastName }}</td>
             <td class="py-3 px-6">{{ participant.username }}</td>
@@ -89,10 +87,10 @@
               </div>
             </td>
           </tr>
-          <tr v-if="participant.showComment || participant.comment">
+          <tr v-if="participant.showComment || participant.comments">
             <td colspan="5" class="py-3 px-6">
                 <textarea
-                    v-model="participant.comment"
+                    v-model="participant.comments"
                     placeholder="Agregar comentario..."
                     class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-blue-400"
                 ></textarea>
@@ -107,7 +105,7 @@
     </div>
   </div>
 
-  <!-- Diálogo para notificaciones con diseño profesional -->
+  <!-- Diálogo para notificaciones -->
   <dialog ref="notificationDialog" class="rounded-lg shadow-xl p-6 max-w-md w-full">
     <div :class="{'bg-green-100': dialogType === 'success', 'bg-red-100': dialogType === 'error'}" class="flex items-start px-4 py-3 rounded-lg">
       <div :class="{'text-green-600': dialogType === 'success', 'text-red-600': dialogType === 'error'}" class="flex-shrink-0 mr-4">
@@ -125,25 +123,24 @@
     </div>
   </dialog>
 </template>
-
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useEventStore } from '@/stores/eventStore';
 import { getEnrollmentsByEvent, saveEnrollmentChanges } from '@/services/eventService'; // Servicio para obtener los participantes y guardar cambios
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { Participant } from '@/models/Participant'; // Modelo de participantes
 
-const participants = ref([]); // Lista de participantes
+const participants = ref<Participant[]>([]); // Lista de participantes
 const isLoading = ref(true); // Estado de carga
 const searchQuery = ref(''); // Búsqueda por nombre, username o teléfono
 const statusFilter = ref(''); // Filtro por estado
 const eventStore = useEventStore(); // Obtener el store del evento
 
-const notificationDialog = ref(null);
+const notificationDialog = ref<HTMLDialogElement | null>(null);
 const dialogMessage = ref('');
-const dialogType = ref('');
+const dialogType = ref<'success' | 'error'>('success');
 
 onMounted(async () => {
-  const eventId = eventStore.selectedEvent.id; // Obtener el ID del evento desde el store
+  const eventId = eventStore.selectedEvent?.id;
 
   if (!eventId) {
     console.error('No se ha seleccionado ningún evento');
@@ -152,8 +149,8 @@ onMounted(async () => {
   }
 
   try {
-    const enrollments = await getEnrollmentsByEvent(eventId);
-    participants.value = enrollments.map((participant) => {
+    const enrollments = await getEnrollmentsByEvent(Number(eventId));
+    participants.value = enrollments.map((participant: Participant) => {
       return {
         ...participant,
         showComment: !!participant.comments, // Mostrar el comentario si ya existe
@@ -175,24 +172,26 @@ const filteredParticipants = computed(() => {
       participant.firstName.toLowerCase(),
       participant.lastName.toLowerCase(),
       participant.username.toLowerCase(),
-      participant.phoneNumber,
+      participant.phoneNumber?.toString(),
     ].some((field) => field.includes(searchQuery.value.toLowerCase()));
 
     return matchesStatus && matchesSearch;
   });
 });
 
-const toggleComment = (participant) => {
+// Alternar visibilidad del comentario
+const toggleComment = (participant: Participant) => {
   participant.showComment = !participant.showComment;
 };
 
-const saveChanges = async (participant) => {
+// Guardar los cambios de la inscripción
+const saveChanges = async (participant: Participant) => {
   try {
     const enrollmentDTO = {
       userId: participant.userId,
-      eventId: eventStore.selectedEvent.id,
+      eventId: Number(eventStore.selectedEvent?.id),
       status: participant.status,
-      comments: participant.comment,
+      comments: participant.comments || '',
     };
 
     if (!enrollmentDTO.userId) {
@@ -205,7 +204,7 @@ const saveChanges = async (participant) => {
   } catch (error) {
     console.error('Error al guardar los cambios:', error);
     // Mostrar notificación de error con diálogo
-    showDialog('Error al guardar los cambios en la inscripción. Por favor verifica los datos e inténtalo de nuevo.', 'error');
+    showDialog('Error al guardar los cambios. Por favor verifica los datos e inténtalo de nuevo.', 'error');
   }
 };
 
@@ -216,7 +215,7 @@ const generateReport = () => {
 };
 
 // Función para mostrar el diálogo de notificación
-const showDialog = (message, type) => {
+const showDialog = (message: string, type: 'success' | 'error') => {
   dialogMessage.value = message;
   dialogType.value = type;
   if (notificationDialog.value) {

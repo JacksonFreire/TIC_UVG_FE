@@ -87,8 +87,9 @@ import { useRouter } from 'vue-router';
 import { useEventStore } from '@/stores/eventStore'; // Importar el store de eventos
 import { getAllEvents } from '@/services/eventService'; // Servicio para obtener la lista de eventos
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { Event } from '@/models/Event';
 
-const events = ref([]);   // Almacena la lista de eventos
+const events = ref<Event[]>([]);   // Almacena la lista de eventos tipada
 const isLoading = ref(true); // Estado de carga de los datos
 const router = useRouter();
 const eventStore = useEventStore(); // Usar el store de eventos
@@ -106,29 +107,28 @@ onMounted(async () => {
 });
 
 // Navegar a la vista de inscripciones
-const viewEnrollments = (eventId: string, eventName: string) => {
-  eventStore.setSelectedEvent(eventId, eventName);  // Guardamos el evento seleccionado en el store
-  router.push({ name: 'EventEnrollments', params: { eventId: eventId } }); // Navegar a la vista de inscripciones
+const viewEnrollments = (eventId: number, eventName: string) => {
+  eventStore.setSelectedEvent(String(eventId), eventName);  // Guardamos el evento seleccionado en el store
+  router.push({ name: 'EventEnrollments', params: { eventId } }); // Navegar a la vista de inscripciones
 };
 
 // Ver detalles del evento (Placeholder)
-const viewDetails = (eventId: string) => {
+const viewDetails = (eventId: number) => {
   console.log('Ver detalles del evento:', eventId);
 };
 
 // Editar evento (Placeholder)
-const editEvent = (eventId: string) => {
+const editEvent = (eventId: number) => {
   console.log('Editar evento:', eventId);
 };
 
 // Eliminar evento (Placeholder)
-const deleteEvent = (eventId: string) => {
+const deleteEvent = (eventId: number) => {
   console.log('Eliminar evento:', eventId);
 };
 
 // Añadir un evento
 const addEvent = () => {
-  // Lógica para añadir un nuevo evento
   console.log('Añadir nuevo evento');
 };
 
@@ -138,38 +138,3 @@ const formatDate = (date: string) => {
   return new Date(date).toLocaleDateString('es-ES', options);
 };
 </script>
-
-<style scoped>
-/* Estilos para tooltips mejorados */
-.tooltip-text {
-  visibility: hidden;
-  width: auto;
-  background-color: #4a4a4a;
-  color: #fff;
-  text-align: center;
-  border-radius: 4px;
-  padding: 8px;
-  position: absolute;
-  z-index: 10;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  opacity: 0;
-  transition: opacity 0.4s, transform 0.4s;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.group:hover .tooltip-text {
-  visibility: visible;
-  opacity: 1;
-  transform: translateX(-50%) translateY(-5px);
-}
-
-.relative button {
-  transition: transform 0.2s;
-}
-
-.relative:hover button {
-  transform: scale(1.1);
-}
-</style>

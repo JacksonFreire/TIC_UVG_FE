@@ -131,6 +131,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useCourseStore } from '@/stores/courseStore';
 import { getEnrollmentsByCourse, saveEnrollmentChanges } from '@/services/coursesService';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { Participant } from '@/models/Participant';
 
 const participants = ref([]);
 const isLoading = ref(true);
@@ -180,11 +181,11 @@ const filteredParticipants = computed(() => {
   });
 });
 
-const toggleComment = (participant) => {
+const toggleComment = (participant: Participant) => {
   participant.showComment = !participant.showComment;
 };
 
-const saveChanges = async (participant) => {
+const saveChanges = async (participant: Participant) => {
   try {
     await saveEnrollmentChanges(participant);
     // Mostrar notificación de éxito con diálogo

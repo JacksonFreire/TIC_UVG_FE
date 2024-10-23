@@ -32,7 +32,7 @@
             <!-- Botones de acciones con tooltips usando CSS mejorado -->
             <div class="relative inline-block group mx-2">
               <button
-                  @click="viewEnrollments(course.id, course.name)"
+                  @click="viewEnrollments(String(course.id), course.name)"
                   class="text-blue-500 hover:text-blue-700"
                   aria-label="Ver Inscripciones"
               >
@@ -42,7 +42,7 @@
             </div>
             <div class="relative inline-block group mx-2">
               <button
-                  @click="editCourse(course.id)"
+                  @click="editCourse(String(course.id))"
                   class="text-yellow-500 hover:text-yellow-700"
                   aria-label="Editar Curso"
               >
@@ -52,7 +52,7 @@
             </div>
             <div class="relative inline-block group mx-2">
               <button
-                  @click="deleteCourse(course.id)"
+                  @click="deleteCourse(String(course.id))"
                   class="text-red-500 hover:text-red-700"
                   aria-label="Eliminar Curso"
               >
@@ -77,8 +77,9 @@ import { useRouter } from 'vue-router';
 import { useCourseStore } from '@/stores/courseStore'; // Importar el store de cursos
 import { getAllCourses } from '@/services/coursesService'; // Servicio para obtener la lista de cursos
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { Course } from '@/models/Course';
 
-const courses = ref([]);   // Almacena la lista de cursos
+const courses = ref<Course[]>([]); // Almacena la lista de cursos
 const isLoading = ref(true); // Estado de carga de los datos
 const router = useRouter();
 const courseStore = useCourseStore(); // Usar el store de cursos
