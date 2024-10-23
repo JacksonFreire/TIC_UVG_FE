@@ -1,3 +1,4 @@
+// src/models/Participant.ts
 export interface Participant {
     userId: number;
     firstName: string;
@@ -5,7 +6,7 @@ export interface Participant {
     username: string;
     phoneNumber: string;
     email: string;
-    status: string;
-    comments?: string; // Puede ser opcional
-    showComment?: boolean; // Campo utilizado para mostrar/ocultar comentarios
+    status: 'confirmed' | 'pending' | 'canceled';
+    comments?: string;
+    showComment?: boolean;
 }

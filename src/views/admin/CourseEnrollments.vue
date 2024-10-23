@@ -130,16 +130,15 @@
 import { ref, computed, onMounted } from 'vue';
 import { useCourseStore } from '@/stores/courseStore';
 import { getEnrollmentsByCourse, saveEnrollmentChanges } from '@/services/coursesService';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { Participant } from '@/models/Participant';
 
-const participants = ref([]);
+const participants = ref<Participant[]>([]); // Ahora especificamos el tipo Participant[]
 const isLoading = ref(true);
 const searchQuery = ref('');
 const statusFilter = ref('');
 const courseStore = useCourseStore();
 
-const notificationDialog = ref(null);
+const notificationDialog = ref<HTMLDialogElement | null>(null);
 const dialogMessage = ref('');
 const dialogType = ref('');
 
@@ -202,7 +201,7 @@ const generateReport = () => {
 };
 
 // Función para mostrar el diálogo de notificación
-const showDialog = (message, type) => {
+const showDialog = (message: string, type: 'success' | 'error') => {
   dialogMessage.value = message;
   dialogType.value = type;
   if (notificationDialog.value) {
@@ -235,7 +234,7 @@ const closeDialog = () => {
   transform: translateX(-50%);
   opacity: 0;
   transition: opacity 0.4s, transform 0.4s;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .relative:hover .tooltip-text {
@@ -257,6 +256,6 @@ dialog {
   border: none;
   padding: 0;
   border-radius: 12px;
-  box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
 }
 </style>

@@ -60,6 +60,7 @@
               </button>
               <span class="tooltip-text group-hover:opacity-100">Eliminar Evento</span>
             </div>
+            <!--
             <div class="relative inline-block group mx-2">
               <button
                   @click="viewDetails(event.id)"
@@ -69,7 +70,7 @@
                 <font-awesome-icon :icon="['fas', 'eye']" />
               </button>
               <span class="tooltip-text group-hover:opacity-100">Ver Detalles</span>
-            </div>
+            </div> -->
           </td>
         </tr>
         <tr v-if="!events.length && !isLoading" class="text-center">
@@ -89,7 +90,7 @@ import { getAllEvents } from '@/services/eventService'; // Servicio para obtener
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { Event } from '@/models/Event';
 
-const events = ref<Event[]>([]);   // Almacena la lista de eventos tipada
+const events = ref<Event[]>([]); // Almacena la lista de eventos tipada
 const isLoading = ref(true); // Estado de carga de los datos
 const router = useRouter();
 const eventStore = useEventStore(); // Usar el store de eventos
@@ -138,3 +139,38 @@ const formatDate = (date: string) => {
   return new Date(date).toLocaleDateString('es-ES', options);
 };
 </script>
+
+<style scoped>
+/* Estilos para tooltips mejorados */
+.tooltip-text {
+  visibility: hidden;
+  width: auto;
+  background-color: #4a4a4a;
+  color: #fff;
+  text-align: center;
+  border-radius: 4px;
+  padding: 8px;
+  position: absolute;
+  z-index: 10;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.4s, transform 0.4s;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.group:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(-50%) translateY(-5px);
+}
+
+.relative button {
+  transition: transform 0.2s;
+}
+
+.relative:hover button {
+  transform: scale(1.1);
+}
+</style>
