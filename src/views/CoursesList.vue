@@ -3,16 +3,15 @@
     <!-- Buscador -->
     <div class="relative mb-6">
       <input
-        type="text"
-        v-model="searchQuery"
-        placeholder="Buscar cursos..."
-        class="w-full p-4 pl-12 border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+          type="text"
+          v-model="searchQuery"
+          placeholder="Buscar cursos..."
+          class="w-full p-4 pl-12 border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
       />
-      <svg class="absolute left-4 top-4 h-6 w-6 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
-        <path
-          d="M21 21l-4.35-4.35a8 8 0 1 0-1.65 1.65L21 21zM4 10a6 6 0 1 1 12 0A6 6 0 0 1 4 10z"
-        />
-      </svg>
+      <font-awesome-icon
+          icon="search"
+          class="absolute left-4 top-4 h-6 w-6 text-gray-400 pointer-events-none"
+      />
     </div>
 
     <!-- Skeleton Loaders mientras se carga -->
@@ -25,16 +24,16 @@
     <!-- Lista de cursos -->
     <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       <div
-        v-for="course in filteredCourses"
-        :key="course.id"
-        class="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition duration-300 transform hover:-translate-y-1"
+          v-for="course in filteredCourses"
+          :key="course.id"
+          class="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition duration-300 transform hover:-translate-y-1"
       >
         <!-- Imagen del curso con precio encima -->
         <div class="relative">
           <img
-            :src="'data:image/jpeg;base64,' + course.image"
-            alt="Imagen del curso"
-            class="w-full h-40 object-cover"
+              :src="'data:image/jpeg;base64,' + course.image"
+              alt="Imagen del curso"
+              class="w-full h-40 object-cover"
           />
           <!-- Precio encima de la imagen -->
           <div class="absolute top-2 left-2 bg-white text-gray-800 text-sm font-bold px-2 py-1 rounded shadow-md">
@@ -50,8 +49,8 @@
             <span class="font-semibold">Instructor:</span> {{ course.instructor?.name || 'No asignado' }}
           </p>
           <button
-            @click="navigateToDetails(course.id)"
-            class="bg-blue-500 text-white px-4 py-2 rounded-lg w-full hover:bg-blue-600 transition duration-300"
+              @click="navigateToDetails(course.id)"
+              class="bg-blue-500 text-white px-4 py-2 rounded-lg w-full hover:bg-blue-600 transition duration-300"
           >
             Ver más
           </button>
@@ -62,19 +61,19 @@
     <!-- Paginación Mejorada -->
     <div v-if="!isLoading" class="flex justify-center mt-8 space-x-2">
       <button
-        @click="loadPreviousPage"
-        :disabled="currentPage === 0"
-        class="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-full shadow-md hover:bg-blue-600 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed"
+          @click="loadPreviousPage"
+          :disabled="currentPage === 0"
+          class="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-full shadow-md hover:bg-blue-600 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed"
       >
         &larr; Anterior
       </button>
       <span class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border rounded-full shadow-sm">
-        Página {{ currentPage + 1 }} de {{ totalPages }}
+        Página {{ currentPage + 1 }} de {{ totalPagesCourses }}
       </span>
       <button
-        @click="loadNextPage"
-        :disabled="currentPage >= totalPages - 1"
-        class="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-full shadow-md hover:bg-blue-600 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed"
+          @click="loadNextPage"
+          :disabled="currentPage >= totalPagesCourses - 1"
+          class="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-full shadow-md hover:bg-blue-600 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed"
       >
         Siguiente &rarr;
       </button>
@@ -85,15 +84,23 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { useDataStore } from '@/stores/useDataStore'; // Importar la store de Pinia
+import { useDataStore } from '@/stores/useDataStore'; // Importa la store de Pinia
 
 const dataStore = useDataStore();
 const router = useRouter();
 
-const searchQuery = ref<string>('');
-const currentPage = ref<number>(0);
+const searchQuery = ref<string>(''); // Búsqueda del usuario
+const currentPage = ref<number>(0); // Página actual
 
-// Funciones para cargar las páginas anteriores y siguientes
+// Computed para filtrar los cursos según la búsqueda
+const filteredCourses = computed(() => {
+  if (!searchQuery.value) return dataStore.courses;
+  return dataStore.courses.filter(course =>
+      course.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
+});
+
+// Funciones de navegación para las páginas
 const loadPreviousPage = () => {
   if (currentPage.value > 0) {
     currentPage.value -= 1;
@@ -102,17 +109,11 @@ const loadPreviousPage = () => {
 };
 
 const loadNextPage = () => {
-  currentPage.value += 1;
-  dataStore.fetchCourses(currentPage.value);
+  if (currentPage.value < dataStore.totalPagesCourses - 1) {
+    currentPage.value += 1;
+    dataStore.fetchCourses(currentPage.value);
+  }
 };
-
-// Computed para filtrar los cursos según la búsqueda
-const filteredCourses = computed(() => {
-  if (!searchQuery.value) return dataStore.courses;
-  return dataStore.courses.filter(course =>
-    course.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-  );
-});
 
 // Función para navegar a los detalles del curso
 const navigateToDetails = (id: number) => {
@@ -126,10 +127,12 @@ const formatDate = (date: string): string => {
 };
 
 // Cargar cursos al montar el componente
-onMounted(() => dataStore.fetchCourses(currentPage.value));
+onMounted(() => {
+  dataStore.fetchCourses(currentPage.value);
+});
 
-// Acceso a los datos y al estado de carga desde la store
-const { isLoading, totalPages } = dataStore;
+// Acceso al estado de carga y totalPages desde la store
+const { isLoading, totalPagesCourses } = dataStore;
 </script>
 
 <style scoped>

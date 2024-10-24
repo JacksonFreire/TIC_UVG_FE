@@ -3,14 +3,14 @@
     <!-- Buscador -->
     <div class="relative mb-6">
       <input
-        type="text"
-        v-model="searchQuery"
-        placeholder="Buscar eventos..."
-        class="w-full p-4 pl-12 border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+          type="text"
+          v-model="searchQuery"
+          placeholder="Buscar eventos..."
+          class="w-full p-4 pl-12 border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
       />
       <font-awesome-icon
-        icon="search"
-        class="absolute left-4 top-4 h-6 w-6 text-gray-400 pointer-events-none"
+          icon="search"
+          class="absolute left-4 top-4 h-6 w-6 text-gray-400 pointer-events-none"
       />
     </div>
 
@@ -25,10 +25,10 @@
     <div v-else>
       <div class="space-y-6">
         <div
-          v-for="event in filteredEvents"
-          :key="event.id"
-          class="event-item bg-white rounded-lg shadow hover:shadow-lg transition duration-200 cursor-pointer flex flex-col lg:flex-row h-auto lg:h-64 overflow-hidden"
-          @click="navigateToDetails(event.id)"
+            v-for="event in filteredEvents"
+            :key="event.id"
+            class="event-item bg-white rounded-lg shadow hover:shadow-lg transition duration-200 cursor-pointer flex flex-col lg:flex-row h-auto lg:h-64 overflow-hidden"
+            @click="navigateToDetails(event.id)"
         >
           <!-- Información del Evento -->
           <div class="w-full lg:w-2/3 p-6 flex flex-col order-2 lg:order-1">
@@ -57,9 +57,9 @@
           <!-- Imagen del Evento -->
           <div class="w-full lg:w-1/3 flex-shrink-0 flex items-center justify-center bg-gray-100 order-1 lg:order-2">
             <img
-              :src="`data:image/jpeg;base64,${event.image}`"
-              alt="Imagen del evento"
-              class="w-full h-48 lg:h-full object-cover transition-transform duration-300 hover:scale-105"
+                :src="`data:image/jpeg;base64,${event.image}`"
+                alt="Imagen del evento"
+                class="event-image w-full h-48 lg:h-full object-cover transition-transform duration-300"
             />
           </div>
         </div>
@@ -68,40 +68,39 @@
 
     <!-- Paginación Mejorada -->
     <div
-      v-if="!isLoading"
-      class="flex flex-col items-center mt-8 space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-2"
+        v-if="!isLoading"
+        class="flex flex-col items-center mt-8 space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-2"
     >
       <button
-        @click="loadPreviousPage"
-        :disabled="currentPage === 0"
-        class="px-4 py-2 mx-1 text-sm font-medium text-white bg-blue-600 rounded-full shadow-md hover:bg-blue-700 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed"
+          @click="loadPreviousPage"
+          :disabled="currentPage === 0"
+          class="px-4 py-2 mx-1 text-sm font-medium text-white bg-blue-600 rounded-full shadow-md hover:bg-blue-700 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed"
       >
         &larr; Anterior
       </button>
       <span class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border rounded-full shadow-sm">
-        Página {{ currentPage + 1 }} de {{ totalPages }}
+        Página {{ currentPage + 1 }} de {{ totalPagesEvents }}
       </span>
       <button
-        @click="loadNextPage"
-        :disabled="currentPage >= totalPages - 1"
-        class="px-4 py-2 mx-1 text-sm font-medium text-white bg-blue-600 rounded-full shadow-md hover:bg-blue-700 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed"
+          @click="loadNextPage"
+          :disabled="currentPage >= totalPagesEvents - 1"
+          class="px-4 py-2 mx-1 text-sm font-medium text-white bg-blue-600 rounded-full shadow-md hover:bg-blue-700 transition duration-300 disabled:bg-gray-300 disabled:cursor-not-allowed"
       >
         Siguiente &rarr;
       </button>
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { useDataStore } from '@/stores/useDataStore'; // Importa tu store de Pinia
+import { useDataStore } from '@/stores/useDataStore'; // Importa la store de Pinia
 
 const dataStore = useDataStore();
 const router = useRouter();
 
-const searchQuery = ref<string>('');
-const currentPage = ref<number>(0);
+const searchQuery = ref<string>(''); // Búsqueda del usuario
+const currentPage = ref<number>(0); // Página actual
 
 // Funciones para cargar las páginas anteriores y siguientes
 const loadPreviousPage = () => {
@@ -112,15 +111,17 @@ const loadPreviousPage = () => {
 };
 
 const loadNextPage = () => {
-  currentPage.value += 1;
-  dataStore.fetchEvents(currentPage.value);
+  if (currentPage.value < dataStore.totalPagesEvents - 1) {
+    currentPage.value += 1;
+    dataStore.fetchEvents(currentPage.value);
+  }
 };
 
 // Computed para filtrar los eventos según la búsqueda
 const filteredEvents = computed(() => {
   if (!searchQuery.value) return dataStore.events;
   return dataStore.events.filter(event =>
-    event.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+      event.name.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
 });
 
@@ -130,7 +131,7 @@ const navigateToDetails = (id: number) => {
 };
 
 // Función para formatear el rango de fechas
-const formatDateRange = (start: string, end: string) => {
+const formatDateRange = (start: string, end: string): string => {
   const startDate = new Date(start);
   const endDate = new Date(end);
   const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -143,7 +144,7 @@ const formatDateRange = (start: string, end: string) => {
 };
 
 // Función para formatear el precio
-const formatPrice = (amount: number) => {
+const formatPrice = (amount: number): string => {
   if (amount === 0) {
     return 'Gratis';
   }
@@ -153,9 +154,10 @@ const formatPrice = (amount: number) => {
 // Cargamos los eventos al montar el componente
 onMounted(() => dataStore.fetchEvents(currentPage.value));
 
-// Acceso a los datos y al estado de carga desde la store
-const { isLoading, totalPages } = dataStore;
+// Acceso al estado de carga y totalPages desde la store
+const { isLoading, totalPagesEvents } = dataStore;
 </script>
+
 
 <style scoped>
 .container {
