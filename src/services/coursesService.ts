@@ -60,7 +60,7 @@ export const checkEnrollment = async (courseId: string, userId: number) => {
 };
 
 // Obtener inscripciones por curso
-export const getEnrollmentsByCourse = async (courseId: string, status: string | null = null) => {
+export const getEnrollmentsByCourse = async (courseId: number, status: string | null = null) => {
   const headers = getAuthHeaders();
   try {
     const params = status ? { status } : {};

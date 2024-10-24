@@ -89,10 +89,10 @@
               </div>
             </td>
           </tr>
-          <tr v-if="participant.showComment || participant.comment">
+          <tr v-if="participant.showComment || participant.comments">
             <td colspan="5" class="py-3 px-6">
                 <textarea
-                    v-model="participant.comment"
+                    v-model="participant.comments"
                     placeholder="Agregar comentario..."
                     class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-blue-400"
                 ></textarea>
@@ -129,19 +129,22 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useEventStore } from '@/stores/eventStore';
-import { getEnrollmentsByEvent, saveEnrollmentChanges } from '@/services/eventService'; // Servicio para obtener los participantes y guardar cambios
+import { getEnrollmentsByEvent, saveEnrollmentChanges } from '@/services/eventService';
+import { Participant } from '@/models/Participant'; // Importar el modelo Participant
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
-const participants = ref([]); // Lista de participantes
+// Tipar correctamente los estados
+const participants = ref<Participant[]>([]); // Lista de participantes
 const isLoading = ref(true); // Estado de carga
 const searchQuery = ref(''); // Búsqueda por nombre, username o teléfono
 const statusFilter = ref(''); // Filtro por estado
 const eventStore = useEventStore(); // Obtener el store del evento
 
-const notificationDialog = ref(null);
+const notificationDialog = ref<HTMLDialogElement | null>(null); // Tipar correctamente el diálogo
 const dialogMessage = ref('');
-const dialogType = ref('');
+const dialogType = ref<'success' | 'error'>('success');
 
+// Función para cargar los participantes al montar el componente
 onMounted(async () => {
   const eventId = eventStore.selectedEvent.id; // Obtener el ID del evento desde el store
 
@@ -153,11 +156,11 @@ onMounted(async () => {
 
   try {
     const enrollments = await getEnrollmentsByEvent(eventId);
-    participants.value = enrollments.map((participant) => {
+    participants.value = enrollments.map((participant: Participant) => {
       return {
         ...participant,
         showComment: !!participant.comments, // Mostrar el comentario si ya existe
-        comment: participant.comments || '',
+        comment: participant.comments || '', // Asegurar que comment esté siempre definido
       };
     });
   } catch (error) {
@@ -167,9 +170,9 @@ onMounted(async () => {
   }
 });
 
-// Computed property para el filtrado
+// Computed property para el filtrado de participantes
 const filteredParticipants = computed(() => {
-  return participants.value.filter((participant) => {
+  return participants.value.filter((participant: Participant) => {
     const matchesStatus = statusFilter.value ? participant.status === statusFilter.value : true;
     const matchesSearch = [
       participant.firstName.toLowerCase(),
@@ -182,17 +185,19 @@ const filteredParticipants = computed(() => {
   });
 });
 
-const toggleComment = (participant) => {
+// Función para mostrar u ocultar comentarios
+const toggleComment = (participant: Participant) => {
   participant.showComment = !participant.showComment;
 };
 
-const saveChanges = async (participant) => {
+// Función para guardar los cambios en la inscripción del participante
+const saveChanges = async (participant: Participant) => {
   try {
     const enrollmentDTO = {
       userId: participant.userId,
       eventId: eventStore.selectedEvent.id,
       status: participant.status,
-      comments: participant.comment,
+      comments: participant.comments || '',
     };
 
     if (!enrollmentDTO.userId) {
@@ -209,26 +214,22 @@ const saveChanges = async (participant) => {
   }
 };
 
-// Placeholder para generar el reporte
+// Función placeholder para generar el reporte
 const generateReport = () => {
   console.log('Generando reporte de inscritos...');
   // Aquí puedes implementar la lógica para generar un reporte
 };
 
 // Función para mostrar el diálogo de notificación
-const showDialog = (message, type) => {
+const showDialog = (message: string, type: 'success' | 'error') => {
   dialogMessage.value = message;
   dialogType.value = type;
-  if (notificationDialog.value) {
-    notificationDialog.value.showModal();
-  }
+  notificationDialog.value?.showModal();
 };
 
 // Función para cerrar el diálogo
 const closeDialog = () => {
-  if (notificationDialog.value) {
-    notificationDialog.value.close();
-  }
+  notificationDialog.value?.close();
 };
 </script>
 

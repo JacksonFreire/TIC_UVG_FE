@@ -4,7 +4,7 @@
     <div class="container mx-auto flex flex-col items-center text-xs relative lg:flex-row lg:justify-between">
       <!-- Logo y Texto de Misión (Solo visible en Desktop) -->
       <div class="hidden lg:flex items-center space-x-3">
-        <img src="@/assets/logo.jpg" alt="Univeritas Group" class="h-6">
+        <img src="@/assets/logo.webp" alt="Univeritas Group" class="h-6">
         <p>Apoyamos a los migrantes en su integración en Italia.</p>
       </div>
 

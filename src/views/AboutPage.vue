@@ -15,7 +15,7 @@
     <section class="my-16">
       <div class="container mx-auto flex flex-col md:flex-row items-center gap-8 px-6">
         <div class="md:w-1/2">
-          <img src="@/assets/mission.jpg" alt="Nuestra Misión" class="rounded-lg shadow-md w-full h-auto">
+          <img src="@/assets/mission.webp" alt="Nuestra Misión" class="rounded-lg shadow-md w-full h-auto">
         </div>
         <div class="md:w-1/2">
           <h2 class="text-3xl font-bold text-blue-700 mb-4">Nuestra Misión</h2>
@@ -32,22 +32,22 @@
         <h2 class="text-3xl font-bold text-blue-700 mb-8">Nuestros Servicios</h2>
         <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <div class="service-item bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
-            <img src="@/assets/education.jpg" alt="Educación y Capacitación" class="w-full h-40 object-cover rounded mb-4">
+            <img src="@/assets/education.webp" alt="Educación y Capacitación" class="w-full h-40 object-cover rounded mb-4">
             <h3 class="text-xl font-semibold text-blue-700">Educación y Capacitación</h3>
             <p class="text-gray-700">
               Proveemos cursos de idiomas, talleres de habilidades laborales y formación profesional para mejorar tus oportunidades de empleo y adaptarte más fácilmente a la vida en Italia.
             </p>
           </div>
           <div class="service-item bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
-            <img src="@/assets/advice.jpg" alt="Asesoría Personalizada" class="w-full h-40 object-cover rounded mb-4">
+            <img src="@/assets/advice.webp" alt="Asesoría Personalizada" class="w-full h-40 object-cover rounded mb-4">
             <h3 class="text-xl font-semibold text-blue-700">Asesoría Personalizada</h3>
             <p class="text-gray-700">
               Ofrecemos orientación en temas legales, educativos y sociales para garantizar que comprendas tus derechos y encuentres el apoyo necesario durante tu proceso de integración.
             </p>
           </div>
           <div class="service-item bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
-            <img src="@/assets/networking.jpg" alt="Eventos de Integración y Networking" class="w-full h-40 object-cover rounded mb-4">
-            <h3 class="text-xl font-semibold text-blue-700">Eventos de Integración y Networking</h3>
+            <img src="@/assets/networking.webp" alt="Eventos de Integración y Networking" class="w-full h-40 object-cover rounded mb-4">
+            <h3 class="text-xl font-semibold text-blue-700">Eventos de Integración</h3>
             <p class="text-gray-700">
               Organizamos actividades culturales y ferias de empleo que promueven el intercambio y la creación de redes de apoyo entre migrantes y la comunidad local.
             </p>
@@ -76,7 +76,7 @@
           </p>
         </div>
         <div class="md:w-1/2">
-          <img src="@/assets/impact.jpg" alt="Nuestro Impacto" class="rounded-lg shadow-md w-full h-auto">
+          <img src="@/assets/impact.webp" alt="Nuestro Impacto" class="rounded-lg shadow-md w-full h-auto">
         </div>
       </div>
     </section>
@@ -95,7 +95,7 @@
     <section class="my-16 bg-blue-50 py-12">
       <div class="container mx-auto flex flex-col md:flex-row items-center gap-8 px-6">
         <div class="md:w-1/2">
-          <img src="@/assets/future.jpg" alt="Visión de Futuro" class="rounded-lg shadow-md w-full h-auto">
+          <img src="@/assets/future.webp" alt="Visión de Futuro" class="rounded-lg shadow-md w-full h-auto">
         </div>
         <div class="md:w-1/2">
           <h2 class="text-3xl font-bold text-blue-700 mb-4">Visión de Futuro</h2>
@@ -125,7 +125,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import bannerAbout from '@/assets/BannerAbout.jpg';
+import bannerAbout from '@/assets/BannerAbout.webp';
 
 export default defineComponent({
   name: 'AboutPage',

@@ -5,7 +5,7 @@
       <!-- Logo -->
       <router-link to="/">
         <div class="flex items-center">
-          <img src="@/assets/logo.jpg" alt="Logo" class="h-8 mr-4 rounded-full shadow-sm" />
+          <img src="@/assets/logo.webp" alt="Logo" class="h-8 mr-4 rounded-full shadow-sm" />
           <router-link to="/" class="text-lg font-bold hover:text-blue-200 transition duration-300">
             Univeritas Group
           </router-link>

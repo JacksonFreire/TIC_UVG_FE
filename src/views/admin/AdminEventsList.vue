@@ -109,14 +109,15 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useEventStore } from '@/stores/eventStore';
-import { getAllEvents, deleteEvent as deleteEventService } from '@/services/eventService'; // Servicio para obtener y eliminar eventos
+import { getAllEvents, deleteEvent as deleteEventService } from '@/services/eventService';
+import { Event } from '@/models/Event'; // Importar el modelo Event
 
-const events = ref([]);   // Almacena la lista de eventos
+const events = ref<Event[]>([]);   // Lista de eventos tipada con el modelo Event
 const isLoading = ref(true); // Estado de carga de los datos
 const router = useRouter();
 const eventStore = useEventStore();
-const deleteDialog = ref(null); // Referencia al diálogo de eliminación
-const eventIdToDelete = ref<string | null>(null); // Evento que se va a eliminar
+const deleteDialog = ref<HTMLDialogElement | null>(null); // Referencia al diálogo de eliminación
+const eventIdToDelete = ref<number | null>(null); // ID del evento que se va a eliminar (numérico)
 const isDeleting = ref(false); // Estado del proceso de eliminación
 
 onMounted(async () => {
@@ -131,7 +132,7 @@ onMounted(async () => {
 });
 
 // Confirmar eliminación de un evento
-const confirmDelete = (eventId: string) => {
+const confirmDelete = (eventId: number) => {
   eventIdToDelete.value = eventId;
   deleteDialog.value?.showModal();
 };
@@ -149,7 +150,7 @@ const deleteEvent = async () => {
   isDeleting.value = true; // Mostrar loader
 
   try {
-    await deleteEventService(Number(eventIdToDelete.value));
+    await deleteEventService(eventIdToDelete.value);
     events.value = events.value.filter(event => event.id !== eventIdToDelete.value);
     closeDialog(); // Cerrar el diálogo después de eliminar
   } catch (error) {
@@ -160,18 +161,18 @@ const deleteEvent = async () => {
 };
 
 // Navegar a la vista de inscripciones
-const viewEnrollments = (eventId: string, eventName: string) => {
+const viewEnrollments = (eventId: number, eventName: string) => { // Ahora eventId es número
   eventStore.setSelectedEvent(eventId, eventName);
   router.push({ name: 'EventEnrollments', params: { eventId } });
 };
 
 // Navegar a la vista de edición de eventos
-const editEvent = (eventId: string) => {
+const editEvent = (eventId: number) => { // Ahora eventId es número
   router.push({ name: 'UpdateEvent', params: { id: eventId } });
 };
 
 // Ver detalles del evento (Placeholder)
-const viewDetails = (eventId: string) => {
+const viewDetails = (eventId: number) => { // Ahora eventId es número
   console.log('Ver detalles del evento:', eventId);
 };
 

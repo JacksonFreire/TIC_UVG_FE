@@ -13,12 +13,13 @@
           <span class="ml-2">Inscripciones a Eventos</span>
         </router-link>
       </li>
+      <!--
       <li>
         <router-link to="/dashboard/statistics" class="flex items-center p-2 rounded-lg hover:bg-gray-700">
           <i class="fas fa-chart-bar"></i>
           <span class="ml-2">Estadísticas</span>
         </router-link>
-      </li>
+      </li> -->
       <li>
         <button @click="logout" class="flex items-center p-2 w-full text-left rounded-lg hover:bg-gray-700 focus:outline-none">
           <i class="fas fa-sign-out-alt"></i>

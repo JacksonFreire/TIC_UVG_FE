@@ -95,19 +95,20 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useCourseStore } from '@/stores/courseStore';
 import { getAllCourses, deleteCourse } from '@/services/coursesService';
+import { Course } from '@/models/Course'; // Importar el modelo
 
-const courses = ref([]);   // Almacena la lista de cursos
-const isLoading = ref(true); // Estado de carga de los datos
+const courses = ref<Course[]>([]); // Tipo explícito de Course[]
+const isLoading = ref(true);
 const router = useRouter();
-const courseStore = useCourseStore(); // Usar el store de cursos
+const courseStore = useCourseStore();
 
-const notificationDialog = ref(null);
+const notificationDialog = ref<HTMLDialogElement | null>(null); // Ref correctamente tipada
 const dialogMessage = ref('');
 const dialogTitle = ref('');
 const dialogClass = ref('');
 const dialogIcon = ref(['fas', 'check-circle']);
 const dialogTitleClass = ref('');
-const isDeleting = ref<string | null>(null);
+const isDeleting = ref<number | null>(null); // Usar el tipo number, ya que courseId es un número
 
 // Mostrar el diálogo de éxito o error
 const showDialog = (message: string, type: 'success' | 'error') => {
@@ -144,28 +145,28 @@ onMounted(async () => {
 });
 
 // Eliminar un curso
-const deleteCourseHandler = async (courseId: string) => {
+const deleteCourseHandler = async (courseId: number) => {
   isDeleting.value = courseId; // Mostrar el loader para el curso que se está eliminando
   try {
-    await deleteCourse(Number(courseId));
+    await deleteCourse(courseId);
     courses.value = courses.value.filter(course => course.id !== courseId); // Remover el curso de la lista
-    showDialog('Curso eliminado exitosamente', 'success'); // Mostrar diálogo de éxito
+    showDialog('Curso eliminado exitosamente', 'success');
   } catch (error) {
     console.error('Error al eliminar el curso:', error);
-    showDialog('Error al eliminar el curso', 'error'); // Mostrar diálogo de error
+    showDialog('Error al eliminar el curso', 'error');
   } finally {
-    isDeleting.value = null; // Ocultar el loader
+    isDeleting.value = null;
   }
 };
 
 // Navegar a la vista de inscripciones
-const viewEnrollments = (courseId: string, courseName: string) => {
-  courseStore.setSelectedCourse(courseId, courseName);  // Guardamos el curso seleccionado en el store
+const viewEnrollments = (courseId: number, courseName: string) => {
+  courseStore.setSelectedCourse(courseId, courseName);
   router.push({ name: 'CourseEnrollments', params: { courseId } });
 };
 
 // Editar un curso
-const editCourse = (courseId: string) => {
+const editCourse = (courseId: number) => {
   router.push({ name: 'UpdateCourse', params: { id: courseId } });
 };
 

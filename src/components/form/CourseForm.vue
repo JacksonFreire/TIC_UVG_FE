@@ -269,7 +269,7 @@ const props = defineProps({
 });
 
 const form = ref({ ...props.existingCourse });
-const notificationDialog = ref(null);
+const notificationDialog = ref<HTMLDialogElement | null>(null);
 const dialogMessage = ref('');
 const dialogTitle = ref('');
 const dialogClass = ref('');
