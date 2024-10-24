@@ -43,7 +43,7 @@
     </section>
 
     <!-- Sección: Eventos que se acercan -->
-    <section class="my-12">
+    <section v-if="homeEvents.length > 0" class="my-12">
       <h2 class="text-3xl font-bold text-center text-blue-700 mb-8">Eventos que se acercan</h2>
       <div v-if="isLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6 px-4">
         <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
@@ -76,7 +76,7 @@
     </section>
 
     <!-- Sección: Cursos que se acercan -->
-    <section class="my-12">
+    <section v-if="homeCourses.length > 0" class="my-12">
       <h2 class="text-3xl font-bold text-center text-blue-700 mb-8">Cursos que se acercan</h2>
       <div v-if="isLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6 px-4">
         <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
