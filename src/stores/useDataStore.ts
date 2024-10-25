@@ -5,10 +5,11 @@ import { getAllEvents } from '@/services/eventService';
 // Interfaces
 import { Course } from '@/models/Course';
 import { Event } from '@/models/Event';
+import { CourseListItem } from '@/models/CourseListItem';
 
 export const useDataStore = defineStore('dataStore', {
   state: () => ({
-    courses: [] as Course[],
+    courses: [] as CourseListItem[],
     events: [] as Event[],
     homeCourses: [] as Course[],
     homeEvents: [] as Event[],
