@@ -68,7 +68,7 @@
 
     <!-- Paginación Mejorada -->
     <div
-        v-if="!isLoading"
+        v-if="totalPagesEvents > 0"
         class="flex flex-col items-center mt-8 space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-2"
     >
       <button
