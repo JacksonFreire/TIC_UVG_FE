@@ -46,7 +46,7 @@
             <span class="font-semibold">Fecha:</span> {{ formatDate(course.startDate) }} - {{ formatDate(course.endDate) }}
           </p>
           <p class="text-sm text-gray-500 mb-4">
-            <span class="font-semibold">Instructor:</span> {{ course.instructor?.name || 'No asignado' }}
+            <span class="font-semibold">Instructor:</span> {{ course.instructorName || 'No asignado' }}
           </p>
           <button
               @click="navigateToDetails(course.id)"
