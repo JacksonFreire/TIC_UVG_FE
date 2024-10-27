@@ -12,12 +12,12 @@
     <div v-else-if="event" class="bg-white shadow-lg rounded-lg overflow-hidden">
       <!-- Imagen del evento -->
       <div class="relative">
-        <img :src="'data:image/jpeg;base64,' + event.image" alt="Event Image" class="w-full h-64 object-cover">
+        <img :src="event.imageUrl" alt="Event Image" class="w-full h-64 object-cover">
         <div class="absolute bottom-2 left-2 bg-white text-gray-800 text-sm font-bold px-2 py-1 rounded shadow-md">
           {{ event.price > 0 ? '$' + event.price.toFixed(2) : 'Gratis' }}
         </div>
       </div>
-      
+
       <div class="p-6">
         <h2 class="text-3xl font-bold text-gray-800 mb-4">{{ event.name }}</h2>
         <p class="text-gray-500 mb-4">{{ formatDate(event.startDate) }} - {{ formatDate(event.endDate) }}</p>
@@ -29,10 +29,10 @@
         <p class="text-sm text-gray-600 mb-4"><span class="font-semibold">Detalles adicionales:</span> {{ event.additionalDetails }}</p>
 
         <!-- Botón para inscribirse al evento -->
-        <button 
-          @click="registerForEventHandler" 
-          :disabled="isRegistered || isLoading"
-          class="mt-4 bg-green-500 text-white px-6 py-2 rounded-full shadow-md hover:bg-green-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+        <button
+            @click="registerForEventHandler"
+            :disabled="isRegistered || isLoading"
+            class="mt-4 bg-green-500 text-white px-6 py-2 rounded-full shadow-md hover:bg-green-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
           Inscribirse al Evento
         </button>
       </div>
@@ -65,7 +65,7 @@ interface Event {
   description: string;
   location: string;
   price: number;
-  image: string;
+  imageUrl: string; // Cambio de image a imageUrl
   startDate: string;
   endDate: string;
   category: string;

@@ -19,7 +19,7 @@
           </p>
         </div>
         <div class="w-48 flex-shrink-0">
-          <img :src="'data:image/jpeg;base64,' + course.image" alt="Imagen del curso" class="rounded-lg shadow-md w-full h-48 object-cover">
+          <img :src="course.imageUrl" alt="Imagen del curso" class="rounded-lg shadow-md w-full h-48 object-cover">
         </div>
       </div>
 
@@ -52,10 +52,10 @@
 
       <!-- Botón de Inscripción -->
       <div class="text-center">
-        <button 
-          @click="handleEnroll" 
-          :disabled="isEnrolled || isLoading" 
-          class="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-green-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        <button
+            @click="handleEnroll"
+            :disabled="isEnrolled || isLoading"
+            class="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg hover:bg-green-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Inscribirme
         </button>
@@ -97,7 +97,7 @@ interface Course {
   duration: string | null;
   level: string | null;
   eventPlace: string;
-  image: string; // Imagen en base64
+  imageUrl: string; // Imagen en base64
   startDate: string;
   endDate: string;
   instructor: Instructor | null;

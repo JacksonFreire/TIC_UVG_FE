@@ -142,7 +142,7 @@ const props = defineProps({
       location: '',
       price: 0.0,
       category: '',
-      image: null,
+      imageUrl: '', // URL de la imagen del evento
       additionalDetails: '',
     }),
   },
@@ -155,7 +155,7 @@ const props = defineProps({
 const form = ref({ ...props.existingEvent });
 const isSubmittingLocal = ref(false);
 const router = useRouter();
-const previewImage = ref(form.value.image ? `data:image/jpeg;base64,${form.value.image}` : null);
+const previewImage = ref(form.value.imageUrl || null);
 const notificationDialog = ref<HTMLDialogElement | null>(null);
 const dialogMessage = ref('');
 const dialogTitle = ref('');
@@ -168,10 +168,14 @@ const onFileChange = (event: Event) => {
   const input = event.target as HTMLInputElement;
   if (input?.files?.length) {
     const file = input.files[0];
+    if (file.size > 2000000) {
+      console.error('El archivo es demasiado grande');
+      return;
+    }
     const reader = new FileReader();
     reader.onload = () => {
-      form.value.image = reader.result as string;
-      previewImage.value = reader.result as string;
+      form.value.imageUrl = reader.result as string; // Almacena la imagen en formato base64 en `imageUrl`
+      previewImage.value = reader.result as string; // Actualiza la vista previa de la imagen
     };
     reader.readAsDataURL(file);
   }
@@ -232,12 +236,8 @@ watch(
     () => props.existingEvent,
     (newEvent) => {
       form.value = { ...newEvent };
-      previewImage.value = newEvent.image ? `data:image/jpeg;base64,${newEvent.image}` : null;
+      previewImage.value = newEvent.imageUrl || null;
     },
     { immediate: true }
 );
 </script>
-
-<style scoped>
-/* Estilos personalizados si es necesario */
-</style>
