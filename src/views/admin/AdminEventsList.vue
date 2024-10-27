@@ -60,6 +60,7 @@
               </button>
               <span class="tooltip-text group-hover:opacity-100">Eliminar Evento</span>
             </div>
+            <!--
             <div class="relative inline-block group mx-2">
               <button
                   @click="viewDetails(event.id)"
@@ -69,7 +70,7 @@
                 <font-awesome-icon :icon="['fas', 'eye']" />
               </button>
               <span class="tooltip-text group-hover:opacity-100">Ver Detalles</span>
-            </div>
+            </div> -->
           </td>
         </tr>
         <tr v-if="!events.length && !isLoading" class="text-center">
@@ -171,11 +172,6 @@ const editEvent = (eventId: number) => { // Ahora eventId es número
   router.push({ name: 'UpdateEvent', params: { id: eventId } });
 };
 
-// Ver detalles del evento (Placeholder)
-const viewDetails = (eventId: number) => { // Ahora eventId es número
-  console.log('Ver detalles del evento:', eventId);
-};
-
 // Añadir un evento
 const addEvent = () => {
   router.push({ name: 'AddEvent' });
@@ -205,7 +201,7 @@ const formatDate = (date: string) => {
   transform: translateX(-50%);
   opacity: 0;
   transition: opacity 0.4s, transform 0.4s;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .group:hover .tooltip-text {
