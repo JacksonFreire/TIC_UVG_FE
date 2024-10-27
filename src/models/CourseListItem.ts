@@ -4,6 +4,6 @@ export interface CourseListItem {
   startDate: string;
   endDate: string;
   price: number;
-  image: string;
+  imageUrl: string;
   instructorName: string;
 }

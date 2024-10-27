@@ -32,7 +32,7 @@ export const useDataStore = defineStore('dataStore', {
             startDate: course.startDate,
             endDate: course.endDate,
             price: course.price ?? 0,
-            image: course.image,  // Imagen en base64
+            imageUrl: course.imageUrl, // Ahora utilizamos imageUrl en lugar de image
             instructorName: course.instructorName,
           }));
 
@@ -71,7 +71,7 @@ export const useDataStore = defineStore('dataStore', {
             endDate: event.endDate,
             location: event.location,
             price: event.price ?? 0,
-            image: event.image,  // Imagen en base64
+            imageUrl: event.imageUrl, // Ahora utilizamos imageUrl en lugar de image
           }));
 
           // Actualizar el número total de páginas para eventos
@@ -109,7 +109,7 @@ export const useDataStore = defineStore('dataStore', {
           startDate: course.startDate,
           endDate: course.endDate,
           price: course.price ?? 0,
-          image: course.image,
+          imageUrl: course.imageUrl, // Ahora utilizamos imageUrl en lugar de image
           instructorName: course.instructorName,
         }));
 
@@ -119,9 +119,9 @@ export const useDataStore = defineStore('dataStore', {
           startDate: event.startDate,
           endDate: event.endDate ?? '',
           location: event.location,
-          image: event.image,
+          imageUrl: event.imageUrl, // Ahora utilizamos imageUrl en lugar de image
           price: event.price ?? 0,
-          description: event.description,  // Incluyendo descripción
+          description: event.description, // Incluyendo descripción
         }));
       } catch (error) {
         console.error('Error al cargar los datos de la home:', error);

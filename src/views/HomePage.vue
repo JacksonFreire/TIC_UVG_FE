@@ -67,7 +67,7 @@
             <p class="event-description text-sm text-gray-700">{{ event.description }}</p>
           </div>
           <img
-              :src="`data:image/jpeg;base64,${event.image}`"
+              :src="event.imageUrl"
               alt="Event Image"
               class="event-image w-20 h-20 object-cover rounded-lg ml-4"
           />
@@ -90,7 +90,7 @@
             class="course-item bg-white shadow-md rounded overflow-hidden transform transition hover:scale-105 hover:rotate-1"
         >
           <img
-              :src="`data:image/jpeg;base64,${course.image}`"
+              :src="course.imageUrl"
               alt="Imagen del Curso"
               class="w-full h-40 object-cover"
           />

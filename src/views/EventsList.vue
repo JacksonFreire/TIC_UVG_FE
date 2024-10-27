@@ -57,7 +57,7 @@
           <!-- Imagen del Evento -->
           <div class="w-full lg:w-1/3 flex-shrink-0 flex items-center justify-center bg-gray-100 order-1 lg:order-2">
             <img
-                :src="`data:image/jpeg;base64,${event.image}`"
+                :src="event.imageUrl"
                 alt="Imagen del evento"
                 class="event-image w-full h-48 lg:h-full object-cover transition-transform duration-300"
             />
@@ -91,6 +91,7 @@
     </div>
   </div>
 </template>
+
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
@@ -157,7 +158,6 @@ onMounted(() => dataStore.fetchEvents(currentPage.value));
 // Acceso al estado de carga y totalPages desde la store
 const { isLoading, totalPagesEvents } = dataStore;
 </script>
-
 
 <style scoped>
 .container {

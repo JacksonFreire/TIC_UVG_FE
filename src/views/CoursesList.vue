@@ -31,7 +31,7 @@
         <!-- Imagen del curso con precio encima -->
         <div class="relative">
           <img
-              :src="'data:image/jpeg;base64,' + course.image"
+              :src="course.imageUrl"
               alt="Imagen del curso"
               class="w-full h-40 object-cover"
           />
