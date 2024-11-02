@@ -2,7 +2,7 @@
   <div class="flex items-center justify-center min-h-screen">
     <div class="w-full max-w-lg p-8 bg-white rounded-lg shadow-lg">
       <h2 class="text-2xl font-bold text-center mb-6">Registro</h2>
-      <form @submit.prevent="submit">
+      <form @submit.prevent="submit" :class="{ 'opacity-50 pointer-events-none': isSubmitting }">
         <div v-for="(field, key) in formFields" :key="key" class="mb-4">
           <label :for="key" class="block text-sm font-medium text-gray-700">
             {{ field.label }} <span v-if="field.required" class="text-red-500">*</span>
@@ -12,35 +12,51 @@
                  v-model="form[key]"
                  :type="field.type"
                  @blur="touched[key] = true"
+                 :disabled="isSubmitting"
                  :class="{'border-red-500': touched[key] && (!form[key] || (key === 'confirmPassword' && !passwordsMatch))}"
                  class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
           />
           <input v-else
                  :id="key"
-                 @change="handleFileUpload"
-                 @blur="touched[key] = true"
-                 :class="{'border-red-500': touched[key] && !form[key]}"
-                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                 type="file"
+                 :key="fileInputKey"
+          @change="handleFileUpload"
+          @blur="touched[key] = true"
+          :disabled="isSubmitting"
+          :class="{'border-red-500': touched[key] && !form[key]}"
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          type="file"
           />
-          
+
           <p v-if="key === 'confirmPassword' && touched.confirmPassword && !passwordsMatch" class="text-red-500 text-sm mt-1">Las contraseñas no coinciden.</p>
           <p v-else-if="touched[key] && !form[key]" class="text-red-500 text-sm mt-1">{{ field.error }}</p>
         </div>
 
-        <button type="submit" :disabled="!validateForm()"
+        <button type="submit" :disabled="!validateForm() || isSubmitting"
                 class="w-full px-4 py-2 font-medium text-white bg-blue-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm"
-                :class="{'bg-gray-400 cursor-not-allowed': !validateForm(), 'bg-blue-600 hover:bg-blue-700': validateForm()}">
+                :class="{'bg-gray-400 cursor-not-allowed': !validateForm() || isSubmitting, 'bg-blue-600 hover:bg-blue-700': validateForm() && !isSubmitting}">
           Enviar
         </button>
       </form>
     </div>
+
+    <!-- Modal de resultado -->
     <transition name="fade">
-      <div v-if="isSubmitting" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
+      <div v-if="showResultDialog" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
         <div class="bg-white rounded-lg p-6 max-w-sm w-full">
-          <h3 class="text-lg font-semibold text-gray-800 text-center">Procesando...</h3>
-          <p class="text-center text-gray-600 mt-2">{{ modalMessage }}</p>
-          <div v-if="submissionError" class="text-red-500 text-sm text-center mt-4">{{ submissionError }}</div>
+          <div class="flex justify-center">
+            <i v-if="submissionError" class="fas fa-exclamation-circle text-red-500 text-4xl"></i>
+            <i v-else class="fas fa-check-circle text-green-500 text-4xl"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 text-center mt-4">
+            {{ submissionError ? 'Error' : 'Éxito' }}
+          </h3>
+          <p class="text-center text-gray-600 mt-2">
+            {{ submissionError ? submissionError : 'La operación se completó con éxito.' }}
+          </p>
+          <button @click="closeResultDialog"
+                  class="mt-4 w-full px-4 py-2 font-medium text-white bg-blue-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
+            Cerrar
+          </button>
         </div>
       </div>
     </transition>
@@ -48,13 +64,58 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { useRegisterForm } from '@/composables/useRegisterForm';
 
 export default defineComponent({
   name: 'RegisterForm',
   setup() {
-    const { form, touched, valid, isSubmitting, modalMessage, submissionError, handleFileUpload, submit, validateForm, passwordsMatch } = useRegisterForm();
+    const {
+      form,
+      touched,
+      isSubmitting,
+      modalMessage,
+      submissionError,
+      handleFileUpload,
+      submit,
+      validateForm,
+      passwordsMatch
+    } = useRegisterForm();
+
+    const showResultDialog = ref(false);
+    const fileInputKey = ref(0); // Clave dinámica para el input de archivo
+
+    // Envolver el método submit para mostrar el diálogo al hacer clic en "Enviar" y limpiar campos
+    const wrappedSubmit = async () => {
+      showResultDialog.value = true;
+      await submit();
+
+      // Limpiar los campos del formulario si la operación es exitosa (sin errores)
+      if (!submissionError.value) {
+        form.firstName = '';
+        form.lastName = '';
+        form.email = '';
+        form.username = '';
+        form.password = '';
+        form.confirmPassword = '';
+        form.phoneNumber = '';
+        form.role = 'USER';
+        form.birthDate = '';
+        form.document = null; // Limpiar el campo de documento
+
+        // Cambiar la clave del input para forzar su re-renderización y limpieza visual
+        fileInputKey.value++;
+
+        for (const key in touched) {
+          touched[key as keyof typeof touched] = false;
+        }
+      }
+    };
+
+    const closeResultDialog = () => {
+      showResultDialog.value = false;
+      submissionError.value = '';
+    };
 
     const formFields = {
       firstName: { label: 'Nombre', type: 'text', required: true, error: 'Este campo es obligatorio.' },
@@ -75,10 +136,13 @@ export default defineComponent({
       modalMessage,
       submissionError,
       handleFileUpload,
-      submit,
+      submit: wrappedSubmit,
       validateForm,
       formFields,
       passwordsMatch,
+      showResultDialog,
+      closeResultDialog,
+      fileInputKey,
     };
   },
 });
