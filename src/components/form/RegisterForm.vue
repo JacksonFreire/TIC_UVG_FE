@@ -2,33 +2,33 @@
   <div class="flex items-center justify-center min-h-screen">
     <div class="w-full max-w-lg p-8 bg-white rounded-lg shadow-lg">
       <h2 class="text-2xl font-bold text-center mb-6">Registro</h2>
-      <form @submit.prevent="submit" :class="{ 'opacity-50 pointer-events-none': isSubmitting }">
+      <form @submit.prevent="submitForm" :class="{ 'opacity-50 pointer-events-none': isSubmitting }">
         <div v-for="(field, key) in formFields" :key="key" class="mb-4">
           <label :for="key" class="block text-sm font-medium text-gray-700">
             {{ field.label }} <span v-if="field.required" class="text-red-500">*</span>
           </label>
           <input v-if="field.type !== 'file'"
                  :id="key"
-                 v-model="form[key]"
+                 v-model="form[key as keyof typeof form]"
                  :type="field.type"
-                 @blur="touched[key] = true"
+                 @blur="touched[key as keyof typeof touched] = true"
                  :disabled="isSubmitting"
-                 :class="{'border-red-500': touched[key] && (!form[key] || (key === 'confirmPassword' && !passwordsMatch))}"
+                 :class="{'border-red-500': touched[key as keyof typeof touched] && (!form[key as keyof typeof form] || (key === 'confirmPassword' && !passwordsMatch))}"
                  class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
           />
           <input v-else
                  :id="key"
                  :key="fileInputKey"
-          @change="handleFileUpload"
-          @blur="touched[key] = true"
-          :disabled="isSubmitting"
-          :class="{'border-red-500': touched[key] && !form[key]}"
-          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-          type="file"
+                 @change="handleFileUpload"
+                 @blur="touched[key as keyof typeof touched] = true"
+                 :disabled="isSubmitting"
+                 :class="{'border-red-500': touched[key as keyof typeof touched] && !form[key as keyof typeof form]}"
+                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                 type="file"
           />
 
           <p v-if="key === 'confirmPassword' && touched.confirmPassword && !passwordsMatch" class="text-red-500 text-sm mt-1">Las contraseñas no coinciden.</p>
-          <p v-else-if="touched[key] && !form[key]" class="text-red-500 text-sm mt-1">{{ field.error }}</p>
+          <p v-else-if="touched[key as keyof typeof touched] && !form[key as keyof typeof form]" class="text-red-500 text-sm mt-1">{{ field.error }}</p>
         </div>
 
         <button type="submit" :disabled="!validateForm() || isSubmitting"
@@ -48,10 +48,10 @@
             <i v-else class="fas fa-check-circle text-green-500 text-4xl"></i>
           </div>
           <h3 class="text-lg font-semibold text-gray-800 text-center mt-4">
-            {{ submissionError ? 'Error' : 'Éxito' }}
+            {{ submissionError ? '¡Algo salió mal!' : '¡Registro Exitoso!' }}
           </h3>
           <p class="text-center text-gray-600 mt-2">
-            {{ submissionError ? submissionError : 'La operación se completó con éxito.' }}
+            {{ submissionError ? userFriendlyError : 'Tu registro se completó correctamente. Revisa tu correo para verificar tu cuenta.' }}
           </p>
           <button @click="closeResultDialog"
                   class="mt-4 w-full px-4 py-2 font-medium text-white bg-blue-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
@@ -74,7 +74,6 @@ export default defineComponent({
       form,
       touched,
       isSubmitting,
-      modalMessage,
       submissionError,
       handleFileUpload,
       submit,
@@ -84,37 +83,77 @@ export default defineComponent({
 
     const showResultDialog = ref(false);
     const fileInputKey = ref(0); // Clave dinámica para el input de archivo
+    const userFriendlyError = ref('');
 
-    // Envolver el método submit para mostrar el diálogo al hacer clic en "Enviar" y limpiar campos
-    const wrappedSubmit = async () => {
-      showResultDialog.value = true;
-      await submit();
+    const submitForm = async () => {
+      isSubmitting.value = true;
+      showResultDialog.value = false;
 
-      // Limpiar los campos del formulario si la operación es exitosa (sin errores)
-      if (!submissionError.value) {
-        form.firstName = '';
-        form.lastName = '';
-        form.email = '';
-        form.username = '';
-        form.password = '';
-        form.confirmPassword = '';
-        form.phoneNumber = '';
-        form.role = 'USER';
-        form.birthDate = '';
-        form.document = null; // Limpiar el campo de documento
+      try {
+        await submit();
+        showResultDialog.value = true;
 
-        // Cambiar la clave del input para forzar su re-renderización y limpieza visual
-        fileInputKey.value++;
+        if (!submissionError.value) {
+          form.firstName = '';
+          form.lastName = '';
+          form.email = '';
+          form.username = '';
+          form.password = '';
+          form.confirmPassword = '';
+          form.phoneNumber = '';
+          form.role = 'USER';
+          form.birthDate = '';
+          form.document = null;
+          fileInputKey.value++;
 
-        for (const key in touched) {
-          touched[key as keyof typeof touched] = false;
+          for (const key in touched) {
+            touched[key as keyof typeof touched] = false;
+          }
         }
+      } catch (error: any) {
+        console.error('Detalles completos del error:', error);
+
+        if (error.response && error.response.data && typeof error.response.data === 'string') {
+          submissionError.value = error.response.data;
+        } else if (error.response && error.response.data && error.response.data.message) {
+          submissionError.value = error.response.data.message;
+        } else {
+          submissionError.value = 'No se pudo completar la solicitud. Verifica los datos e inténtalo nuevamente.';
+        }
+
+        userFriendlyError.value = handleUserErrorMessage(error);
+        showResultDialog.value = true;
+      } finally {
+        isSubmitting.value = false;
+      }
+    };
+
+    const handleUserErrorMessage = (error: any): string => {
+      if (error.response) {
+        if (error.response.data && error.response.data.message) {
+          return error.response.data.message;
+        }
+        switch (error.response.status) {
+          case 400:
+            return 'Algunos datos ingresados no son válidos. Verifica la información y vuelve a intentarlo.';
+          case 403:
+            return 'Este correo electrónico ya está registrado. Si no has verificado tu cuenta, revisa tu correo para verificarla o usa otro correo electrónico.';
+          case 500:
+            return 'Hubo un problema en nuestro servidor. Por favor, inténtalo de nuevo más tarde.';
+          default:
+            return `Error inesperado (${error.response.status}). Por favor, inténtalo de nuevo.`;
+        }
+      } else if (error.request) {
+        return 'No pudimos conectar con el servidor. Verifica tu conexión a Internet e inténtalo de nuevo.';
+      } else {
+        return 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo más tarde.';
       }
     };
 
     const closeResultDialog = () => {
       showResultDialog.value = false;
       submissionError.value = '';
+      userFriendlyError.value = '';
     };
 
     const formFields = {
@@ -133,16 +172,16 @@ export default defineComponent({
       form,
       touched,
       isSubmitting,
-      modalMessage,
       submissionError,
       handleFileUpload,
-      submit: wrappedSubmit,
+      submitForm,
       validateForm,
-      formFields,
       passwordsMatch,
       showResultDialog,
       closeResultDialog,
       fileInputKey,
+      userFriendlyError,
+      formFields, // Asegúrate de devolver formFields
     };
   },
 });
