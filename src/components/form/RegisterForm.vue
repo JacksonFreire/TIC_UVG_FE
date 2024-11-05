@@ -191,12 +191,4 @@ export default defineComponent({
 .has-error input {
   border-color: #f87171;
 }
-
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.5s;
-}
-
-.fade-enter, .fade-leave-to {
-  opacity: 0;
-}
 </style>
