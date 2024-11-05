@@ -33,7 +33,7 @@
               type="password" 
               @blur="touched.confirmPassword = true"
               :class="{'border-red-500': touched.confirmPassword && confirmPasswordError}"
-              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             />
             <p v-if="confirmPasswordError" class="text-red-500 text-sm mt-1">{{ confirmPasswordError }}</p>
           </div>
@@ -41,7 +41,7 @@
           <!-- Botón de Enviar -->
           <button 
             type="submit" 
-            class="w-full px-4 py-2 mt-4 font-medium text-white bg-indigo-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm hover:bg-indigo-700"
+            class="w-full px-4 py-2 mt-4 font-medium text-white bg-blue-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm hover:bg-blue-700"
           >
             Restablecer Contraseña
           </button>
