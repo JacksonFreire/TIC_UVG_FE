@@ -125,15 +125,20 @@
       />
     </div>
 
+    <!-- Campo de selección de Instructor -->
     <div>
-      <label for="instructorId" class="block text-sm font-medium text-gray-700">Instructor ID</label>
-      <input
-          type="number"
-          id="instructorId"
+      <label for="instructor" class="block text-sm font-medium text-gray-700">Instructor</label>
+      <select
+          id="instructor"
           v-model="form.instructor.id"
           class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           required
-      />
+      >
+        <option value="" disabled>Seleccione un instructor</option>
+        <option v-for="instructor in instructors" :key="instructor.id" :value="instructor.id">
+          {{ instructor.name }}
+        </option>
+      </select>
     </div>
 
     <!-- Campos para curriculums -->
@@ -213,9 +218,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { createCourse, updateCourse } from '@/services/coursesService';
+import { onMounted, ref, watch } from 'vue';
+import { getAllInstructors, createCourse, updateCourse } from '@/services/coursesService';
 import { useRouter } from 'vue-router';
+import { ItemInstructor } from '@/models/ItemInstructor';
+
+const instructors = ref<ItemInstructor[]>([]);
 
 const props = defineProps({
   existingCourse: {
@@ -254,6 +262,16 @@ const form = ref({ ...props.existingCourse });
 const previewImage = ref(form.value.imageUrl || null); // Vista previa de la imagen desde la URL
 const isSubmittingLocal = ref(false);
 const router = useRouter();
+
+
+// Cargar la lista de instructores al montar el componente
+onMounted(async () => {
+  try {
+    instructors.value = await getAllInstructors();
+  } catch (error) {
+    console.error('Error al cargar instructores:', error);
+  }
+});
 
 // Manejar la carga de imágenes
 const onFileChange = (event: Event) => {
@@ -302,6 +320,8 @@ const submitFormCourse = async () => {
     const payload = { ...form.value };
     payload.startDate = new Date(payload.startDate).toISOString();
     payload.endDate = new Date(payload.endDate).toISOString();
+
+    payload.instructor = form.value.instructor;
 
     if (props.isEditing) {
       await updateCourse(payload.id, payload);

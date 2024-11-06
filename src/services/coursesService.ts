@@ -122,3 +122,15 @@ export const deleteCourse = async (courseId: number) => {
     throw new Error('Error al eliminar el curso.');
   }
 };
+
+// Función para obtener todos los instructores (requiere autenticación)
+export const getAllInstructors = async () => {
+  const headers = getAuthHeaders(); // Agrega los encabezados de autenticación
+  try {
+    const response = await axios.get(`${API_URL}/api/activities/instructor/list`, { headers });
+    return response.data;
+  } catch (error) {
+    console.error('Error al obtener la lista de instructores:', error);
+    throw new Error('Error al obtener la lista de instructores.');
+  }
+};
