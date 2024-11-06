@@ -1,13 +1,13 @@
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 
 // URL base para la API
 const API_URL = import.meta.env.VITE_APP_BASE_URL_API;
 
-// Función para obtener el token de autorización
-const getToken = () => {
+// Función para obtener los encabezados de autorización
+const getAuthHeaders = () => {
   const token = localStorage.getItem('token');
   if (!token) throw new Error('No authenticated');
-  return token;
+  return { Authorization: `Bearer ${token}` };
 };
 
 // Función para manejar errores de Axios
@@ -25,7 +25,7 @@ const handleAxiosError = (error: unknown) => {
   return { message: 'Error desconocido', status: null };
 };
 
-// Función para obtener todos los eventos paginados
+// Función para obtener todos los eventos paginados (público)
 export const getAllEvents = async (page: number, size: number) => {
   try {
     const response = await axios.get(`${API_URL}/api/activities/events`, {
@@ -39,7 +39,7 @@ export const getAllEvents = async (page: number, size: number) => {
   }
 };
 
-// Función para obtener un evento por su ID
+// Función para obtener un evento por su ID (público)
 export const getEventById = async (id: string) => {
   try {
     const response = await axios.get(`${API_URL}/api/activities/events/${id}`);
@@ -51,10 +51,11 @@ export const getEventById = async (id: string) => {
   }
 };
 
-// Función para crear un evento
+// Función para crear un evento (requiere rol ADMIN)
 export const createEvent = async (eventData: any) => {
+  const headers = getAuthHeaders();
   try {
-    const response = await axios.post(`${API_URL}/api/activities/events/create`, eventData);
+    const response = await axios.post(`${API_URL}/api/activities/events/create`, eventData, { headers });
     return response.data;
   } catch (error) {
     const { message } = handleAxiosError(error);
@@ -63,10 +64,11 @@ export const createEvent = async (eventData: any) => {
   }
 };
 
-// Función para actualizar un evento
+// Función para actualizar un evento (requiere rol ADMIN)
 export const updateEvent = async (id: number, eventData: any) => {
+  const headers = getAuthHeaders();
   try {
-    const response = await axios.put(`${API_URL}/api/activities/events/update/${id}`, eventData);
+    const response = await axios.put(`${API_URL}/api/activities/events/update/${id}`, eventData, { headers });
     return response.data;
   } catch (error) {
     const { message } = handleAxiosError(error);
@@ -75,10 +77,11 @@ export const updateEvent = async (id: number, eventData: any) => {
   }
 };
 
-// Función para eliminar un evento
+// Función para eliminar un evento (requiere rol ADMIN)
 export const deleteEvent = async (id: number) => {
+  const headers = getAuthHeaders();
   try {
-    const response = await axios.delete(`${API_URL}/api/activities/events/delete/${id}`);
+    const response = await axios.delete(`${API_URL}/api/activities/events/delete/${id}`, { headers });
     return response.data;
   } catch (error) {
     const { message } = handleAxiosError(error);
@@ -87,10 +90,9 @@ export const deleteEvent = async (id: number) => {
   }
 };
 
-// Inscribir a un usuario en un evento
+// Inscribir a un usuario en un evento (requiere rol USER)
 export const registerForEvent = async (eventId: number, userId: number) => {
-  const token = getToken();
-  const headers = { Authorization: `Bearer ${token}` };
+  const headers = getAuthHeaders();
   try {
     await axios.post(`${API_URL}/api/enrollments/event/${eventId}`, { userId }, { headers });
   } catch (error) {
@@ -100,17 +102,13 @@ export const registerForEvent = async (eventId: number, userId: number) => {
   }
 };
 
-// Verificar si el usuario está inscrito en un evento
+// Verificar si el usuario está inscrito en un evento (requiere rol USER)
 export const checkEventRegistration = async (eventId: string, userId: number) => {
-  const token = getToken();
-  const headers = { Authorization: `Bearer ${token}` };
+  const headers = getAuthHeaders();
   try {
     const response = await axios.get(`${API_URL}/api/enrollments/isEnrolledEvent`, {
       headers,
-      params: {
-        eventId,
-        userId,
-      },
+      params: { eventId, userId },
     });
     return response.data;
   } catch (error) {
@@ -120,10 +118,9 @@ export const checkEventRegistration = async (eventId: string, userId: number) =>
   }
 };
 
-// Función para obtener inscripciones de un evento por su ID, con filtro opcional por estado
+// Función para obtener inscripciones de un evento (requiere rol ADMIN)
 export const getEnrollmentsByEvent = async (eventId: number, status?: string) => {
-  const token = getToken();
-  const headers = { Authorization: `Bearer ${token}` };
+  const headers = getAuthHeaders();
   try {
     const response = await axios.get(`${API_URL}/api/enrollments/admin/event/${eventId}`, {
       headers,
@@ -141,10 +138,9 @@ export const getEnrollmentsByEvent = async (eventId: number, status?: string) =>
   }
 };
 
-// Guardar cambios en la inscripción de un participante en el evento
+// Guardar cambios en la inscripción de un participante (requiere rol ADMIN)
 export const saveEnrollmentChanges = async (enrollmentDTO: { userId: number, eventId: number, status: string, comments: string, courseId?: number }) => {
-  const token = getToken();
-  const headers = { Authorization: `Bearer ${token}` };
+  const headers = getAuthHeaders();
   try {
     await axios.put(`${API_URL}/api/enrollments/admin/updateEnrollment`, enrollmentDTO, { headers });
     console.log('Cambios guardados correctamente');
