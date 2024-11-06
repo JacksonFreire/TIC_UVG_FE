@@ -43,7 +43,7 @@
     </section>
 
     <!-- Sección: Eventos que se acercan -->
-    <section class="my-12">
+    <section v-if="homeEvents.length > 0" class="my-12">
       <h2 class="text-3xl font-bold text-center text-blue-700 mb-8">Eventos que se acercan</h2>
       <div v-if="isLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6 px-4">
         <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
@@ -52,10 +52,10 @@
       </div>
       <div v-else class="container mx-auto px-4">
         <div
-          v-for="event in homeEvents"
-          :key="event.id"
-          class="event-item flex items-center p-4 bg-white shadow-md rounded-lg mb-4 transition hover:scale-105 cursor-pointer"
-          @click="navigateToEventDetails(event.id)"
+            v-for="event in homeEvents"
+            :key="event.id"
+            class="event-item flex items-center p-4 bg-white shadow-md rounded-lg mb-4 transition hover:scale-105 cursor-pointer"
+            @click="navigateToEventDetails(event.id)"
         >
           <div class="date-container flex-shrink-0 mr-4">
             <div class="date-number">{{ formatDate(event.startDate, 'DD') }}</div>
@@ -67,16 +67,16 @@
             <p class="event-description text-sm text-gray-700">{{ event.description }}</p>
           </div>
           <img
-            :src="`data:image/jpeg;base64,${event.image}`"
-            alt="Event Image"
-            class="event-image w-20 h-20 object-cover rounded-lg ml-4"
+              :src="event.imageUrl"
+              alt="Event Image"
+              class="event-image w-20 h-20 object-cover rounded-lg ml-4"
           />
         </div>
       </div>
     </section>
 
     <!-- Sección: Cursos que se acercan -->
-    <section class="my-12">
+    <section v-if="homeCourses.length > 0" class="my-12">
       <h2 class="text-3xl font-bold text-center text-blue-700 mb-8">Cursos que se acercan</h2>
       <div v-if="isLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6 px-4">
         <div class="animate-pulse bg-gray-200 rounded-lg p-4 h-48"></div>
@@ -85,21 +85,21 @@
       </div>
       <div v-else class="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
         <div
-          v-for="course in homeCourses"
-          :key="course.id"
-          class="course-item bg-white shadow-md rounded overflow-hidden transform transition hover:scale-105 hover:rotate-1"
+            v-for="course in homeCourses"
+            :key="course.id"
+            class="course-item bg-white shadow-md rounded overflow-hidden transform transition hover:scale-105 hover:rotate-1"
         >
           <img
-            :src="`data:image/jpeg;base64,${course.image}`"
-            alt="Imagen del Curso"
-            class="w-full h-40 object-cover"
+              :src="course.imageUrl"
+              alt="Imagen del Curso"
+              class="w-full h-40 object-cover"
           />
           <div class="p-4">
             <h3 class="text-xl font-semibold text-blue-700 mb-2">{{ course.name }}</h3>
             <p class="text-sm text-gray-600 mb-4">{{ formatDate(course.startDate) }} - {{ formatDate(course.endDate) }}</p>
             <router-link
-              :to="`/courses/${course.id}`"
-              class="inline-block px-4 py-2 mt-2 text-white bg-blue-600 rounded hover:bg-blue-700"
+                :to="`/courses/${course.id}`"
+                class="inline-block px-4 py-2 mt-2 text-white bg-blue-600 rounded hover:bg-blue-700"
             >
               Más Información
             </router-link>
@@ -139,7 +139,7 @@ export default defineComponent({
 
     // Función para formatear fechas
     const formatDate = (date: string, format?: string) => {
-      let options: Intl.DateTimeFormatOptions = {};
+      let options: Intl.DateTimeFormatOptions;
       if (format === 'DD') {
         options = { day: '2-digit' };
       } else if (format === 'MMMM YYYY') {
@@ -225,10 +225,9 @@ export default defineComponent({
   background: #1d4ed8;
   color: #fff;
   border-radius: 8px;
-  padding: 5px 10px;
+  padding: 5px 20px 5px 10px; /* Arriba, derecha, abajo, izquierda */
   text-align: center;
   font-size: 1.2rem;
-  padding-right: 20px;
   min-width: 100px;
   display: flex;
   flex-direction: column;

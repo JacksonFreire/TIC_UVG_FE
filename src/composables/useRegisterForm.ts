@@ -37,19 +37,29 @@ export function useRegisterForm() {
   const modalMessage = ref('Por favor, espera mientras procesamos tu solicitud.');
   const submissionError = ref('');
 
+  // Tipos de archivos permitidos (formatos comunes de cámaras de teléfonos)
+  const allowedFileTypes = ['image/jpeg', 'image/png', 'image/heic', 'image/heif', 'image/webp'];
+
   // Computed property to check if passwords match
   const passwordsMatch = computed(() => form.password === form.confirmPassword);
 
   const validateForm = (): boolean => {
     return !!form.firstName && !!form.lastName && !!form.email && !!form.username &&
-      !!form.password && passwordsMatch.value &&
-      !!form.phoneNumber && !!form.role && !!form.birthDate && !!form.document;
+        !!form.password && passwordsMatch.value &&
+        !!form.phoneNumber && !!form.role && !!form.birthDate && !!form.document;
   };
 
   const handleFileUpload = (event: Event) => {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
-      form.document = file;
+      // Verificar si el archivo es de un tipo permitido
+      if (allowedFileTypes.includes(file.type)) {
+        form.document = file;
+        console.log(`Archivo cargado: ${file.name}, tipo: ${file.type}`);
+      } else {
+        alert('Tipo de archivo no soportado. Por favor, sube una imagen en formato JPEG, PNG, HEIC, HEIF o WebP.');
+        form.document = null;
+      }
     }
   };
 
@@ -59,15 +69,21 @@ export function useRegisterForm() {
       try {
         const formData = new FormData();
 
+        // Agrega todos los campos del formulario a formData
         for (const key in form) {
           if (key !== 'confirmPassword') {
             const value = form[key as keyof typeof form];
-            if (value !== null) {
-              formData.append(key, value as string | Blob);
+            if (value !== null && value !== undefined) {
+              if (key === 'document' && value instanceof File) {
+                formData.append(key, value); // Agrega el archivo
+              } else {
+                formData.append(key, value.toString()); // Agrega otros campos como string
+              }
             }
           }
         }
 
+        // Envía formData al método register
         await userStore.register(formData);
 
         // Clear form after successful submission

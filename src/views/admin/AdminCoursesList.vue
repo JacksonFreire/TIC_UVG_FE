@@ -32,7 +32,7 @@
             <!-- Botones de acciones con tooltips usando CSS mejorado -->
             <div class="relative inline-block group mx-2">
               <button
-                  @click="viewEnrollments(String(course.id), course.name)"
+                  @click="viewEnrollments(course.id, course.name)"
                   class="text-blue-500 hover:text-blue-700"
                   aria-label="Ver Inscripciones"
               >
@@ -42,7 +42,7 @@
             </div>
             <div class="relative inline-block group mx-2">
               <button
-                  @click="editCourse(String(course.id))"
+                  @click="editCourse(course.id)"
                   class="text-yellow-500 hover:text-yellow-700"
                   aria-label="Editar Curso"
               >
@@ -52,11 +52,13 @@
             </div>
             <div class="relative inline-block group mx-2">
               <button
-                  @click="deleteCourse(String(course.id))"
+                  @click="deleteCourseHandler(course.id)"
                   class="text-red-500 hover:text-red-700"
                   aria-label="Eliminar Curso"
+                  :disabled="isDeleting === course.id"
               >
-                <font-awesome-icon :icon="['fas', 'trash']" />
+              <font-awesome-icon v-if="isDeleting !== course.id" :icon="['fas', 'trash']" />
+              <font-awesome-icon v-else :icon="['fas', 'spinner']" class="fa-spin" />
               </button>
               <span class="tooltip-text group-hover:opacity-100">Eliminar Curso</span>
             </div>
@@ -67,6 +69,23 @@
         </tr>
         </tbody>
       </table>
+      <!-- Diálogo de notificación -->
+      <dialog ref="notificationDialog" class="rounded-lg shadow-xl p-6 max-w-md w-full">
+        <div class="flex items-start px-4 py-3 rounded-lg" :class="dialogClass">
+          <div class="flex-shrink-0 mr-4">
+            <font-awesome-icon :icon="dialogIcon" class="text-3xl" />
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold" :class="dialogTitleClass">{{ dialogTitle }}</h3>
+            <p class="mt-2 text-gray-700">{{ dialogMessage }}</p>
+          </div>
+        </div>
+        <div class="flex justify-end mt-4">
+          <button @click="closeDialog" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-300 focus:ring-offset-2">
+            Cerrar
+          </button>
+        </div>
+      </dialog>
     </div>
   </div>
 </template>
@@ -74,50 +93,86 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { useCourseStore } from '@/stores/courseStore'; // Importar el store de cursos
-import { getAllCourses } from '@/services/coursesService'; // Servicio para obtener la lista de cursos
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { Course } from '@/models/Course';
+import { useCourseStore } from '@/stores/courseStore';
+import { getAllCourses, deleteCourse } from '@/services/coursesService';
+import { Course } from '@/models/Course'; // Importar el modelo
 
-const courses = ref<Course[]>([]); // Almacena la lista de cursos
-const isLoading = ref(true); // Estado de carga de los datos
+const courses = ref<Course[]>([]); // Tipo explícito de Course[]
+const isLoading = ref(true);
 const router = useRouter();
-const courseStore = useCourseStore(); // Usar el store de cursos
+const courseStore = useCourseStore();
 
+const notificationDialog = ref<HTMLDialogElement | null>(null); // Ref correctamente tipada
+const dialogMessage = ref('');
+const dialogTitle = ref('');
+const dialogClass = ref('');
+const dialogIcon = ref(['fas', 'check-circle']);
+const dialogTitleClass = ref('');
+const isDeleting = ref<number | null>(null); // Usar el tipo number, ya que courseId es un número
+
+// Mostrar el diálogo de éxito o error
+const showDialog = (message: string, type: 'success' | 'error') => {
+  dialogMessage.value = message;
+  if (type === 'success') {
+    dialogTitle.value = 'Éxito';
+    dialogClass.value = 'bg-green-100';
+    dialogIcon.value = ['fas', 'check-circle'];
+    dialogTitleClass.value = 'text-green-700';
+  } else {
+    dialogTitle.value = 'Error';
+    dialogClass.value = 'bg-red-100';
+    dialogIcon.value = ['fas', 'triangle-exclamation'];
+    dialogTitleClass.value = 'text-red-700';
+  }
+  notificationDialog.value?.showModal();
+};
+
+// Cerrar el diálogo
+const closeDialog = () => {
+  notificationDialog.value?.close();
+};
+
+// Cargar los cursos al montar el componente
 onMounted(async () => {
   try {
-    // Llamada al servicio para obtener los cursos
-    const response = await getAllCourses(0, 10); // Paginación opcional (0 = página, 10 = tamaño)
+    const response = await getAllCourses(0, 10); // Paginación opcional
     courses.value = response.content;
   } catch (error) {
     console.error('Error al cargar los cursos:', error);
   } finally {
-    isLoading.value = false; // Finaliza la carga
+    isLoading.value = false;
   }
 });
 
+// Eliminar un curso
+const deleteCourseHandler = async (courseId: number) => {
+  isDeleting.value = courseId; // Mostrar el loader para el curso que se está eliminando
+  try {
+    await deleteCourse(courseId);
+    courses.value = courses.value.filter(course => course.id !== courseId); // Remover el curso de la lista
+    showDialog('Curso eliminado exitosamente', 'success');
+  } catch (error) {
+    console.error('Error al eliminar el curso:', error);
+    showDialog('Error al eliminar el curso', 'error');
+  } finally {
+    isDeleting.value = null;
+  }
+};
+
 // Navegar a la vista de inscripciones
-const viewEnrollments = (courseId: string, courseName: string) => {
-  courseStore.setSelectedCourse(courseId, courseName);  // Guardamos el curso seleccionado en el store
-  router.push({ name: 'CourseEnrollments', params: { courseId } }); // Navegar a la vista de inscripciones
+const viewEnrollments = (courseId: number, courseName: string) => {
+  courseStore.setSelectedCourse(courseId, courseName);
+  router.push({ name: 'CourseEnrollments', params: { courseId } });
 };
 
 // Editar un curso
-const editCourse = (courseId: string) => {
-  // Lógica para editar un curso
-  console.log('Editar curso:', courseId);
-};
-
-// Eliminar un curso
-const deleteCourse = (courseId: string) => {
-  // Lógica para eliminar un curso
-  console.log('Eliminar curso:', courseId);
+const editCourse = (courseId: number) => {
+  router.push({ name: 'UpdateCourse', params: { id: courseId } });
 };
 
 // Añadir un curso
 const addCourse = () => {
-  // Lógica para añadir un nuevo curso
-  console.log('Añadir nuevo curso');
+  router.push({ name: 'AddCourse' });
 };
 
 // Formatear la fecha de los cursos
@@ -144,7 +199,7 @@ const formatDate = (date: string) => {
   transform: translateX(-50%);
   opacity: 0;
   transition: opacity 0.4s, transform 0.4s;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .group:hover .tooltip-text {

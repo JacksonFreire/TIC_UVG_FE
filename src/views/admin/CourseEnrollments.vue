@@ -130,18 +130,20 @@
 import { ref, computed, onMounted } from 'vue';
 import { useCourseStore } from '@/stores/courseStore';
 import { getEnrollmentsByCourse, saveEnrollmentChanges } from '@/services/coursesService';
-import { Participant } from '@/models/Participant';
+import { Participant } from '@/models/Participant'; // Importar el modelo
 
-const participants = ref<Participant[]>([]); // Ahora especificamos el tipo Participant[]
+// Estado de los participantes
+const participants = ref<Participant[]>([]); // Tipo explícito
 const isLoading = ref(true);
 const searchQuery = ref('');
 const statusFilter = ref('');
 const courseStore = useCourseStore();
 
-const notificationDialog = ref<HTMLDialogElement | null>(null);
+const notificationDialog = ref<HTMLDialogElement | null>(null); // Tipar correctamente el dialog
 const dialogMessage = ref('');
-const dialogType = ref('');
+const dialogType = ref<'success' | 'error'>('success'); // Tipo específico para el tipo de diálogo
 
+// Al montar el componente, obtener los participantes
 onMounted(async () => {
   const courseId = courseStore.selectedCourse.id;
 
@@ -153,7 +155,7 @@ onMounted(async () => {
 
   try {
     participants.value = await getEnrollmentsByCourse(courseId);
-    // Asegurar que los comentarios se muestren si existen
+    // Mostrar comentarios si ya existen
     participants.value.forEach((participant) => {
       if (participant.comments) {
         participant.showComment = true;
@@ -166,6 +168,7 @@ onMounted(async () => {
   }
 });
 
+// Filtrar participantes según el estado y la búsqueda
 const filteredParticipants = computed(() => {
   return participants.value.filter((participant) => {
     const matchesStatus = statusFilter.value ? participant.status === statusFilter.value : true;
@@ -180,42 +183,40 @@ const filteredParticipants = computed(() => {
   });
 });
 
+// Mostrar u ocultar comentarios
 const toggleComment = (participant: Participant) => {
   participant.showComment = !participant.showComment;
 };
 
+// Guardar los cambios de un participante
 const saveChanges = async (participant: Participant) => {
   try {
     await saveEnrollmentChanges(participant);
-    // Mostrar notificación de éxito con diálogo
     showDialog('Cambios guardados exitosamente', 'success');
   } catch (error) {
-    // Mostrar notificación de error con diálogo
+    console.error('Error al guardar los cambios:', error);
     showDialog('Error al guardar los cambios. Por favor, inténtelo de nuevo', 'error');
   }
 };
 
+// Función para generar un reporte
 const generateReport = () => {
   console.log('Generando reporte de inscritos para el curso...');
-  // Aquí puedes implementar la lógica para generar un reporte
 };
 
-// Función para mostrar el diálogo de notificación
+// Mostrar el diálogo de notificación
 const showDialog = (message: string, type: 'success' | 'error') => {
   dialogMessage.value = message;
   dialogType.value = type;
-  if (notificationDialog.value) {
-    notificationDialog.value.showModal();
-  }
+  notificationDialog.value?.showModal();
 };
 
-// Función para cerrar el diálogo
+// Cerrar el diálogo
 const closeDialog = () => {
-  if (notificationDialog.value) {
-    notificationDialog.value.close();
-  }
+  notificationDialog.value?.close();
 };
 </script>
+
 
 <style scoped>
 /* Estilos para tooltips mejorados */
@@ -234,7 +235,7 @@ const closeDialog = () => {
   transform: translateX(-50%);
   opacity: 0;
   transition: opacity 0.4s, transform 0.4s;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .relative:hover .tooltip-text {
@@ -256,6 +257,6 @@ dialog {
   border: none;
   padding: 0;
   border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.2);
 }
 </style>

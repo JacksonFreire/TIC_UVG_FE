@@ -5,7 +5,7 @@
         Lista de Participantes en {{ eventStore.selectedEvent.name }}
       </h2>
 
-      <!-- Botón de "Generar Reporte" -->
+      <!-- Botón de "Generar Reporte" mejorado -->
       <button
           @click="generateReport"
           class="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
@@ -18,6 +18,7 @@
 
     <!-- Filtros -->
     <div class="mb-4 flex flex-col md:flex-row justify-between md:items-center space-y-6 md:space-y-0">
+      <!-- Campo de búsqueda mejorado -->
       <input
           v-model="searchQuery"
           type="text"
@@ -25,6 +26,7 @@
           class="border border-gray-300 rounded-lg px-4 py-2 w-full md:w-2/3 lg:w-1/2 focus:outline-none focus:border-blue-400 focus:shadow-lg transition-shadow duration-300"
       />
 
+      <!-- Filtro por estado mejorado -->
       <select
           v-model="statusFilter"
           class="border border-gray-300 rounded-lg px-4 py-2 w-full md:w-1/3 lg:w-1/4 focus:outline-none focus:border-blue-400 focus:shadow-lg transition-shadow duration-300"
@@ -52,7 +54,7 @@
         <tr v-if="isLoading" class="text-center">
           <td colspan="5" class="py-3 px-6 text-gray-500">Cargando participantes...</td>
         </tr>
-        <template v-else v-for="participant in filteredParticipants" :key="participant.userId">
+        <template v-else v-for="participant in filteredParticipants" :key="participant.username">
           <tr class="hover:bg-gray-50 transition duration-200">
             <td class="py-3 px-6">{{ participant.firstName }} {{ participant.lastName }}</td>
             <td class="py-3 px-6">{{ participant.username }}</td>
@@ -105,7 +107,7 @@
     </div>
   </div>
 
-  <!-- Diálogo para notificaciones -->
+  <!-- Diálogo para notificaciones con diseño profesional -->
   <dialog ref="notificationDialog" class="rounded-lg shadow-xl p-6 max-w-md w-full">
     <div :class="{'bg-green-100': dialogType === 'success', 'bg-red-100': dialogType === 'error'}" class="flex items-start px-4 py-3 rounded-lg">
       <div :class="{'text-green-600': dialogType === 'success', 'text-red-600': dialogType === 'error'}" class="flex-shrink-0 mr-4">
@@ -123,24 +125,28 @@
     </div>
   </dialog>
 </template>
+
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useEventStore } from '@/stores/eventStore';
-import { getEnrollmentsByEvent, saveEnrollmentChanges } from '@/services/eventService'; // Servicio para obtener los participantes y guardar cambios
-import { Participant } from '@/models/Participant'; // Modelo de participantes
+import { getEnrollmentsByEvent, saveEnrollmentChanges } from '@/services/eventService';
+import { Participant } from '@/models/Participant'; // Importar el modelo Participant
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
+// Tipar correctamente los estados
 const participants = ref<Participant[]>([]); // Lista de participantes
 const isLoading = ref(true); // Estado de carga
 const searchQuery = ref(''); // Búsqueda por nombre, username o teléfono
 const statusFilter = ref(''); // Filtro por estado
 const eventStore = useEventStore(); // Obtener el store del evento
 
-const notificationDialog = ref<HTMLDialogElement | null>(null);
+const notificationDialog = ref<HTMLDialogElement | null>(null); // Tipar correctamente el diálogo
 const dialogMessage = ref('');
 const dialogType = ref<'success' | 'error'>('success');
 
+// Función para cargar los participantes al montar el componente
 onMounted(async () => {
-  const eventId = eventStore.selectedEvent?.id;
+  const eventId = eventStore.selectedEvent.id; // Obtener el ID del evento desde el store
 
   if (!eventId) {
     console.error('No se ha seleccionado ningún evento');
@@ -149,12 +155,12 @@ onMounted(async () => {
   }
 
   try {
-    const enrollments = await getEnrollmentsByEvent(Number(eventId));
+    const enrollments = await getEnrollmentsByEvent(eventId);
     participants.value = enrollments.map((participant: Participant) => {
       return {
         ...participant,
         showComment: !!participant.comments, // Mostrar el comentario si ya existe
-        comment: participant.comments || '',
+        comment: participant.comments || '', // Asegurar que comment esté siempre definido
       };
     });
   } catch (error) {
@@ -164,32 +170,32 @@ onMounted(async () => {
   }
 });
 
-// Computed property para el filtrado
+// Computed property para el filtrado de participantes
 const filteredParticipants = computed(() => {
-  return participants.value.filter((participant) => {
+  return participants.value.filter((participant: Participant) => {
     const matchesStatus = statusFilter.value ? participant.status === statusFilter.value : true;
     const matchesSearch = [
       participant.firstName.toLowerCase(),
       participant.lastName.toLowerCase(),
       participant.username.toLowerCase(),
-      participant.phoneNumber?.toString(),
+      participant.phoneNumber,
     ].some((field) => field.includes(searchQuery.value.toLowerCase()));
 
     return matchesStatus && matchesSearch;
   });
 });
 
-// Alternar visibilidad del comentario
+// Función para mostrar u ocultar comentarios
 const toggleComment = (participant: Participant) => {
   participant.showComment = !participant.showComment;
 };
 
-// Guardar los cambios de la inscripción
+// Función para guardar los cambios en la inscripción del participante
 const saveChanges = async (participant: Participant) => {
   try {
     const enrollmentDTO = {
       userId: participant.userId,
-      eventId: Number(eventStore.selectedEvent?.id),
+      eventId: eventStore.selectedEvent.id,
       status: participant.status,
       comments: participant.comments || '',
     };
@@ -204,11 +210,11 @@ const saveChanges = async (participant: Participant) => {
   } catch (error) {
     console.error('Error al guardar los cambios:', error);
     // Mostrar notificación de error con diálogo
-    showDialog('Error al guardar los cambios. Por favor verifica los datos e inténtalo de nuevo.', 'error');
+    showDialog('Error al guardar los cambios en la inscripción. Por favor verifica los datos e inténtalo de nuevo.', 'error');
   }
 };
 
-// Placeholder para generar el reporte
+// Función placeholder para generar el reporte
 const generateReport = () => {
   console.log('Generando reporte de inscritos...');
   // Aquí puedes implementar la lógica para generar un reporte
@@ -218,16 +224,12 @@ const generateReport = () => {
 const showDialog = (message: string, type: 'success' | 'error') => {
   dialogMessage.value = message;
   dialogType.value = type;
-  if (notificationDialog.value) {
-    notificationDialog.value.showModal();
-  }
+  notificationDialog.value?.showModal();
 };
 
 // Función para cerrar el diálogo
 const closeDialog = () => {
-  if (notificationDialog.value) {
-    notificationDialog.value.close();
-  }
+  notificationDialog.value?.close();
 };
 </script>
 

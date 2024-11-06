@@ -6,7 +6,7 @@ export interface Event {
     endDate: string;
     location: string;
     price: number;
-    image: string; // Imagen en formato base64
+    imageUrl: string; // Imagen en formato base64
     category: string;
     additionalDetails: string;
     createdAt: string;

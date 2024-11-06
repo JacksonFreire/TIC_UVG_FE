@@ -63,9 +63,10 @@
           <!-- User Dropdown Menu -->
           <transition name="fade">
             <div v-if="isUserMenuOpen" ref="userMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-10 submenu">
+              <!--
               <router-link to="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-300" @click="closeMenu">
                 <font-awesome-icon icon="user" class="mr-2" /> Perfil
-              </router-link>
+              </router-link>-->
               <button @click="logout" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-300">
                 <font-awesome-icon icon="sign-out-alt" class="mr-2" /> Cerrar sesión
               </button>
