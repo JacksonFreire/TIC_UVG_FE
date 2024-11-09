@@ -129,7 +129,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useCourseStore } from '@/stores/courseStore';
-import { getEnrollmentsByCourse, saveEnrollmentChanges } from '@/services/coursesService';
+import { getEnrollmentsByCourse, saveEnrollmentChanges,downloadParticipantReport } from '@/services/coursesService';
 import { Participant } from '@/models/Participant'; // Importar el modelo
 
 // Estado de los participantes
@@ -200,8 +200,20 @@ const saveChanges = async (participant: Participant) => {
 };
 
 // Función para generar un reporte
-const generateReport = () => {
+const generateReport = async () => {
   console.log('Generando reporte de inscritos para el curso...');
+  try {
+    const courseId = courseStore.selectedCourse.id;
+    if (!courseId) {
+      console.error('No se ha seleccionado ningún curso');
+      return;
+    }
+    await downloadParticipantReport(courseId);
+    showDialog('Reporte generado exitosamente', 'success');
+  } catch (error) {
+    console.error('Error al generar el reporte:', error);
+    showDialog('Error al generar el reporte. Por favor, inténtelo de nuevo', 'error');
+  }
 };
 
 // Mostrar el diálogo de notificación
@@ -235,7 +247,7 @@ const closeDialog = () => {
   transform: translateX(-50%);
   opacity: 0;
   transition: opacity 0.4s, transform 0.4s;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .relative:hover .tooltip-text {
@@ -257,6 +269,6 @@ dialog {
   border: none;
   padding: 0;
   border-radius: 12px;
-  box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
 }
 </style>

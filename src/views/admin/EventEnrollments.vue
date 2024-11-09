@@ -46,6 +46,7 @@
           <th class="py-3 px-6 text-left">Nombre</th>
           <th class="py-3 px-6 text-left">Username</th>
           <th class="py-3 px-6 text-left">Teléfono</th>
+          <th class="py-3 px-6 text-left">Email</th>
           <th class="py-3 px-6 text-left">Estado de Inscripción</th>
           <th class="py-3 px-6 text-center">Acciones</th>
         </tr>
@@ -59,6 +60,7 @@
             <td class="py-3 px-6">{{ participant.firstName }} {{ participant.lastName }}</td>
             <td class="py-3 px-6">{{ participant.username }}</td>
             <td class="py-3 px-6">{{ participant.phoneNumber }}</td>
+            <td class="py-3 px-6">{{ participant.email }}</td>
             <td class="py-3 px-6">
               <select v-model="participant.status" class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-400">
                 <option value="confirmed">Confirmado</option>
@@ -129,7 +131,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useEventStore } from '@/stores/eventStore';
-import { getEnrollmentsByEvent, saveEnrollmentChanges } from '@/services/eventService';
+import { getEnrollmentsByEvent, saveEnrollmentChanges, downloadEventParticipantReport } from '@/services/eventService';
 import { Participant } from '@/models/Participant'; // Importar el modelo Participant
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
@@ -214,10 +216,22 @@ const saveChanges = async (participant: Participant) => {
   }
 };
 
-// Función placeholder para generar el reporte
-const generateReport = () => {
-  console.log('Generando reporte de inscritos...');
-  // Aquí puedes implementar la lógica para generar un reporte
+// Función para generar un reporte
+const generateReport = async () => {
+  console.log('Generando reporte de inscritos para el eventos...');
+  const eventId = eventStore.selectedEvent.id;
+
+  if (!eventId) {
+    console.error('No se ha seleccionado ningún evento');
+    return;
+  }
+
+  try {
+    await downloadEventParticipantReport(eventId);
+    showDialog('Reporte generado exitosamente', 'success');
+  } catch (error) {
+    showDialog('Error al generar el reporte. Intente de nuevo', 'error');
+  }
 };
 
 // Función para mostrar el diálogo de notificación
