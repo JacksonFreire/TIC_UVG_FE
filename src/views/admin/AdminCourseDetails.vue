@@ -12,7 +12,8 @@
           <label class="block text-base font-bold text-indigo-600 uppercase">Nombre del Curso</label>
           <p class="mt-1 text-gray-900 font-semibold">{{ course.name }}</p>
         </div>
-        <div>
+        <!-- Descripción ocupando una fila completa -->
+        <div class="col-span-2">
           <label class="block text-base font-bold text-indigo-600 uppercase">Descripción</label>
           <p class="mt-1 text-gray-900">{{ course.description }}</p>
         </div>
@@ -51,6 +52,30 @@
         </div>
       </div>
 
+      <!-- Lugar del Evento -->
+      <div class="mt-6">
+        <label class="block text-base font-bold text-indigo-600 uppercase">Lugar del Evento</label>
+        <p class="mt-1 text-gray-900">{{ course.eventPlace }}</p>
+      </div>
+
+      <!-- Imagen del Curso -->
+      <div v-if="course.imageUrl" class="mt-8">
+        <label class="block text-base font-bold text-indigo-600 uppercase">Imagen del Curso</label>
+        <img :src="course.imageUrl" alt="Imagen del Curso" class="mt-4 max-h-60 object-cover rounded-lg shadow-sm" />
+      </div>
+
+      <!-- Fechas -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+        <div>
+          <label class="block text-base font-bold text-indigo-600 uppercase">Fecha de Inicio</label>
+          <p class="mt-1 text-gray-900">{{ formatDate(course.startDate) }}</p>
+        </div>
+        <div>
+          <label class="block text-base font-bold text-indigo-600 uppercase">Fecha de Finalización</label>
+          <p class="mt-1 text-gray-900">{{ formatDate(course.endDate) }}</p>
+        </div>
+      </div>
+
       <!-- Instructor -->
       <div class="mt-8">
         <h3 class="text-lg font-bold text-gray-800 uppercase mb-3">
@@ -68,30 +93,6 @@
             <p class="text-gray-500 text-sm">{{ course.instructor.bio }}</p>
           </div>
         </div>
-      </div>
-
-      <!-- Fechas -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        <div>
-          <label class="block text-base font-bold text-indigo-600 uppercase">Fecha de Inicio</label>
-          <p class="mt-1 text-gray-900">{{ formatDate(course.startDate) }}</p>
-        </div>
-        <div>
-          <label class="block text-base font-bold text-indigo-600 uppercase">Fecha de Finalización</label>
-          <p class="mt-1 text-gray-900">{{ formatDate(course.endDate) }}</p>
-        </div>
-      </div>
-
-      <!-- Lugar del Evento -->
-      <div class="mt-6">
-        <label class="block text-base font-bold text-indigo-600 uppercase">Lugar del Evento</label>
-        <p class="mt-1 text-gray-900">{{ course.eventPlace }}</p>
-      </div>
-
-      <!-- Imagen del Curso -->
-      <div v-if="course.imageUrl" class="mt-8">
-        <label class="block text-base font-bold text-indigo-600 uppercase">Imagen del Curso</label>
-        <img :src="course.imageUrl" alt="Imagen del Curso" class="mt-4 max-h-60 object-cover rounded-lg shadow-sm" />
       </div>
 
       <!-- Curriculums -->
@@ -116,22 +117,6 @@
           <div>
             <label class="block text-base font-bold text-indigo-600 uppercase">Orden</label>
             <p class="mt-1 text-gray-900">{{ curriculum.order }}</p>
-          </div>
-          <div>
-            <label class="block text-base font-bold text-indigo-600 uppercase">Duración</label>
-            <p class="mt-1 text-gray-900">{{ curriculum.duration }}</p>
-          </div>
-          <div>
-            <label class="block text-base font-bold text-indigo-600 uppercase">Tipo de Contenido</label>
-            <p class="mt-1 text-gray-900">{{ curriculum.type }}</p>
-          </div>
-          <div>
-            <label class="block text-base font-bold text-indigo-600 uppercase">Enlace del Recurso</label>
-            <a :href="curriculum.resourceLink" class="text-blue-600 underline" target="_blank">{{ curriculum.resourceLink }}</a>
-          </div>
-          <div>
-            <label class="block text-base font-bold text-indigo-600 uppercase">Obligatorio</label>
-            <p class="mt-1 text-gray-900">{{ curriculum.isMandatory ? "Sí" : "No" }}</p>
           </div>
         </div>
       </div>
