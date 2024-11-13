@@ -16,7 +16,7 @@ import {
     faEdit, faTrash, faEye, faSave, faCommentDots, faFileExcel,
     faPlus, faTriangleExclamation, faSearch, faMapMarkerAlt, faTag, faCalendarAlt,
     faFileAlt, faComment, faCheckCircle, faSpinner, faInfoCircle,
-    faGraduationCap, faChalkboardTeacher, faBook
+    faGraduationCap, faChalkboardTeacher, faBook,faSun, faMoon,faUserCircle
 } from '@fortawesome/free-solid-svg-icons';
 import { faFacebook, faInstagram, faLinkedin } from '@fortawesome/free-brands-svg-icons';
 
@@ -46,9 +46,13 @@ library.add(
     faComment,
     faSpinner,
     faInfoCircle,
-    faGraduationCap,      // Icono para el título del curso
-    faChalkboardTeacher,  // Icono para la sección del instructor
-    faBook                // Icono para cada curriculum
+    faGraduationCap,
+    faChalkboardTeacher,
+    faBook,
+    faSun,
+    faMoon,
+    faUserCircle
+
 );
 
 const app = createApp(App);
