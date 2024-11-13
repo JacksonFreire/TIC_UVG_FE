@@ -50,6 +50,17 @@
               </button>
               <span class="tooltip-text group-hover:opacity-100">Editar Evento</span>
             </div>
+            <!-- Botón para ver detalles del evento -->
+            <div class="relative inline-block group mx-2">
+              <button
+                  @click="viewDetails(event.id)"
+                  class="text-green-500 hover:text-green-700"
+                  aria-label="Ver Detalles"
+              >
+                <font-awesome-icon :icon="['fas', 'eye']" />
+              </button>
+              <span class="tooltip-text group-hover:opacity-100">Ver Detalles</span>
+            </div>
             <div class="relative inline-block group mx-2">
               <button
                   @click="confirmDelete(event.id)"
@@ -170,6 +181,11 @@ const viewEnrollments = (eventId: number, eventName: string) => { // Ahora event
 // Navegar a la vista de edición de eventos
 const editEvent = (eventId: number) => { // Ahora eventId es número
   router.push({ name: 'UpdateEvent', params: { id: eventId } });
+};
+
+// Navegar a la vista de detalles del evento
+const viewDetails = (eventId: number) => {
+  router.push({ name: 'AdminEventDetails', params: { id: eventId } });
 };
 
 // Añadir un evento

@@ -95,6 +95,13 @@ const routes: Array<RouteRecordRaw> = [
         meta: { requiresAuth: true, role: 'ADMIN' }
       },
       {
+        path: 'events/:id/details',
+        name: 'AdminEventDetails',
+        component: () => import('@/views/admin/AdminEventDetails.vue'),
+        meta: { requiresAuth: true, role: 'ADMIN' },
+        props: true
+      },
+      {
         path: 'events/edit/:id',
         name: 'UpdateEvent',  // Nueva ruta para actualizar evento
         component: UpdateEvent,

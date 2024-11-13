@@ -53,10 +53,10 @@
             <div class="relative inline-block group mx-2">
               <button
                   @click="viewDetails(course.id)"
-                  class="text-indigo-500 hover:text-indigo-700"
+                  class="text-green-500 hover:text-green-700"
                   aria-label="Ver Detalles"
               >
-                <font-awesome-icon :icon="['fas', 'info-circle']" />
+                <font-awesome-icon :icon="['fas', 'eye']" />
               </button>
               <span class="tooltip-text group-hover:opacity-100">Ver Detalles</span>
             </div>
