@@ -43,7 +43,7 @@
               <h3 class="text-xl font-semibold text-blue-600">{{ curriculum.sectionName }} - {{ curriculum.lessonName }}</h3>
               <p class="text-sm text-gray-600 mb-2">{{ curriculum.content }}</p>
               <p class="text-xs text-gray-500"><span class="font-semibold">Duración:</span> {{ curriculum.duration }}</p>
-              <p class="text-xs text-gray-500"><span class="font-semibold">Tipo:</span> {{ curriculum.type }}</p>
+           <!--   <p class="text-xs text-gray-500"><span class="font-semibold">Tipo:</span> {{ curriculum.type }}</p> -->
               <a v-if="curriculum.resourceLink" :href="curriculum.resourceLink" target="_blank" class="text-blue-500 hover:underline text-sm">Ver recurso</a>
             </div>
           </li>
