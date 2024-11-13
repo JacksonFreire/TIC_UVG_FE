@@ -14,7 +14,9 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import {
     faBars, faUser, faSignInAlt, faSignOutAlt, faChevronDown,
     faEdit, faTrash, faEye, faSave, faCommentDots, faFileExcel,
-    faPlus, faTriangleExclamation, faSearch, faMapMarkerAlt, faTag, faCalendarAlt,faFileAlt, faComment,faCheckCircle,faSpinner
+    faPlus, faTriangleExclamation, faSearch, faMapMarkerAlt, faTag, faCalendarAlt,
+    faFileAlt, faComment, faCheckCircle, faSpinner, faInfoCircle,
+    faGraduationCap, faChalkboardTeacher, faBook
 } from '@fortawesome/free-solid-svg-icons';
 import { faFacebook, faInstagram, faLinkedin } from '@fortawesome/free-brands-svg-icons';
 
@@ -42,7 +44,11 @@ library.add(
     faCalendarAlt,
     faFileAlt,
     faComment,
-    faSpinner
+    faSpinner,
+    faInfoCircle,
+    faGraduationCap,      // Icono para el título del curso
+    faChalkboardTeacher,  // Icono para la sección del instructor
+    faBook                // Icono para cada curriculum
 );
 
 const app = createApp(App);

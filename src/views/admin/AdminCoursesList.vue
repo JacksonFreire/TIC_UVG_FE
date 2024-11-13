@@ -52,6 +52,16 @@
             </div>
             <div class="relative inline-block group mx-2">
               <button
+                  @click="viewDetails(course.id)"
+                  class="text-indigo-500 hover:text-indigo-700"
+                  aria-label="Ver Detalles"
+              >
+                <font-awesome-icon :icon="['fas', 'info-circle']" />
+              </button>
+              <span class="tooltip-text group-hover:opacity-100">Ver Detalles</span>
+            </div>
+            <div class="relative inline-block group mx-2">
+              <button
                   @click="deleteCourseHandler(course.id)"
                   class="text-red-500 hover:text-red-700"
                   aria-label="Eliminar Curso"
@@ -173,6 +183,10 @@ const editCourse = (courseId: number) => {
 // Añadir un curso
 const addCourse = () => {
   router.push({ name: 'AddCourse' });
+};
+
+const viewDetails = (courseId: number) => {
+  router.push({ name: 'AdminCourseDetails', params: { id: courseId } });
 };
 
 // Formatear la fecha de los cursos

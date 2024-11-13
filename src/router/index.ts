@@ -21,6 +21,7 @@ import UpdateCourse from '@/views/admin/UpdateCourse.vue';
 import AddEvent from '@/views/admin/AddEvent.vue'; // Importar la vista para añadir eventos
 import UpdateEvent from '@/views/admin/UpdateEvent.vue'; // Importar la vista para actualizar eventos
 import { useAuthStore } from '@/stores/auth';
+import AdminCourseDetails from "@/views/admin/AdminCourseDetails.vue";
 
 // Definición de rutas
 const routes: Array<RouteRecordRaw> = [
@@ -72,6 +73,13 @@ const routes: Array<RouteRecordRaw> = [
         name: 'AddCourse',
         component: AddCourse,
         meta: { requiresAuth: true, role: 'ADMIN' }
+      },
+      {
+        path: 'courses/:id/details',
+        name: 'AdminCourseDetails',
+        component: AdminCourseDetails,
+        meta: { requiresAuth: true, role: 'ADMIN' },
+        props: true,
       },
       {
         path: 'courses/edit/:id',
