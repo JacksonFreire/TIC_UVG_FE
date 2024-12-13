@@ -46,6 +46,7 @@
           <th class="py-3 px-6 text-left">Nombre</th>
           <th class="py-3 px-6 text-left">Username</th>
           <th class="py-3 px-6 text-left">Teléfono</th>
+          <th class="py-3 px-6 text-left">Email</th>
           <th class="py-3 px-6 text-left">Estado de Inscripción</th>
           <th class="py-3 px-6 text-center">Acciones</th>
         </tr>
@@ -59,6 +60,7 @@
             <td class="py-3 px-6">{{ participant.firstName }} {{ participant.lastName }}</td>
             <td class="py-3 px-6">{{ participant.username }}</td>
             <td class="py-3 px-6">{{ participant.phoneNumber }}</td>
+            <td class="py-3 px-6">{{ participant.email }}</td>
             <td class="py-3 px-6">
               <select v-model="participant.status" class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-400">
                 <option value="confirmed">Confirmado</option>
@@ -90,7 +92,7 @@
             </td>
           </tr>
           <tr v-if="participant.showComment || participant.comments">
-            <td colspan="5" class="py-3 px-6">
+            <td colspan="6" class="py-3 px-6">
                 <textarea
                     v-model="participant.comments"
                     placeholder="Agregar comentario..."
