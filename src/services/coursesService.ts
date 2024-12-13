@@ -134,3 +134,31 @@ export const getAllInstructors = async () => {
     throw new Error('Error al obtener la lista de instructores.');
   }
 };
+
+// Función para descargar el reporte de participantes de un curso
+export const downloadParticipantReport = async (courseId: number) => {
+  const headers = {
+    Authorization: `Bearer ${localStorage.getItem('token')}`,
+    'Content-Type': 'application/json',
+  };
+
+  try {
+    const response = await axios.get(`${API_URL}/api/reports/participants/course`, {
+      params: { courseId },
+      headers,
+      responseType: 'blob', // Importante para manejar la respuesta como archivo
+    });
+
+    // Crear un enlace de descarga
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `reporte_participantes_curso_${courseId}.xlsx`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (error) {
+    console.error('Error al descargar el reporte de participantes:', error);
+    throw new Error('Error al descargar el reporte de participantes.');
+  }
+};

@@ -131,7 +131,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useEventStore } from '@/stores/eventStore';
-import { getEnrollmentsByEvent, saveEnrollmentChanges } from '@/services/eventService';
+import { getEnrollmentsByEvent, saveEnrollmentChanges, downloadEventParticipantReport } from '@/services/eventService';
 import { Participant } from '@/models/Participant'; // Importar el modelo Participant
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
@@ -216,10 +216,22 @@ const saveChanges = async (participant: Participant) => {
   }
 };
 
-// Función placeholder para generar el reporte
-const generateReport = () => {
-  console.log('Generando reporte de inscritos...');
-  // Aquí puedes implementar la lógica para generar un reporte
+// Función para generar un reporte
+const generateReport = async () => {
+  console.log('Generando reporte de inscritos para el eventos...');
+  const eventId = eventStore.selectedEvent.id;
+
+  if (!eventId) {
+    console.error('No se ha seleccionado ningún evento');
+    return;
+  }
+
+  try {
+    await downloadEventParticipantReport(eventId);
+    showDialog('Reporte generado exitosamente', 'success');
+  } catch (error) {
+    showDialog('Error al generar el reporte. Intente de nuevo', 'error');
+  }
 };
 
 // Función para mostrar el diálogo de notificación

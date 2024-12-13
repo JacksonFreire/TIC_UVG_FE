@@ -150,3 +150,33 @@ export const saveEnrollmentChanges = async (enrollmentDTO: { userId: number, eve
     throw new Error(message);
   }
 };
+
+// Función para descargar el reporte de participantes de un evento
+export const downloadEventParticipantReport = async (eventId: number) => {
+  const headers = {
+    Authorization: `Bearer ${localStorage.getItem('token')}`,
+    'Content-Type': 'application/json',
+  };
+
+  try {
+    const response = await axios.get(`${API_URL}/api/reports/participants/event`, {
+      params: { eventId },
+      headers,
+      responseType: 'blob', // Importante para manejar la respuesta como archivo
+    });
+
+    // Crear un enlace de descarga
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `reporte_participantes_evento_${eventId}.xlsx`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (error) {
+    console.error('Error al descargar el reporte de participantes del evento:', error);
+    throw new Error('Error al descargar el reporte de participantes del evento.');
+  }
+};
+
+
