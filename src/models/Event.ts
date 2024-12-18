@@ -1,3 +1,5 @@
+import { Instructor } from './Instructor';
+
 export interface Event {
     id: number;
     name: string;
@@ -9,6 +11,7 @@ export interface Event {
     imageUrl: string; // Imagen en formato base64
     category: string;
     additionalDetails: string;
+    instructor?: Instructor;
     createdAt: string;
     updatedAt: string;
 }

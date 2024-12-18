@@ -23,6 +23,12 @@ import UpdateEvent from '@/views/admin/UpdateEvent.vue'; // Importar la vista pa
 import { useAuthStore } from '@/stores/auth';
 import AdminCourseDetails from "@/views/admin/AdminCourseDetails.vue";
 
+
+import DashboardInstructorView from '@/views/instructor/DashboardInstructorView.vue';
+import InstructorCoursesList from '@/views/instructor/InstructorCoursesList.vue';
+import InstructorCourseEnrollments from '@/views/instructor/InstructorCourseEnrollments.vue';
+
+
 // Definición de rutas
 const routes: Array<RouteRecordRaw> = [
   { path: '/', name: 'Home', component: Home },
@@ -110,6 +116,41 @@ const routes: Array<RouteRecordRaw> = [
       }
     ],
   },
+  {
+    path: '/instructor-dashboard',
+    name: 'InstructorDashboard',
+    component: DashboardInstructorView,
+    meta: { requiresAuth: true, role: 'INSTR' },
+    redirect: { name: 'InstructorCoursesList' },
+    children: [
+      {
+        path: 'courses',
+        name: 'InstructorCoursesList',
+        component: InstructorCoursesList,
+        meta: { requiresAuth: true, role: 'INSTR' },
+      },
+      {
+        path: 'courses/:id/enrollments',
+        name: 'InstructorCourseEnrollments',
+        component: InstructorCourseEnrollments,
+        meta: { requiresAuth: true, role: 'INSTR' },
+        props: true,
+      },
+      {
+        path: 'events',
+        name: 'InstructorEventsList',
+        component: () => import('@/views/instructor/InstructorEventsList.vue'),
+        meta: { requiresAuth: true, role: 'INSTR' },
+      },
+      {
+        path: 'events/:id/participants',
+        name: 'InstructorEventParticipants',
+        component: () => import('@/views/instructor/InstructorEventEnrollments.vue'),
+        meta: { requiresAuth: true, role: 'INSTR' },
+        props: true,
+      },
+    ],
+  },
   // Ruta para manejar páginas no encontradas (404)
   {
     path: '/:pathMatch(.*)*',
@@ -129,18 +170,28 @@ router.beforeEach((to, from, next) => {
   const isAuthenticated = authStore.isLoggedIn;
   const userRole = authStore.userRole;
 
-  // Verificación de autenticación
+  // Verificar si la ruta requiere autenticación
   if (to.meta.requiresAuth && !isAuthenticated) {
-    // Si no está autenticado, redirigir al login
     authStore.setRedirectUrl(to.fullPath);
     next({ name: 'Login' });
-  } else if (to.meta.role && to.meta.role !== userRole) {
-    // Si no tiene el rol adecuado, redirigir a la página de inicio
-    next({ name: 'Home' });
+  } else if (to.meta.requiresAuth && to.meta.role) {
+    // Verificar rol del usuario
+    if (to.meta.role !== userRole) {
+      if (userRole === 'ADMIN') {
+        next({ name: 'AdminDashboard' });
+      } else if (userRole === 'INSTR') {
+        next({ name: 'InstructorDashboard' });
+      } else {
+        next({ name: 'Home' });
+      }
+    } else {
+      next();
+    }
   } else {
-    // Permitir el acceso si cumple con los requisitos
     next();
   }
 });
+
+
 
 export default router;

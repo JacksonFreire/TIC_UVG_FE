@@ -162,3 +162,17 @@ export const downloadParticipantReport = async (courseId: number) => {
     throw new Error('Error al descargar el reporte de participantes.');
   }
 };
+
+// Función para obtener los cursos asociados a un instructor por ID
+export const getCoursesByInstructorId = async (instructorId: number) => {
+  const headers = getAuthHeaders();
+  try {
+    const response = await axios.get(`${API_URL}/api/activities/instructor/${instructorId}/courses`, {
+      headers,
+    });
+    return response.data; // Lista de cursos como CourseListDTO[]
+  } catch (error) {
+    console.error('Error al obtener los cursos del instructor:', error);
+    throw new Error('No se pudieron obtener los cursos del instructor.');
+  }
+};

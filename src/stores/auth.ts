@@ -6,6 +6,7 @@ interface AuthState {
   token: string | null;
   userDetails: { username: string; userId: number } | null;
   userRole: string | null; // Rol del usuario, como 'ADMIN' o 'INSTR'
+  instructorId: number | null;
   redirectUrl: string; // URL a la que redirigir tras el inicio de sesión
 }
 
@@ -33,6 +34,7 @@ export const useAuthStore = defineStore('auth', {
             userId: parseInt(tokenPayload.userId, 10),
           };
           this.userRole = tokenPayload.role || null; // Asignar el rol del usuario
+          this.instructorId = tokenPayload.instructorId ? parseInt(tokenPayload.instructorId, 10) : null;
         }
 
         // Redirigir a la URL guardada después del inicio de sesión
@@ -40,9 +42,12 @@ export const useAuthStore = defineStore('auth', {
           const urlToRedirect = this.redirectUrl;
           this.setRedirectUrl('');
           router.push(urlToRedirect);
-        } else if (this.userRole === 'ADMIN' || this.userRole === 'INSTR') {
-          // Redirigir a dashboard si el usuario es ADMIN o INSTR
+        } else if (this.userRole === 'ADMIN') {
+          // Redirigir al dashboard de ADMIN
           router.push('/dashboard');
+        } else if (this.userRole === 'INSTR') {
+          // Redirigir al dashboard de INSTRUCTOR
+          router.push('/instructor-dashboard');
         } else {
           // Redirigir a la página de inicio si el usuario tiene otro rol
           router.push('/');
@@ -58,6 +63,7 @@ export const useAuthStore = defineStore('auth', {
       this.token = null;
       this.userDetails = null;
       this.userRole = null;
+      this.instructorId = null;
       this.redirectUrl = '';
       localStorage.removeItem('token');
 
@@ -80,5 +86,7 @@ export const useAuthStore = defineStore('auth', {
 
     // Getter para verificar si el usuario es INSTRUCTOR
     isInstructor: (state) => state.userRole === 'INSTR',
+
+    getInstructorId: (state) => state.instructorId,
   },
 });

@@ -310,6 +310,12 @@ const removeCurriculum = (index: number) => {
   form.value.curriculums.splice(index, 1);
 };
 
+const toISOStringWithTimezone = (dateString: string) => {
+  const date = new Date(dateString);
+  const tzOffset = date.getTimezoneOffset() * 60000; // Offset en milisegundos
+  return new Date(date.getTime() - tzOffset).toISOString();
+};
+
 // Enviar el formulario para actualizar o crear el curso
 const submitFormCourse = async () => {
   if (isSubmittingLocal.value) return;
@@ -318,8 +324,8 @@ const submitFormCourse = async () => {
 
   try {
     const payload = { ...form.value };
-    payload.startDate = new Date(payload.startDate).toISOString();
-    payload.endDate = new Date(payload.endDate).toISOString();
+    payload.startDate = toISOStringWithTimezone(payload.startDate);
+    payload.endDate = toISOStringWithTimezone(payload.endDate);
 
     payload.instructor = form.value.instructor;
 

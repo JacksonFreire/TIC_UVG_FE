@@ -55,6 +55,25 @@
         <img :src="event.imageUrl" alt="Imagen del Evento" class="mt-4 max-h-60 object-cover rounded-lg shadow-sm" />
       </div>
 
+      <!-- Instructor del Evento -->
+      <div v-if="event.instructor" class="mt-6 flex items-center gap-4">
+        <div>
+          <label class="block text-base font-bold text-indigo-600 uppercase">Instructor</label>
+          <p class="mt-1 text-gray-900 font-semibold">{{ event.instructor.name }}</p>
+          <p class="mt-1 text-gray-600">{{ event.instructor.bio || 'Sin biografía disponible' }}</p>
+        </div>
+        <!--
+        <div v-if="event.instructor.profileImage">
+          <img
+              :src="event.instructor.profileImage.startsWith('http') || event.instructor.profileImage.startsWith('data:image')
+                  ? event.instructor.profileImage
+                  : `data:image/png;base64,${event.instructor.profileImage}`"
+              alt="Foto del Instructor"
+              class="h-16 w-16 rounded-full object-cover shadow-sm"
+          />
+        </div>-->
+      </div>
+
       <!-- Detalles Adicionales -->
       <div class="mt-6">
         <label class="block text-base font-bold text-indigo-600 uppercase">Detalles Adicionales</label>

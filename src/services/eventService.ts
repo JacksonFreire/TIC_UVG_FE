@@ -179,4 +179,29 @@ export const downloadEventParticipantReport = async (eventId: number) => {
   }
 };
 
+export const getEventsByInstructorId = async (instructorId: number) => {
+  const headers = {
+    Authorization: `Bearer ${localStorage.getItem('token')}`,
+  };
+  try {
+    const response = await axios.get(`${API_URL}/api/activities/instructor/${instructorId}/events`, { headers });
+    return response.data;
+  } catch (error) {
+    console.error('Error al obtener los eventos del instructor:', error);
+    throw new Error('No se pudieron obtener los eventos del instructor.');
+  }
+};
+
+// Función para obtener todos los instructores (requiere autenticación)
+export const getAllInstructors = async () => {
+  const headers = getAuthHeaders(); // Agrega los encabezados de autenticación
+  try {
+    const response = await axios.get(`${API_URL}/api/activities/instructor/list`, { headers });
+    return response.data;
+  } catch (error) {
+    console.error('Error al obtener la lista de instructores:', error);
+    throw new Error('Error al obtener la lista de instructores.');
+  }
+};
+
 

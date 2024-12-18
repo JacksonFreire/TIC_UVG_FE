@@ -110,15 +110,17 @@
             <label class="block text-base font-bold text-indigo-600 uppercase">Nombre de la Lección</label>
             <p class="mt-1 text-gray-900">{{ curriculum.lessonName }}</p>
           </div>
-          <div>
+        </div>
+          <div class="col-span-1 md:col-span-2">
             <label class="block text-base font-bold text-indigo-600 uppercase">Contenido</label>
             <p class="mt-1 text-gray-900">{{ curriculum.content }}</p>
           </div>
+          <!--
           <div>
             <label class="block text-base font-bold text-indigo-600 uppercase">Orden</label>
             <p class="mt-1 text-gray-900">{{ curriculum.order }}</p>
-          </div>
-        </div>
+          </div>-->
+
       </div>
     </div>
   </div>

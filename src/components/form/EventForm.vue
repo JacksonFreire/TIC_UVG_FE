@@ -96,6 +96,22 @@
       ></textarea>
     </div>
 
+    <!-- Campo de selección de Instructor -->
+    <div>
+      <label for="instructor" class="block text-sm font-medium text-gray-700">Instructor</label>
+      <select
+          id="instructor"
+          v-model="form.instructor.id"
+          class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          required
+      >
+        <option value="" disabled>Seleccione un instructor</option>
+        <option v-for="instructor in instructors" :key="instructor.id" :value="instructor.id">
+          {{ instructor.name }}
+        </option>
+      </select>
+    </div>
+
     <div>
       <button type="submit" class="mt-6 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
               :disabled="isSubmittingLocal">
@@ -126,8 +142,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { createEvent, updateEvent } from '@/services/eventService';
+import { onMounted,ref, watch } from 'vue';
+import { createEvent, updateEvent, getAllInstructors } from '@/services/eventService';
 import { useRouter } from 'vue-router';
 
 const props = defineProps({
@@ -144,6 +160,9 @@ const props = defineProps({
       category: '',
       imageUrl: '', // URL de la imagen del evento
       additionalDetails: '',
+      instructor: {
+        id: null,
+      },
     }),
   },
   isEditing: {
@@ -162,6 +181,17 @@ const dialogTitle = ref('');
 const dialogClass = ref('');
 const dialogIcon = ref(['fas', 'check-circle']);
 const dialogTitleClass = ref('');
+const instructors = ref<{ id: number; name: string }[]>([]);
+
+
+// Cargar la lista de instructores al montar el componente
+onMounted(async () => {
+  try {
+    instructors.value = await getAllInstructors();
+  } catch (error) {
+    console.error('Error al cargar instructores:', error);
+  }
+});
 
 // Manejar la carga de imágenes
 const onFileChange = (event: Event) => {
@@ -203,6 +233,13 @@ const closeDialog = () => {
   notificationDialog.value?.close();
 };
 
+const adjustDateToISOString = (dateString: string) => {
+  const date = new Date(dateString);
+  const offset = date.getTimezoneOffset(); // Diferencia de zona horaria en minutos
+  date.setMinutes(date.getMinutes() - offset); // Ajustar la hora local a UTC
+  return date.toISOString();
+};
+
 // Enviar el formulario para crear o actualizar el evento
 const submitFormEvent = async () => {
   if (isSubmittingLocal.value) return;
@@ -211,8 +248,10 @@ const submitFormEvent = async () => {
 
   try {
     const payload = { ...form.value };
-    payload.startDate = new Date(payload.startDate).toISOString();
-    payload.endDate = new Date(payload.endDate).toISOString();
+    payload.startDate = adjustDateToISOString(payload.startDate);
+    payload.endDate = adjustDateToISOString(payload.endDate);
+
+    payload.instructor = { id: form.value.instructor.id };
 
     if (props.isEditing) {
       await updateEvent(form.value.id, payload);

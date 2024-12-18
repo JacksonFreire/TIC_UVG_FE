@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col min-h-screen">
     <!-- Navbar existente -->
-    <Navbar v-if="!isInAdminDashboard" />
+    <Navbar v-if="!isInDashboard" />
 
     <!-- Contenido Principal -->
     <div :class="contentClass">
@@ -9,7 +9,7 @@
     </div>
 
     <!-- Footer -->
-    <Footer v-if="!isInAdminDashboard" />
+    <Footer v-if="!isInDashboard" />
   </div>
 </template>
 
@@ -30,18 +30,22 @@ export default defineComponent({
     const authStore = useAuthStore();
     const route = useRoute();
 
-    const isInAdminDashboard = computed(() => {
-      return route.path.includes('/dashboard') && (authStore.userRole === 'ADMIN' || authStore.userRole === 'INSTR');
+    // Determinar si el usuario está en cualquier tipo de dashboard
+    const isInDashboard = computed(() => {
+      return (
+          route.path.includes('/dashboard') || route.path.includes('/instructor-dashboard')
+      );
     });
 
+    // Clase dinámica para el contenedor principal
     const contentClass = computed(() => {
-      return isInAdminDashboard.value
-          ? 'flex-grow' // Dashboard no necesita padding top
-          : 'flex-grow pt-16 container mx-auto px-4'; // Otras páginas compensan el espacio del navbar
+      return isInDashboard.value
+          ? 'flex-grow' // Dashboard ocupa toda la pantalla
+          : 'flex-grow pt-16 container mx-auto px-4'; // Espaciado para páginas públicas
     });
 
     return {
-      isInAdminDashboard,
+      isInDashboard,
       contentClass,
     };
   },
