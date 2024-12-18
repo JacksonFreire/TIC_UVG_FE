@@ -57,8 +57,9 @@ import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import { getEventsByInstructorId } from '@/services/eventService';
 import { useEventStore } from '@/stores/eventStore';
+import { Event } from '@/models/Event'; // Importar el modelo Event
 
-const events = ref([]); // Lista de eventos
+const events = ref<Event[]>([]); // Usar el modelo Event
 const isLoading = ref(true);
 const error = ref(false);
 

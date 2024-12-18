@@ -74,7 +74,7 @@ onMounted(async () => {
   try {
     const allParticipants = await getEnrollmentsByCourse(courseId);
     // Filtrar solo los confirmados
-    participants.value = allParticipants.filter((participant) => participant.status === 'confirmed');
+    participants.value = allParticipants.filter((participant: Participant) => participant.status === 'confirmed');
   } catch (error) {
     console.error('Error al cargar los participantes:', error);
   } finally {

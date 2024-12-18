@@ -6,7 +6,7 @@ interface AuthState {
   token: string | null;
   userDetails: { username: string; userId: number } | null;
   userRole: string | null; // Rol del usuario, como 'ADMIN' o 'INSTR'
-  instructorId: number | null;
+  instructorId: number | null; // ID del instructor
   redirectUrl: string; // URL a la que redirigir tras el inicio de sesión
 }
 
@@ -15,6 +15,7 @@ export const useAuthStore = defineStore('auth', {
     token: null,
     userDetails: null,
     userRole: null,
+    instructorId: null, // Definimos instructorId como null inicialmente
     redirectUrl: '',
   }),
 
