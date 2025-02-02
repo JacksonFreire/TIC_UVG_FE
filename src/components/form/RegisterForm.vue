@@ -26,7 +26,11 @@
                  class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                  type="file"
           />
-
+          <!-- Validación de la contraseña -->
+          <p v-if="key === 'password' && touched.password && !isValidPassword(form.password)" class="text-red-500 text-sm mt-1">
+            La contraseña debe contener al menos una mayúscula y un número.
+          </p>
+          <!-- Validación de la confirmación de contraseña -->
           <p v-if="key === 'confirmPassword' && touched.confirmPassword && !passwordsMatch" class="text-red-500 text-sm mt-1">Las contraseñas no coinciden.</p>
           <p v-else-if="touched[key as keyof typeof touched] && !form[key as keyof typeof form]" class="text-red-500 text-sm mt-1">{{ field.error }}</p>
         </div>
@@ -78,7 +82,8 @@ export default defineComponent({
       handleFileUpload,
       submit,
       validateForm,
-      passwordsMatch
+      passwordsMatch,
+      isValidPassword
     } = useRegisterForm();
 
     const showResultDialog = ref(false);
@@ -181,7 +186,8 @@ export default defineComponent({
       closeResultDialog,
       fileInputKey,
       userFriendlyError,
-      formFields, // Asegúrate de devolver formFields
+      formFields,
+      isValidPassword,
     };
   },
 });

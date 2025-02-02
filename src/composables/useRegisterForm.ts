@@ -37,6 +37,11 @@ export function useRegisterForm() {
   const modalMessage = ref('Por favor, espera mientras procesamos tu solicitud.');
   const submissionError = ref('');
 
+  // Función para validar que la contraseña tenga al menos una mayúscula y un número
+  const isValidPassword = (password: string): boolean => {
+    return /[A-Z]/.test(password) && /\d/.test(password);
+  };
+
   // Tipos de archivos permitidos (formatos comunes de cámaras de teléfonos)
   const allowedFileTypes = ['image/jpeg', 'image/png', 'image/heic', 'image/heif', 'image/webp'];
 
@@ -45,7 +50,7 @@ export function useRegisterForm() {
 
   const validateForm = (): boolean => {
     return !!form.firstName && !!form.lastName && !!form.email && !!form.username &&
-        !!form.password && passwordsMatch.value &&
+        isValidPassword(form.password) && !!form.password && passwordsMatch.value &&
         !!form.phoneNumber && !!form.role && !!form.birthDate && !!form.document;
   };
 
@@ -131,5 +136,6 @@ export function useRegisterForm() {
     submit,
     validateForm,
     passwordsMatch,
+    isValidPassword,
   };
 }
