@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-center justify-center min-h-screen">
     <div class="w-full max-w-lg p-8 bg-white rounded-lg shadow-lg">
-      <h2 class="text-2xl font-bold text-center mb-6">Registro</h2>
+      <h2 class="text-2xl font-bold text-center mb-6 text-blue-500">Registro</h2>
       <form @submit.prevent="submitForm" :class="{ 'opacity-50 pointer-events-none': isSubmitting }">
         <div v-for="(field, key) in formFields" :key="key" class="mb-4">
           <label :for="key" class="block text-sm font-medium text-gray-700">
